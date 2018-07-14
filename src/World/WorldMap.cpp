@@ -17,14 +17,10 @@ void WorldMap::display(Ndk::World& world)
 {
 	for (int y = 0; y < m_size_y; y++) {
 		for (int x = 0; x < m_size_x; x++) {
-			Nz::MaterialRef mat = Nz::Material::New();
-			mat->LoadFromFile("tiles/tile.png");
-			mat->EnableBlending(true);
-			mat->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-			mat->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-			mat->EnableDepthWrite(false);
-
-			Nz::SpriteRef spr = Nz::Sprite::New(mat);
+			Tile& tile = getTile(x, y);
+			Nz::SpriteRef spr;
+			spr = Nz::Sprite::New(tile.getMaterial());
+			
 
 			Ndk::EntityHandle test = world.CreateEntity();
 			Ndk::NodeComponent &nodeComp = test->AddComponent<Ndk::NodeComponent>();
@@ -37,15 +33,14 @@ void WorldMap::display(Ndk::World& world)
 
 			nodeComp.SetScale(scale, scale);
 			float height = y / 2.f * scale * tile_height;
-			std::cout << "x = " << x << " y = " << y << "   " << height << std::endl;
-			if (y % 2 == 0) {
-				// Ligne paire
-				nodeComp.SetPosition(x * scale * tile_width, height);
-			}
-			else {
-				nodeComp.SetPosition(x * scale * tile_width + (0.5 * scale*tile_width), height);
+			float width = x * scale * tile_width;
+
+			if (y % 2 != 0) {
+				// Odd line
+				width += 0.5 * scale*tile_width;
 			}
 			
+			nodeComp.SetPosition(width, height);
 		}
 	}
 }
