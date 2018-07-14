@@ -1,9 +1,12 @@
 #include <NDK/Application.hpp>
 #include <Nazara/Renderer.hpp>
 #include <Nazara/Utility.hpp>
-#include <NDK/Application.hpp>
 #include <NDK/Components.hpp>
 #include <NDK/Systems.hpp>
+#include <NDK/StateMachine.hpp>
+
+#include "includes\CityState.h"
+
 #include <iostream>
 
 int main()
@@ -25,28 +28,19 @@ int main()
 	viewer.SetTarget(&mainWindow);
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
 
-	Nz::MaterialRef mat = Nz::Material::New();
-	mat->LoadFromFile("tiles/tile.png");
-	mat->EnableBlending(true);
-	mat->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	mat->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	mat->EnableDepthWrite(false);
+	// We add our state machine with the newly created GameState
+	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
 
-	Nz::SpriteRef spr = Nz::Sprite::New(mat);
-
-	Ndk::EntityHandle sprEntity = world.CreateEntity();
-	Ndk::NodeComponent &nodeComp = sprEntity->AddComponent<Ndk::NodeComponent>();
-	Ndk::GraphicsComponent &GraphicsComp = sprEntity->AddComponent<Ndk::GraphicsComponent>();
-	GraphicsComp.Attach(spr);
-
-	nodeComp.SetScale(0.4f, 0.4f);
-	//nodeComp.SetPosition(100.f, 80.f);
-
-	
-	
-
+	// We make it run
 	while (application.Run())
 	{
+		// We update the state machine which will ensure that our states are updated
+		if (!fsm.Update(application.GetUpdateTime()))
+		{
+			NazaraError("Failed to update state machine.");
+			return EXIT_FAILURE;
+		}
+
 		mainWindow.Display();
 	}
 
