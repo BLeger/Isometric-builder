@@ -14,7 +14,7 @@ public:
 	CityState(Ndk::World& world, Nz::RenderWindow& window);
 	void Enter(Ndk::StateMachine& fsm) override;
 	void Leave(Ndk::StateMachine& fsm) override;
-	void Update(Ndk::StateMachine& fsm, float elapsedTime) override;
+	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
 private:
 	const Nz::Vector2f m_windowSize;

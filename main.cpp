@@ -14,10 +14,11 @@ int main()
 	mainWindow.Create(Nz::VideoMode(800, 600, 32), "Test");
 	mainWindow.EnableVerticalSync(true);
 
-
+	// World
 	Ndk::World& world = application.AddWorld();
 	world.GetSystem<Ndk::RenderSystem>().SetGlobalUp(Nz::Vector3f::Down());
 
+	// Camera
 	Ndk::EntityHandle viewEntity = world.CreateEntity();
 	viewEntity->AddComponent<Ndk::NodeComponent>();
 	Ndk::CameraComponent& viewer = viewEntity->AddComponent<Ndk::CameraComponent>();
