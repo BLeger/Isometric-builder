@@ -1,5 +1,5 @@
-#ifndef TILE_H
-#define TILE_H
+#ifndef BUILDING_H
+#define BUILDING_H
 
 #include <NDK/Application.hpp>
 #include <NDK/Entity.hpp>
@@ -10,30 +10,23 @@
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
+#include <Nazara\Math\Vector2.hpp>
 
 #include <string>
 
-enum TileType {
-	Tile_1x1,
-	Object_NxN_Attach,
-	Object_NxN_Body
-};
-
-class Tile {
+class Building {
 
 public:
-	Tile() {};
-	Tile(TileType type, std::string material);
-
-	void setType(TileType type);
-	TileType getType();
+	Building(int size_x, int size_y, std::string materialName);
 
 	void setMaterialName(std::string material);
-	Nz::MaterialRef getMaterial();
+	std::string getMaterialName();
+
+	Nz::Vector2<int> getSize();
 
 private:
 	std::string m_materialName;
-	TileType m_type;
+	int m_size_x, m_size_y;
 };
 
-#endif // !TILE_H
+#endif // !BUILDING_H

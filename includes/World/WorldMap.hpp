@@ -13,8 +13,10 @@
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
+#include <Nazara\Math\Vector2.hpp>
 
 #include "Tile.hpp"
+#include "Building.hpp"
 
 class WorldMap {
 
@@ -24,6 +26,7 @@ public:
 	Tile& getTile(int x, int y);
 
 	void display(Ndk::World& world);
+	void addBuilding(Building b, int x, int y);
 
 private:
 	std::vector<Tile> m_tiles{};

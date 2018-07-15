@@ -9,7 +9,17 @@ WorldMap::WorldMap(int size_x, int size_y) : m_size_x(size_x), m_size_y(size_y) 
 	}
 
 	Tile& t = getTile(2, 2);
-	t.setType(TileType::Object_NxN_Body);
+	t.setType(TileType::Object_NxN_Attach);
+	t.setMaterialName("big_tile");
+
+	Tile& t2 = getTile(3, 2);
+	t2.setType(TileType::Object_NxN_Body);
+
+	Tile& t3 = getTile(2, 1);
+	t3.setType(TileType::Object_NxN_Body);
+
+	Tile& t4 = getTile(2, 3);
+	t4.setType(TileType::Object_NxN_Body);
 }
 
 Tile& WorldMap::getTile(int x, int y) {
@@ -53,4 +63,12 @@ void WorldMap::display(Ndk::World& world)
 			}
 		}
 	}
+}
+
+void WorldMap::addBuilding(Building b, int x, int y) {
+	Nz::Vector2<int> buildingSize = b.getSize();
+
+	Tile& t = getTile(x, y);
+	t.setType(TileType::Object_NxN_Attach);
+	t.setMaterialName(b.getMaterialName());
 }
