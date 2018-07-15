@@ -11,6 +11,8 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 
+#include <string>
+
 enum TileType {
 	Tile_1x1,
 	Object_NxN_Attach,
@@ -21,11 +23,14 @@ class Tile {
 
 public:
 	Tile() {};
-	Tile(TileType type);
+	Tile(TileType type, std::string material);
 
+	void setType(TileType type);
+	TileType getType();
 	Nz::MaterialRef getMaterial();
 
 private:
+	std::string m_material_name;
 	TileType m_type;
 };
 
