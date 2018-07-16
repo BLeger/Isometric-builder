@@ -19,19 +19,34 @@ enum TileType {
 	Object_NxN_Body
 };
 
+struct TileData {
+	TileType type;
+	std::string name;
+	std::string materialName;
+	float heightOffset;
+	int size_x;
+	int size_y;
+};
+
 class Tile {
 
 public:
 	Tile() {};
-	Tile(TileType type, std::string material);
+	Tile(TileType type, std::string material, float heightOffset = 40.f);
+	Tile(TileData datas);
+
+	void setTileDatas(TileData& datas); 
 
 	void setType(TileType type);
 	TileType getType();
+
+	float getHeightOffset();
 
 	void setMaterialName(std::string material);
 	Nz::MaterialRef getMaterial();
 
 private:
+	float m_heightOffset;
 	std::string m_materialName;
 	TileType m_type;
 };

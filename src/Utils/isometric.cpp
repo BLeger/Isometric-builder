@@ -36,9 +36,9 @@ std::vector<Nz::Vector2<int>> Isometric::square(int x, int y, int width, int hei
 {
 	std::vector<Nz::Vector2<int>> cells{};
 
-	cells.push_back(Nz::Vector2<int>(x, y));
-
 	for (int i = 0; i < width; i++) {
+		cells.push_back(Nz::Vector2<int>(x, y));
+
 		int xLineStart = x;
 		int yLineStart = y;
 
@@ -50,7 +50,6 @@ std::vector<Nz::Vector2<int>> Isometric::square(int x, int y, int width, int hei
 		}
 
 		Nz::Vector2<int> topRight = topRightCell(xLineStart, yLineStart);
-		cells.push_back(topRight);
 		x = topRight.x;
 		y = topRight.y;
 	}
