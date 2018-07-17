@@ -38,11 +38,19 @@ public:
 	bool changeTile(int x, int y, TileData newTileData);
 
 private:
+	void displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder);
+
 	std::vector<Tile> m_tiles{};
 	std::map<coordinates, Building> m_buildings{};
 
 	const int m_size_x;
 	const int m_size_y;
+
+	const float m_scale = 0.5f;
+	const float m_tile_width = 133.f;
+	const float m_tile_height = 80.f;
+
+	const float m_width_offset = 0.0f;
 };
 
 #endif // !WORLD_MAP_H
