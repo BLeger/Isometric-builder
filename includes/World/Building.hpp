@@ -13,18 +13,20 @@
 #include <Nazara\Math\Vector2.hpp>
 
 #include <string>
+#include "Tile.hpp"
 
 class Building {
 
 public:
-	Building(int size_x, int size_y, std::string materialName);
+	Building(TileData& tile);
 
-	void setMaterialName(std::string material);
+	TileData& getTileData();
 	std::string getMaterialName();
 
 	Nz::Vector2<int> getSize();
 
 private:
+	TileData& m_tileData;
 	std::string m_materialName;
 	int m_size_x, m_size_y;
 };

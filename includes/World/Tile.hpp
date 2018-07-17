@@ -12,6 +12,7 @@
 #include <Nazara/Renderer/RenderWindow.hpp>
 
 #include <string>
+#include <iostream>
 
 enum TileType {
 	Tile_1x1,
@@ -24,16 +25,16 @@ struct TileData {
 	std::string name;
 	std::string materialName;
 	float heightOffset;
-	int size_x;
-	int size_y;
+	int width;
+	int height;
 };
 
 class Tile {
 
 public:
 	Tile() {};
-	Tile(TileType type, std::string material, float heightOffset = 40.f);
-	Tile(TileData datas);
+	Tile(TileType type, std::string material, float heightOffset = 0.f);
+	Tile(TileData& datas);
 
 	void setTileDatas(TileData& datas); 
 

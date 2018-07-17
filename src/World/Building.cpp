@@ -1,11 +1,17 @@
 #include "../../includes/World/Building.hpp"
 
-Building::Building(int size_x, int size_y, std::string materialName) :
-m_size_x(size_x),
-m_size_y(size_y),
-m_materialName(materialName) 
+Building::Building(TileData& tile) :
+m_size_x(tile.width),
+m_size_y(tile.height),
+m_materialName(tile.materialName),
+m_tileData(tile)
 {
 
+}
+
+TileData & Building::getTileData()
+{
+	return m_tileData;
 }
 
 std::string Building::getMaterialName()

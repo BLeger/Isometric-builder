@@ -7,6 +7,14 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 {
 	// Creating a world
 	//m_worldMap = WorldMap{20, 20};
+	
+	TileData grass{ TileType::Tile_1x1, "grass", "grass", 0.f, 1, 1 };
+	TileData tree{ TileType::Tile_1x1, "tree", "tree", -34.f, 1, 1 };
+
+	m_worldMap.generateMap(grass);
+	m_worldMap.changeTile(2, 2, tree);
+
+
 	m_worldMap.display(world);
 }
 

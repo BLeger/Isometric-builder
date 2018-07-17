@@ -2,14 +2,16 @@
 
 WorldMap::WorldMap(int size_x, int size_y) : m_size_x(size_x), m_size_y(size_y) {
 
-	for (int i = 0; i < size_x; i++) {
-		for (int j = 0; j < size_y; j++) {
-			m_tiles.push_back(Tile{TileType::Tile_1x1, "tile"});
+	
+
+}
+
+void WorldMap::generateMap(TileData& defaultTile) {
+	for (int i = 0; i < m_size_x; i++) {
+		for (int j = 0; j < m_size_y; j++) {
+			m_tiles.push_back(Tile{ defaultTile });
 		}
 	}
-
-	Building b{ 1, 1, "tree" };
-	addBuilding(b, 2, 2);
 }
 
 Tile& WorldMap::getTile(int x, int y) {
@@ -39,10 +41,7 @@ void WorldMap::display(Ndk::World& world)
 			if (type == TileType::Tile_1x1 || type == TileType::Object_NxN_Attach) {
 				Nz::SpriteRef spr;
 				spr = Nz::Sprite::New(tile.getMaterial());
-				spr->SetOrigin(Nz::Vector3f(0.f, tile_height, 0.f));
-				if (x == 2 && y == 2) {
-					spr->SetOrigin(Nz::Vector3f(0.f, 160, 0.f));
-				}
+				spr->SetOrigin(Nz::Vector3f(0.f, height_offset, 0.f));
 
 				// Create the entity
 				Ndk::EntityHandle test = world.CreateEntity();
@@ -81,5 +80,18 @@ void WorldMap::addBuilding(Building b, int x, int y) {
 	// The main cell of the building displays the building
 	Tile& attachTile = getTile(x, y);
 	attachTile.setType(TileType::Object_NxN_Attach);
-	attachTile.setMaterialName(b.getMaterialName());
+	attachTile.setTileDatas(b.getTileData());
+}
+
+bool WorldMap::changeTile(int x, int y, TileData newTileData)
+{
+	if (false) {
+		// Condition d'impossibilité de changement
+		return false;
+	}
+
+	Tile& tile = getTile(x, y);
+	tile.setTileDatas(newTileData);
+
+	return true;
 }

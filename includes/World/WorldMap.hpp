@@ -22,12 +22,16 @@
 class WorldMap {
 
 public:
-	WorldMap();
+	//WorldMap() {};
 	WorldMap(int size_x, int size_y);
+	void generateMap(TileData& defaultTile);
+
 	Tile& getTile(int x, int y);
 
 	void display(Ndk::World& world);
 	void addBuilding(Building b, int x, int y);
+
+	bool changeTile(int x, int y, TileData newTileData);
 
 private:
 	std::vector<Tile> m_tiles{};

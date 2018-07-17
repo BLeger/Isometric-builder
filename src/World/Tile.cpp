@@ -1,11 +1,11 @@
 #include "../../includes/World/Tile.hpp"
 
-Tile::Tile(TileType type, std::string material, float heightOffset = 40.f) : m_type(type), m_materialName(material), m_heightOffset(heightOffset)
+Tile::Tile(TileType type, std::string material, float heightOffset) : m_type(type), m_materialName(material), m_heightOffset(heightOffset)
 {
 
 }
 
-Tile::Tile(TileData datas) : m_type(datas.type), m_materialName(datas.materialName), m_heightOffset(datas.heightOffset) {
+Tile::Tile(TileData& datas) : m_type(datas.type), m_materialName(datas.materialName), m_heightOffset(datas.heightOffset) {
 
 }
 
@@ -30,6 +30,7 @@ float Tile::getHeightOffset()
 }
 
 void Tile::setMaterialName(std::string material) {
+	std::cout << material << std::endl;
 	m_materialName = material;
 }
 
