@@ -3,6 +3,7 @@
 
 #include <vector>
 #include <iostream>
+#include <map>
 
 #include <NDK/Application.hpp>
 #include <NDK/Entity.hpp>
@@ -15,11 +16,14 @@
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara\Math\Vector2.hpp>
 
+#include "TileData.hpp"
 #include "Tile.hpp"
 #include "Building.hpp"
 #include "../Utils/isometric.hpp"
 
 class WorldMap {
+
+	using coordinates = Nz::Vector2i;
 
 public:
 	//WorldMap() {};
@@ -35,6 +39,7 @@ public:
 
 private:
 	std::vector<Tile> m_tiles{};
+	std::map<coordinates, Building> m_buildings{};
 
 	const int m_size_x;
 	const int m_size_y;

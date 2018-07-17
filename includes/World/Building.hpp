@@ -13,7 +13,7 @@
 #include <Nazara\Math\Vector2.hpp>
 
 #include <string>
-#include "Tile.hpp"
+#include "TileData.hpp"
 
 class Building {
 

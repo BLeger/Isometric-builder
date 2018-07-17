@@ -29,19 +29,7 @@ float Tile::getHeightOffset()
 	return m_heightOffset;
 }
 
-void Tile::setMaterialName(std::string material) {
-	std::cout << material << std::endl;
-	m_materialName = material;
-}
-
-Nz::MaterialRef Tile::getMaterial()
+std::string Tile::getMaterialName()
 {
-	Nz::MaterialRef material = Nz::Material::New();
-	material->LoadFromFile("tiles/" + m_materialName + ".png");
-	material->EnableBlending(true);
-	material->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	material->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	material->EnableDepthWrite(false);
-
-	return material;
+	return m_materialName;
 }

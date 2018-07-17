@@ -40,7 +40,7 @@ void WorldMap::display(Ndk::World& world)
 
 			if (type == TileType::Tile_1x1 || type == TileType::Object_NxN_Attach) {
 				Nz::SpriteRef spr;
-				spr = Nz::Sprite::New(tile.getMaterial());
+				spr = Nz::Sprite::New(Isometric::createMaterial(tile.getMaterialName()));
 				spr->SetOrigin(Nz::Vector3f(0.f, height_offset, 0.f));
 
 				// Create the entity
@@ -63,6 +63,40 @@ void WorldMap::display(Ndk::World& world)
 			}
 		}
 	}
+
+	auto it = m_buildings.begin();
+	while (it != m_buildings.end()) {
+		coordinates position = (*it).first;
+		Building b = (*it).second;
+
+		TileData& tileData = b.getTileData();
+		float height_offset = tileData.heightOffset;
+
+		Nz::SpriteRef spr;
+		spr = Nz::Sprite::New(Isometric::createMaterial(b.getMaterialName()));
+		spr->SetOrigin(Nz::Vector3f(0.f, height_offset, 0.f));
+
+		// Create the entity
+		Ndk::EntityHandle test = world.CreateEntity();
+		Ndk::NodeComponent &nodeComp = test->AddComponent<Ndk::NodeComponent>();
+		Ndk::GraphicsComponent &GraphicsComp = test->AddComponent<Ndk::GraphicsComponent>();
+		GraphicsComp.Attach(spr, i);
+		i++;
+
+		nodeComp.SetScale(scale, scale);
+
+		// x coordinate of the tile
+		float xPos = width_offset + (position.x * scale * tile_width);
+		float yPos = (position.y / 2.f * scale * tile_height);
+		if (position.y % 2 != 0) {
+			// Odd line are shifted
+			xPos += 0.5 * scale*tile_width;
+		}
+
+		nodeComp.SetPosition(xPos, yPos + height_offset);
+
+		it++;
+	}
 }
 
 void WorldMap::addBuilding(Building b, int x, int y) {
@@ -74,13 +108,15 @@ void WorldMap::addBuilding(Building b, int x, int y) {
 	// All the cells occupied by the building are converted to body cells
 	for (Nz::Vector2<int> cell : cells) {
 		Tile& bodyTile = getTile(cell.x, cell.y);
-		bodyTile.setType(TileType::Object_NxN_Body);
+		//bodyTile.setType(TileType::Object_NxN_Body);
 	}
 
 	// The main cell of the building displays the building
-	Tile& attachTile = getTile(x, y);
-	attachTile.setType(TileType::Object_NxN_Attach);
-	attachTile.setTileDatas(b.getTileData());
+	//Tile& attachTile = getTile(x, y);
+	//attachTile.setType(TileType::Object_NxN_Attach);
+	//attachTile.setTileDatas(b.getTileData());
+
+	m_buildings.insert(std::make_pair(coordinates{ x, y }, b));
 }
 
 bool WorldMap::changeTile(int x, int y, TileData newTileData)

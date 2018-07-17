@@ -56,3 +56,15 @@ std::vector<Nz::Vector2<int>> Isometric::square(int x, int y, int width, int hei
 
 	return cells;
 }
+
+Nz::MaterialRef Isometric::createMaterial(std::string materialName)
+{
+	Nz::MaterialRef material = Nz::Material::New();
+	material->LoadFromFile("tiles/" + materialName + ".png");
+	material->EnableBlending(true);
+	material->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
+	material->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
+	material->EnableDepthWrite(false);
+
+	return material;
+}

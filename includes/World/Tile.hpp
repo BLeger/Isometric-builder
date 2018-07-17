@@ -14,20 +14,8 @@
 #include <string>
 #include <iostream>
 
-enum TileType {
-	Tile_1x1,
-	Object_NxN_Attach,
-	Object_NxN_Body
-};
-
-struct TileData {
-	TileType type;
-	std::string name;
-	std::string materialName;
-	float heightOffset;
-	int width;
-	int height;
-};
+#include "TileData.hpp"
+#include "Building.hpp"
 
 class Tile {
 
@@ -43,13 +31,14 @@ public:
 
 	float getHeightOffset();
 
-	void setMaterialName(std::string material);
-	Nz::MaterialRef getMaterial();
+	std::string getMaterialName();
 
 private:
 	float m_heightOffset;
 	std::string m_materialName;
 	TileType m_type;
+
+	Building* b;
 };
 
 #endif // !TILE_H
