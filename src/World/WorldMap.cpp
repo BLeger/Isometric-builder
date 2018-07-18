@@ -6,10 +6,12 @@ WorldMap::WorldMap(int size_x, int size_y) : m_size_x(size_x), m_size_y(size_y) 
 
 }
 
-void WorldMap::generateMap(TileData& defaultTile) {
+void WorldMap::generateMap(Ndk::World& world, TileData& defaultTile) {
+	int drawingOrder = 0;
 	for (int i = 0; i < m_size_x; i++) {
 		for (int j = 0; j < m_size_y; j++) {
-			m_tiles.push_back(Tile{ defaultTile });
+			m_tiles.push_back(Tile{ defaultTile, world, drawingOrder });
+			drawingOrder++;
 		}
 	}
 }
@@ -27,12 +29,21 @@ void WorldMap::display(Ndk::World& world)
 			Tile& tile = getTile(x, y);
 			float height_offset = tile.getHeightOffset();
 
-			displaySprite(world, Isometric::createMaterial(tile.getMaterialName()), Nz::Vector2i{ x, y }, height_offset, drawingOrder);
-			drawingOrder++;
+			tile.setScale(m_scale);
+
+			float xPos = m_width_offset + (x * m_scale * m_tile_width);
+			float yPos = (y / 2.f * m_scale * m_tile_height);
+
+			if (y % 2 != 0) {
+				// Odd line are shifted
+				xPos += 0.5 * m_scale*m_tile_width;
+			}
+
+			tile.setPosition(Nz::Vector2f(xPos, yPos));
 		}
 	}
 
-	auto it = m_buildings.begin();
+	/*auto it = m_buildings.begin();
 	while (it != m_buildings.end()) {
 		coordinates position = (*it).first;
 		Building b = (*it).second;
@@ -44,12 +55,12 @@ void WorldMap::display(Ndk::World& world)
 		drawingOrder++;
 
 		it++;
-	}
+	}*/
 }
 
 void WorldMap::displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder)
 {
-	Nz::SpriteRef spr;
+	/*Nz::SpriteRef spr;
 	spr = Nz::Sprite::New(material);
 	spr->SetOrigin(Nz::Vector3f(0.f, height_offset, 0.f));
 
@@ -57,9 +68,9 @@ void WorldMap::displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Ve
 	Ndk::EntityHandle test = world.CreateEntity();
 	Ndk::NodeComponent &nodeComp = test->AddComponent<Ndk::NodeComponent>();
 	Ndk::GraphicsComponent &GraphicsComp = test->AddComponent<Ndk::GraphicsComponent>();
-	GraphicsComp.Attach(spr, drawingOrder);
+	GraphicsComp.Attach(spr, drawingOrder);*/
 
-	nodeComp.SetScale(m_scale, m_scale);
+	/*nodeComp.SetScale(m_scale, m_scale);
 
 	// Coordinates of the tile
 	float xPos = m_width_offset + (position.x * m_scale * m_tile_width);
@@ -71,8 +82,11 @@ void WorldMap::displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Ve
 	}
 
 	nodeComp.SetPosition(xPos, yPos + height_offset);
-}
 
+	if (position.x == 0 && position.y == 0) {
+		t = test;
+	}*/
+}
 
 void WorldMap::addBuilding(Building b, int x, int y) {
 	Nz::Vector2<int> buildingSize = b.getSize();
@@ -105,4 +119,23 @@ bool WorldMap::changeTile(int x, int y, TileData newTileData)
 	tile.setTileDatas(newTileData);
 
 	return true;
+}
+
+void WorldMap::zoom(int delta)
+{
+	m_scale += delta * 0.1;
+
+	if (m_scale > m_max_scale)
+		m_scale = m_max_scale;
+
+	if (m_scale < m_min_scale)
+		m_scale = m_min_scale;
+
+}
+
+void WorldMap::test()
+{
+	Ndk::NodeComponent& tt = t->GetComponent<Ndk::NodeComponent>();
+	tt.SetPosition(200.f, 200.f);
+	
 }

@@ -28,7 +28,7 @@ class WorldMap {
 public:
 	//WorldMap() {};
 	WorldMap(int size_x, int size_y);
-	void generateMap(TileData& defaultTile);
+	void generateMap(Ndk::World& world, TileData& defaultTile);
 
 	Tile& getTile(int x, int y);
 
@@ -37,7 +37,11 @@ public:
 
 	bool changeTile(int x, int y, TileData newTileData);
 
+	void zoom(int delta);
+	void test();
+
 private:
+	Ndk::EntityHandle t;
 	void displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder);
 
 	std::vector<Tile> m_tiles{};
@@ -46,7 +50,10 @@ private:
 	const int m_size_x;
 	const int m_size_y;
 
-	const float m_scale = 0.5f;
+	float m_scale = 0.5f;
+	const float m_max_scale = 0.8f;
+	const float m_min_scale = 0.2f;
+
 	const float m_tile_width = 133.f;
 	const float m_tile_height = 80.f;
 

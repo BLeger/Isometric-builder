@@ -14,6 +14,7 @@
 #include <string>
 #include <iostream>
 
+#include "../Utils/isometric.hpp"
 #include "TileData.hpp"
 #include "Building.hpp"
 
@@ -21,22 +22,26 @@ class Tile {
 
 public:
 	Tile() {};
-	Tile(TileType type, std::string material, float heightOffset = 0.f);
-	Tile(TileData& datas);
+	//Tile(TileType type, std::string material, float heightOffset = 0.f);
+	Tile(TileData& datas, Ndk::World& world, int drawingOrder);
+
+	void setScale(float scale);
+	void setPosition(Nz::Vector2f position);
 
 	void setTileDatas(TileData& datas); 
 
-	void setType(TileType type);
-	TileType getType();
+	//void setType(TileType type);
+	//TileType getType();
 
 	float getHeightOffset();
 
 	std::string getMaterialName();
 
 private:
+	Ndk::EntityHandle m_entity;
 	float m_heightOffset;
 	std::string m_materialName;
-	TileType m_type;
+	//TileType m_type;
 
 	Building* b;
 };

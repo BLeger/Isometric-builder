@@ -23,7 +23,11 @@ public:
 	void Leave(Ndk::StateMachine& fsm) override;
 	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
+	void mousePressed(Nz::Vector2i position);
+	void mouseWheelMoved(float delta);
+
 private:
+	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
 
 	WorldMap m_worldMap;
