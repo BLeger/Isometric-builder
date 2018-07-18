@@ -39,23 +39,31 @@ void WorldMap::display(Ndk::World& world)
 				xPos += 0.5 * m_scale*m_tile_width;
 			}
 
-			tile.setPosition(Nz::Vector2f(xPos, yPos));
+			tile.setPosition(Nz::Vector2f(xPos, yPos + height_offset));
 		}
 	}
 
-	/*auto it = m_buildings.begin();
+	auto it = m_buildings.begin();
 	while (it != m_buildings.end()) {
 		coordinates position = (*it).first;
 		Building b = (*it).second;
 
-		TileData& tileData = b.getTileData();
-		float height_offset = tileData.heightOffset;
+		float height_offset = b.getHeightOffset();
+		std::cout << height_offset << std::endl;
 
-		displaySprite(world, Isometric::createMaterial(b.getMaterialName()), position, height_offset, drawingOrder);
-		drawingOrder++;
+		float xPos = m_width_offset + (position.x * m_scale * m_tile_width);
+		float yPos = (position.y / 2.f * m_scale * m_tile_height);
+
+		if (position.y % 2 != 0) {
+			// Odd line are shifted
+			xPos += 0.5 * m_scale*m_tile_width;
+		}
+
+		b.setScale(m_scale);
+		b.setPosition(Nz::Vector2f(xPos, yPos + height_offset));
 
 		it++;
-	}*/
+	}
 }
 
 void WorldMap::displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder)
@@ -131,11 +139,4 @@ void WorldMap::zoom(int delta)
 	if (m_scale < m_min_scale)
 		m_scale = m_min_scale;
 
-}
-
-void WorldMap::test()
-{
-	Ndk::NodeComponent& tt = t->GetComponent<Ndk::NodeComponent>();
-	tt.SetPosition(200.f, 200.f);
-	
 }

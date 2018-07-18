@@ -13,20 +13,27 @@
 #include <Nazara\Math\Vector2.hpp>
 
 #include <string>
+#include "../Utils/isometric.hpp"
 #include "TileData.hpp"
 
 class Building {
 
 public:
-	Building(TileData& tile);
+	Building(TileData& tile, Ndk::World& world, int drawingOrder);
+
+	void setScale(float scale);
+	void setPosition(Nz::Vector2f position);
 
 	TileData& getTileData();
 	std::string getMaterialName();
+	float getHeightOffset();
 
 	Nz::Vector2<int> getSize();
 
 private:
+	Ndk::EntityHandle m_entity;
 	TileData& m_tileData;
+	float m_heightOffset;
 	std::string m_materialName;
 	int m_size_x, m_size_y;
 };

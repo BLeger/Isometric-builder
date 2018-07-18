@@ -16,10 +16,10 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_worldMap.generateMap(world, grass);
 	m_worldMap.changeTile(2, 2, tree);
 
-	Building b{ batiment };
+	Building b{ batiment, world, 500 };
 	m_worldMap.addBuilding(b, 4, 6);
-	m_worldMap.addBuilding(b, 3, 5);
-	m_worldMap.addBuilding(b, 5, 7);
+	//m_worldMap.addBuilding(b, 3, 5);
+	//m_worldMap.addBuilding(b, 5, 7);
 
 	
 

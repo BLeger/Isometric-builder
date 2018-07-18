@@ -41,6 +41,7 @@ private:
 	Ndk::EntityHandle m_entity;
 	float m_heightOffset;
 	std::string m_materialName;
+	int m_drawingOrder;
 	//TileType m_type;
 
 	Building* b;

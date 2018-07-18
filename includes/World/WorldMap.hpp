@@ -38,7 +38,6 @@ public:
 	bool changeTile(int x, int y, TileData newTileData);
 
 	void zoom(int delta);
-	void test();
 
 private:
 	Ndk::EntityHandle t;
