@@ -140,3 +140,4 @@ void WorldMap::zoom(int delta)
 		m_scale = m_min_scale;
 
 }
+

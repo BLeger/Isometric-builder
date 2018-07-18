@@ -68,3 +68,29 @@ Nz::MaterialRef Isometric::createMaterial(std::string materialName)
 
 	return material;
 }
+
+float Isometric::distanceToCenter(int tileX, int tileY, float mouseX, float mouseY, float tileWidth, float tileHeight)
+{
+	Nz::Vector2f center = cellCenter(tileX, tileY, tileWidth, tileHeight);
+	return pow(center.x - mouseX, 2) + pow(center.y - mouseY, 2);
+}
+
+Nz::Vector2f Isometric::cellCenter(int x, int y, float tileWidth, float tileHeight)
+{
+	float xPos = x * tileWidth + (tileWidth / 2);
+	if (y % 2 != 0)
+		xPos += tileWidth / 2;
+
+	float yPos = y / 2.f * tileHeight + (tileHeight / 2);
+	return Nz::Vector2f(xPos, yPos);
+}
+
+bool Isometric::isInside(int tileX, int tileY, float mouseX, float mouseY, float larg_tile, float heut_tile)
+{
+	Nz::Vector2f center = cellCenter(tileX, tileY, larg_tile, heut_tile);
+
+	float dx = abs(mouseX - center.x);
+	float dy = abs(mouseY - center.y);
+
+	return (dx / (larg_tile * 0.5) + dy / (heut_tile * 0.5) <= 1);
+}
