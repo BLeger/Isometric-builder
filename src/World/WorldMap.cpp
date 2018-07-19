@@ -100,7 +100,7 @@ void WorldMap::addBuilding(Building b, int x, int y) {
 	Nz::Vector2<int> buildingSize = b.getSize();
 
 	// Get the coordinates of all the cell occupied by the building
-	std::vector<Nz::Vector2<int>> cells = Isometric::square(x, y, buildingSize.x, buildingSize.y);
+	std::vector<Nz::Vector2<int>> cells = Isometric::square(Nz::Vector2i(x, y), buildingSize.x, buildingSize.y);
 
 	// All the cells occupied by the building are converted to body cells
 	for (Nz::Vector2<int> cell : cells) {

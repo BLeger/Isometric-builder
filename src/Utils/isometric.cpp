@@ -1,57 +1,54 @@
 #include "../../includes/Utils/isometric.hpp"
 
-Nz::Vector2<int> Isometric::topLeftCell(int x, int y)
+Nz::Vector2i Isometric::topLeftCell(Nz::Vector2i position)
 {
-	if (y % 2 == 0) {
-		return Nz::Vector2<int>(x - 1, y - 1);
+	if (position.y % 2 == 0) {
+		return Nz::Vector2i(position.x - 1, position.y - 1);
 	}
-	return Nz::Vector2<int>(x, y - 1);
+	return Nz::Vector2i(position.x, position.y - 1);
 }
 
-Nz::Vector2<int> Isometric::topRightCell(int x, int y)
+Nz::Vector2i Isometric::topRightCell(Nz::Vector2i position)
 {
-	if (y % 2 == 0) {
-		return Nz::Vector2<int>(x, y - 1);
+	if (position.y % 2 == 0) {
+		return Nz::Vector2i(position.x, position.y - 1);
 	}
-	return Nz::Vector2<int>(x + 1, y - 1);
+	return Nz::Vector2i(position.x + 1, position.y - 1);
 }
 
-Nz::Vector2<int> Isometric::bottomLeftCell(int x, int y)
+Nz::Vector2i Isometric::bottomLeftCell(Nz::Vector2i position)
 {
-	if (y % 2 == 0) {
-		return Nz::Vector2<int>(x - 1, y + 1);
+	if (position.y % 2 == 0) {
+		return Nz::Vector2i(position.x - 1, position.y + 1);
 	}
-	return Nz::Vector2<int>(x, y + 1);
+	return Nz::Vector2i(position.x, position.y + 1);
 }
 
-Nz::Vector2<int> Isometric::bottomRightCell(int x, int y)
+Nz::Vector2i Isometric::bottomRightCell(Nz::Vector2i position)
 {
-	if (y % 2 == 0) {
-		return Nz::Vector2<int>(x, y + 1);
+	if (position.y % 2 == 0) {
+		return Nz::Vector2i(position.x, position.y + 1);
 	}
-	return Nz::Vector2<int>(x + 1, y + 1);
+	return Nz::Vector2i(position.x + 1, position.y + 1);
 }
 
-std::vector<Nz::Vector2<int>> Isometric::square(int x, int y, int width, int height)
+std::vector<Nz::Vector2i> Isometric::square(Nz::Vector2i tilePosition, int width, int height)
 {
-	std::vector<Nz::Vector2<int>> cells{};
+	std::vector<Nz::Vector2i> cells{};
 
 	for (int i = 0; i < width; i++) {
-		cells.push_back(Nz::Vector2<int>(x, y));
+		cells.push_back(Nz::Vector2i(tilePosition.x, tilePosition.y));
 
-		int xLineStart = x;
-		int yLineStart = y;
+		Nz::Vector2i lineStart = tilePosition;
 
 		for (int j = 0; j < height - 1; j++) {
-			Nz::Vector2<int> botRight = bottomRightCell(x, y);
+			Nz::Vector2i botRight = bottomRightCell(tilePosition);
 			cells.push_back(botRight);
-			x = botRight.x;
-			y = botRight.y;
+			tilePosition = botRight;
 		}
 
-		Nz::Vector2<int> topRight = topRightCell(xLineStart, yLineStart);
-		x = topRight.x;
-		y = topRight.y;
+		Nz::Vector2i topRight = topRightCell(lineStart);
+		tilePosition = topRight;
 	}
 
 	return cells;
@@ -69,28 +66,70 @@ Nz::MaterialRef Isometric::createMaterial(std::string materialName)
 	return material;
 }
 
-float Isometric::distanceToCenter(int tileX, int tileY, float mouseX, float mouseY, float tileWidth, float tileHeight)
+std::vector<Nz::Vector2i> Isometric::getSurroundingTiles(Nz::Vector2i position)
 {
-	Nz::Vector2f center = cellCenter(tileX, tileY, tileWidth, tileHeight);
-	return pow(center.x - mouseX, 2) + pow(center.y - mouseY, 2);
+	std::vector<Nz::Vector2i> tiles{Isometric::bottomLeftCell(position) , Isometric::topLeftCell(position),
+		Isometric::bottomRightCell(position), Isometric::topRightCell(position) };
+
+	std::vector<Nz::Vector2i> surroundingTiles {};
+
+	for (Nz::Vector2i position : tiles) {
+		if (position.x >= 0 && position.y >= 0) {
+			surroundingTiles.push_back(position);
+		}
+	}
+
+	return surroundingTiles;
 }
 
-Nz::Vector2f Isometric::cellCenter(int x, int y, float tileWidth, float tileHeight)
+float Isometric::distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight)
 {
-	float xPos = x * tileWidth + (tileWidth / 2);
-	if (y % 2 != 0)
+	Nz::Vector2f center = cellCenter(tilePosition, tileWidth, tileHeight);
+	return pow(center.x - mousePosition.x, 2) + pow(center.y - mousePosition.y, 2);
+}
+
+Nz::Vector2f Isometric::cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight)
+{
+	float xPos = tilePosition.x * tileWidth + (tileWidth / 2);
+	if (tilePosition.y % 2 != 0)
 		xPos += tileWidth / 2;
 
-	float yPos = y / 2.f * tileHeight + (tileHeight / 2);
+	float yPos = tilePosition.y / 2.f * tileHeight + (tileHeight / 2);
 	return Nz::Vector2f(xPos, yPos);
 }
 
-bool Isometric::isInside(int tileX, int tileY, float mouseX, float mouseY, float larg_tile, float heut_tile)
+Nz::Vector2i Isometric::getCellClicked(Nz::Vector2i mousePosition)
 {
-	Nz::Vector2f center = cellCenter(tileX, tileY, larg_tile, heut_tile);
+	float larg_tile = 133.f * 0.5f;
+	float heut_tile = 80.f * 0.5f;
 
-	float dx = abs(mouseX - center.x);
-	float dy = abs(mouseY - center.y);
+	//std::cout << "CART x: " << position.x << " y: " << position.y << std::endl;
 
-	return (dx / (larg_tile * 0.5) + dy / (heut_tile * 0.5) <= 1);
+	// Estimated tile
+	Nz::Vector2i tile{ (int)(mousePosition.x / larg_tile), (int)(mousePosition.y / heut_tile) };
+	// Position of the center of this tile
+	Nz::Vector2f center = Isometric::cellCenter(tile, larg_tile, heut_tile);
+
+	tile.y *= 2;
+
+	//std::cout << "tileX : " << tileX << " tileY : " << tileY << std::endl;
+	//std::cout << "X offset " << tileX_offset << " Y offset " << tileY_offset << std::endl;
+
+	std::vector<Nz::Vector2i> others = Isometric::getSurroundingTiles(tile);
+
+	Nz::Vector2i bestPos = tile;
+	float minDist = distanceToCenter(tile, mousePosition, larg_tile, heut_tile);
+
+	for (Nz::Vector2i other : others) {
+		float d2 = distanceToCenter(other, mousePosition, larg_tile, heut_tile);
+		//std::cout << "Other : " << other.x << " - " << other.y << " Dist : " << d2 << std::endl;
+		if (d2 < minDist) {
+			minDist = d2;
+			bestPos = other;
+		}
+	}
+
+	//std::cout << "RESULT : " << bestPos.x << " - " << bestPos.y << std::endl;
+	return bestPos;
 }
+

@@ -23,7 +23,7 @@ public:
 	void Leave(Ndk::StateMachine& fsm) override;
 	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
-	void mousePressed(Nz::Vector2i position);
+	void mousePressed(Nz::Vector2i mousePosition);
 	void mouseWheelMoved(float delta);
 
 private:

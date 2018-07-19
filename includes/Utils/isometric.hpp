@@ -17,18 +17,20 @@
 
 class Isometric {
 public:
-	static Nz::Vector2<int> topLeftCell(int x, int y);
-	static Nz::Vector2<int> topRightCell(int x, int y);
-	static Nz::Vector2<int> bottomLeftCell(int x, int y);
-	static Nz::Vector2<int> bottomRightCell(int x, int y);
+	static Nz::Vector2i topLeftCell(Nz::Vector2i position);
+	static Nz::Vector2i topRightCell(Nz::Vector2i position);
+	static Nz::Vector2i bottomLeftCell(Nz::Vector2i position);
+	static Nz::Vector2i bottomRightCell(Nz::Vector2i position);
 
-	static std::vector<Nz::Vector2<int>> square(int x, int y, int width, int height);
+	static std::vector<Nz::Vector2<int>> square(Nz::Vector2i tilePosition, int width, int height);
 
 	static Nz::MaterialRef createMaterial(std::string materialName);
 
-	static float distanceToCenter(int tileX, int tileY, float mouseX, float mouseY, float tileWidth, float tileHeight);
-	static Nz::Vector2f cellCenter(int x, int y, float tileWidth, float tileHeight);
-	static bool isInside(int tileX, int tileY, float mouseX, float mouseY, float larg_tile, float heut_tile);
+	static std::vector<Nz::Vector2i> getSurroundingTiles(Nz::Vector2i position);
+	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
+	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
+
+	static Nz::Vector2i getCellClicked(Nz::Vector2i mousePosition);
 };
 
 #endif // !ISOMETRIC_H
