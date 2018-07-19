@@ -40,9 +40,6 @@ public:
 	void zoom(int delta);
 
 private:
-	Ndk::EntityHandle t;
-	void displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder);
-
 	std::vector<Tile> m_tiles{};
 	std::map<coordinates, Building> m_buildings{};
 

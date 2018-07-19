@@ -66,36 +66,6 @@ void WorldMap::display(Ndk::World& world)
 	}
 }
 
-void WorldMap::displaySprite(Ndk::World& world, Nz::MaterialRef material, Nz::Vector2i position, float height_offset, int drawingOrder)
-{
-	/*Nz::SpriteRef spr;
-	spr = Nz::Sprite::New(material);
-	spr->SetOrigin(Nz::Vector3f(0.f, height_offset, 0.f));
-
-	// Create the entity
-	Ndk::EntityHandle test = world.CreateEntity();
-	Ndk::NodeComponent &nodeComp = test->AddComponent<Ndk::NodeComponent>();
-	Ndk::GraphicsComponent &GraphicsComp = test->AddComponent<Ndk::GraphicsComponent>();
-	GraphicsComp.Attach(spr, drawingOrder);*/
-
-	/*nodeComp.SetScale(m_scale, m_scale);
-
-	// Coordinates of the tile
-	float xPos = m_width_offset + (position.x * m_scale * m_tile_width);
-	float yPos = (position.y / 2.f * m_scale * m_tile_height);
-
-	if (position.y % 2 != 0) {
-		// Odd line are shifted
-		xPos += 0.5 * m_scale*m_tile_width;
-	}
-
-	nodeComp.SetPosition(xPos, yPos + height_offset);
-
-	if (position.x == 0 && position.y == 0) {
-		t = test;
-	}*/
-}
-
 void WorldMap::addBuilding(Building b, int x, int y) {
 	Nz::Vector2<int> buildingSize = b.getSize();
 
