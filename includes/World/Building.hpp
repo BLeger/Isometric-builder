@@ -10,7 +10,7 @@
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
-#include <Nazara\Math\Vector2.hpp>
+#include <Nazara/Math/Vector2.hpp>
 
 #include <string>
 #include "../Utils/isometric.hpp"

@@ -23,7 +23,7 @@ class Tile {
 public:
 	Tile() {};
 	//Tile(TileType type, std::string material, float heightOffset = 0.f);
-	Tile(TileData& datas, Ndk::World& world, int drawingOrder);
+	Tile(TileData& datas, Ndk::World& world, int drawingOrder, Nz::MaterialRef& m);
 
 	void setScale(float scale);
 	void setPosition(Nz::Vector2f position);
@@ -44,7 +44,7 @@ private:
 	int m_drawingOrder;
 	//TileType m_type;
 
-	Building* b;
+	//Building* b;
 };
 
 #endif // !TILE_H

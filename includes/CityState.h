@@ -13,7 +13,8 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 
-#include "World\WorldMap.hpp"
+
+#include "World/WorldMap.hpp"
 
 class CityState : public Ndk::State {
 

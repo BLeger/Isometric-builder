@@ -5,11 +5,11 @@
 
 }*/
 
-Tile::Tile(TileData& datas, Ndk::World& world, int drawingOrder) : m_drawingOrder(drawingOrder), m_materialName(datas.materialName), m_heightOffset(datas.heightOffset) {
+Tile::Tile(TileData& datas, Ndk::World& world, int drawingOrder, Nz::MaterialRef& m) : m_drawingOrder(drawingOrder), m_materialName(datas.materialName), m_heightOffset(datas.heightOffset) {
 	Nz::SpriteRef spr;
-	spr = Nz::Sprite::New(Isometric::createMaterial(m_materialName));
+	spr = Nz::Sprite::New(m);
 	spr->SetOrigin(Nz::Vector3f(0.f, m_heightOffset, 0.f));
-
+	
 	m_entity = world.CreateEntity();
 	Ndk::NodeComponent &nodeComp = m_entity->AddComponent<Ndk::NodeComponent>();
 	Ndk::GraphicsComponent &GraphicsComp = m_entity->AddComponent<Ndk::GraphicsComponent>();

@@ -14,7 +14,8 @@
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
-#include <Nazara\Math\Vector2.hpp>
+#include <Nazara/Graphics/TileMap.hpp>
+#include <Nazara/Math\Vector2.hpp>
 
 #include "TileData.hpp"
 #include "Tile.hpp"
@@ -27,8 +28,7 @@ class WorldMap {
 
 public:
 	//WorldMap() {};
-	WorldMap(int size_x, int size_y);
-	void generateMap(Ndk::World& world, TileData& defaultTile);
+	WorldMap(Nz::Vector2i size, Ndk::World& world);
 
 	Tile& getTile(int x, int y);
 
@@ -43,15 +43,15 @@ private:
 	std::vector<Tile> m_tiles{};
 	std::map<coordinates, Building> m_buildings{};
 
-	const int m_size_x;
-	const int m_size_y;
+	Nz::TileMapRef m_tileMap;
+
+	const Nz::Vector2i m_size;
 
 	float m_scale = 0.5f;
 	const float m_max_scale = 0.8f;
 	const float m_min_scale = 0.2f;
 
-	const float m_tile_width = 133.f;
-	const float m_tile_height = 80.f;
+	const Nz::Vector2ui m_tileSize {64, 31};
 
 	const float m_width_offset = 0.0f;
 };

@@ -5,7 +5,8 @@
 #include <NDK/Systems.hpp>
 #include <NDK/StateMachine.hpp>
 
-#include "includes\CityState.h"
+#include "includes/CityState.h"
+
 
 #include <iostream>
 
