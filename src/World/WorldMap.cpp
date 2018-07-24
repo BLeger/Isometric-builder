@@ -9,19 +9,78 @@ WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size) {
 	tileset->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
 	tileset->EnableDepthWrite(false);
 
-	m_tileMap = Nz::TileMap::New(Nz::Vector2ui{ 10, 10 }, Nz::Vector2f{ (float)m_tileSize.x, (float)m_tileSize.y });
+	m_tileMap = Nz::TileMap::New(Nz::Vector2ui{ 20, 20 }, Nz::Vector2f{ (float)m_tileSize.x, (float)m_tileSize.y });
 	m_tileMap->EnableIsometricMode(true);
 
 	m_tileMap->SetMaterial(0, tileset);
 	Nz::Rectui tileRectGrass{ 0 * m_tileSize.x, 0u, m_tileSize.x, m_tileSize.y };
 	Nz::Rectui tileRectWater{ 1 * m_tileSize.x, 0u, m_tileSize.x, m_tileSize.y };
 	m_tileMap->EnableTiles(tileRectGrass);
-	m_tileMap->EnableTile(Nz::Vector2ui{ 1, 1 }, tileRectWater);
+	m_tileMap->EnableTile(Nz::Vector2ui{ 2, 2 }, tileRectWater);
 
 	Ndk::EntityHandle m_entity = world.CreateEntity();
 	Ndk::NodeComponent &nodeComp = m_entity->AddComponent<Ndk::NodeComponent>();
 	Ndk::GraphicsComponent &GraphicsComp = m_entity->AddComponent<Ndk::GraphicsComponent>();
 	GraphicsComp.Attach(m_tileMap);
+
+
+	// Second tilemap
+
+	Nz::MaterialRef tree = Nz::Material::New();
+	tree->LoadFromFile("tiles/secondtileset.png");
+	tree->EnableBlending(true);
+	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
+	tree->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
+	tree->EnableDepthWrite(false);
+
+	const Nz::Vector2ui m_tileSize2{ 64, 64 };
+
+	Nz::TileMapRef m_tileMap2 = Nz::TileMap::New(Nz::Vector2ui{ 20, 10 }, Nz::Vector2f{ (float)m_tileSize2.x, (float)m_tileSize2.y });
+	m_tileMap2->EnableIsometricMode(true);
+
+	m_tileMap2->SetMaterial(0, tree);
+	Nz::Rectui treeRect{ 0 * m_tileSize.x, 0u, m_tileSize2.x, m_tileSize2.y };
+	Nz::Rectui stoneRect{ 1 * m_tileSize.x, 0u, m_tileSize2.x, m_tileSize2.y };
+
+	Ndk::EntityHandle m_entity2 = world.CreateEntity();
+	Ndk::NodeComponent &nodeComp2 = m_entity2->AddComponent<Ndk::NodeComponent>();
+	Ndk::GraphicsComponent &GraphicsComp2 = m_entity2->AddComponent<Ndk::GraphicsComponent>();
+	GraphicsComp2.Attach(m_tileMap2);
+	nodeComp2.SetPosition(Nz::Vector3f(0.f, -42.f, 0.f));
+
+	m_tileMap2->EnableTile(Nz::Vector2ui(1, 1), treeRect);
+	m_tileMap2->EnableTile(Nz::Vector2ui(1, 2), stoneRect);
+	m_tileMap2->EnableTile(Nz::Vector2ui(2, 2), treeRect);
+
+	// Third
+
+	Nz::TileMapRef m_tileMap3 = Nz::TileMap::New(Nz::Vector2ui{ 20, 10 }, Nz::Vector2f{ (float)m_tileSize2.x, (float)m_tileSize2.y });
+	m_tileMap3->EnableIsometricMode(true);
+
+	m_tileMap3->SetMaterial(0, tree);
+
+	Ndk::EntityHandle m_entity3 = world.CreateEntity();
+	Ndk::NodeComponent &nodeComp3 = m_entity3->AddComponent<Ndk::NodeComponent>();
+	Ndk::GraphicsComponent &GraphicsComp3 = m_entity3->AddComponent<Ndk::GraphicsComponent>();
+	GraphicsComp3.Attach(m_tileMap3);
+	nodeComp3.SetPosition(Nz::Vector3f(32.f, -42.f, 0.f));
+
+	m_tileMap3->EnableTile(Nz::Vector2ui(1, 1), treeRect);
+	m_tileMap3->EnableTile(Nz::Vector2ui(1, 2), treeRect);
+	m_tileMap3->EnableTile(Nz::Vector2ui(2, 2), treeRect);
+
+	/*Nz::SpriteRef spr;
+	spr = Nz::Sprite::New(tree);
+	spr->SetOrigin(Nz::Vector3f(0.f, 0.f, 0.f));
+
+	for (int i = 0; i < 100; i++) {
+		Ndk::EntityHandle tree_entity = world.CreateEntity();
+		Ndk::NodeComponent &tNode = tree_entity->AddComponent<Ndk::NodeComponent>();
+		Ndk::GraphicsComponent &tGraphics = tree_entity->AddComponent<Ndk::GraphicsComponent>();
+		tGraphics.Attach(spr);
+		tNode.SetPosition(Nz::Vector3f{ i * 2.f, i * 2.f, 0.f });
+	}*/
+	
 }
 
 
