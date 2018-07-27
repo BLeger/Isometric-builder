@@ -32,7 +32,7 @@ int main()
 	// We add our state machine with the newly created GameState
 	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
 
-	application.EnableFPSCounter(true);
+	//application.EnableFPSCounter(true);
 
 	// We make it run
 	while (application.Run())
