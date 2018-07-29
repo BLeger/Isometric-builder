@@ -1,6 +1,6 @@
 #include "../../includes/World/WorldMap.hpp"
 
-WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size)) {
+WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size) {
 
 	Nz::MaterialRef tileset = Nz::Material::New();
 	tileset->LoadFromFile("tiles/tileset.png");
@@ -9,74 +9,51 @@ WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size)) {
 	tileset->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
 	tileset->EnableDepthWrite(false);
 
-	m_tileMap = Nz::TileMap::New(Nz::Vector2ui{ 20, 20 }, Nz::Vector2f{ (float)m_tileSize.x, (float)m_tileSize.y });
+	m_tileMap = Nz::TileMap::New(size, Nz::Vector2f{ (float)m_tileSize.x, (float)m_tileSize.y });
 	m_tileMap->EnableIsometricMode(true);
 
 	m_tileMap->SetMaterial(0, tileset);
-	Nz::Rectui tileRectGrass{ 0 * m_tileSize.x, 0u, m_tileSize.x, m_tileSize.y };
-	Nz::Rectui tileRectWater{ 1 * m_tileSize.x, 0u, m_tileSize.x, m_tileSize.y };
-	m_tileMap->EnableTiles(tileRectGrass);
-	m_tileMap->EnableTile(Nz::Vector2ui{ 2, 2 }, tileRectWater);
 
 	Ndk::EntityHandle m_entity = world.CreateEntity();
 	Ndk::NodeComponent &nodeComp = m_entity->AddComponent<Ndk::NodeComponent>();
 	Ndk::GraphicsComponent &GraphicsComp = m_entity->AddComponent<Ndk::GraphicsComponent>();
 	GraphicsComp.Attach(m_tileMap);
 
-	//m_tileMap3->EnableTile(Nz::Vector2ui(1, 2), treeRect);
-	//m_tileMap3->EnableTile(Nz::Vector2ui(2, 2), treeRect);
 
+	for (int x = 0; x < m_size.x; x++) {
+		for (int y = 0; y < m_size.y; y++) {
+			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0, 0, 0 });
+		}
+	}
 	
-	/*Nz::MaterialRef tree = Nz::Material::New();
-	tree->LoadFromFile("tiles/tree.png");
-	tree->EnableBlending(true);
-	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tree->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tree->EnableDepthWrite(false);
-
-	Nz::SpriteRef spr;
-	spr = Nz::Sprite::New(tree);
-	spr->SetOrigin(Nz::Vector3f(0.f, 0.f, 0.f));
-
-	for (int i = 0; i < 10000; i++) {
-		Ndk::EntityHandle tree_entity = world.CreateEntity();
-		Ndk::NodeComponent &tNode = tree_entity->AddComponent<Ndk::NodeComponent>();
-		Ndk::GraphicsComponent &tGraphics = tree_entity->AddComponent<Ndk::GraphicsComponent>();
-		tNode.SetPosition(Nz::Vector3f(i * 2.f, i * 2.f, 0.f));
-		tGraphics.Attach(spr);
-	}*/
+	update();
 	
 }
 
 
-Tile& WorldMap::getTile(int x, int y) {
-	return m_tiles.at(m_size.x * y + x);
+TileData& WorldMap::getTile(Nz::Vector2ui position) {
+	return m_tiles.at(m_size.x * position.y + position.x);
 }
 
-void WorldMap::display(Ndk::World& world)
+void WorldMap::update()
 {
-	int drawingOrder = 0;
-
-	for (int y = 0; y < m_size.y; y++) {
-		for (int x = 0; x < m_size.x; x++) {
-			Tile& tile = getTile(x, y);
-			float height_offset = tile.getHeightOffset();
-
-			tile.setScale(m_scale);
-
-			float xPos = m_width_offset + (x * m_scale * m_tileSize.x);
-			float yPos = (y / 2.f * m_scale * m_tileSize.y);
-
-			if (y % 2 != 0) {
-				// Odd line are shifted
-				xPos += 0.5 * m_scale*m_tileSize.x;
+	for (unsigned int y = 0; y < m_size.y; y++) {
+		for (unsigned int x = 0; x < m_size.x; x++) {
+			Nz::Vector2ui position{ x, y };
+			TileData& tile = getTile(position);
+			
+			// Display or not the tile
+			if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE) {
+				Nz::Rectui textureRect{ tile.tileMaterialID * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
+				m_tileMap->EnableTile(position, textureRect);
 			}
-
-			tile.setPosition(Nz::Vector2f(xPos, yPos + height_offset));
+			else {
+				m_tileMap->DisableTile(position);
+			}
 		}
 	}
 
-	auto it = m_buildings.begin();
+	/*auto it = m_buildings.begin();
 	while (it != m_buildings.end()) {
 		coordinates position = (*it).first;
 		Building b = (*it).second;
@@ -96,11 +73,11 @@ void WorldMap::display(Ndk::World& world)
 		b.setPosition(Nz::Vector2f(xPos, yPos + height_offset));
 
 		it++;
-	}
+	}*/
 }
 
 void WorldMap::addBuilding(Building b, int x, int y) {
-	Nz::Vector2<int> buildingSize = b.getSize();
+	/*Nz::Vector2<int> buildingSize = b.getSize();
 
 	// Get the coordinates of all the cell occupied by the building
 	std::vector<Nz::Vector2<int>> cells = Isometric::square(Nz::Vector2i(x, y), buildingSize.x, buildingSize.y);
@@ -116,7 +93,7 @@ void WorldMap::addBuilding(Building b, int x, int y) {
 	//attachTile.setType(TileType::Object_NxN_Attach);
 	//attachTile.setTileDatas(b.getTileData());
 
-	m_buildings.insert(std::make_pair(coordinates{ x, y }, b));
+	m_buildings.insert(std::make_pair(coordinates{ x, y }, b));*/
 }
 
 bool WorldMap::changeTile(int x, int y, TileData newTileData)
@@ -126,8 +103,8 @@ bool WorldMap::changeTile(int x, int y, TileData newTileData)
 		return false;
 	}
 
-	Tile& tile = getTile(x, y);
-	tile.setTileDatas(newTileData);
+	//Tile& tile = getTile(x, y);
+	//tile.setTileDatas(newTileData);
 
 	return true;
 }

@@ -4,11 +4,11 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
-	m_worldMap(WorldMap{ Nz::Vector2i{10, 10}, world })
+	m_worldMap(WorldMap{ Nz::Vector2ui{10, 10}, world })
 {
 	//TileData grass{ TileType::Tile_1x1, "grass", 0.f, 1, 1 };
-	TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
-	TileData batiment{ TileType::Object_NxN_Attach, "batiment", -185.f, 2, 2 };
+	//TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
+	//TileData batiment{ TileType::Object_NxN_Attach, "batiment", -185.f, 2, 2 };
 
 	
 	//nodeComp.SetPosition(Nz::Vector3f{ 0, 0, 0 });
@@ -56,13 +56,13 @@ void CityState::mousePressed(Nz::Vector2i mousePosition)
 {
 	Nz::Vector2i tilePosition = Isometric::getCellClicked(mousePosition);
 
-	TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
-	m_worldMap.changeTile(tilePosition.x, tilePosition.y, tree);
-	m_worldMap.display(m_world);
+	//TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
+	//m_worldMap.changeTile(tilePosition.x, tilePosition.y, tree);
+	//m_worldMap.display(m_world);
 }
 
 void CityState::mouseWheelMoved(float delta)
 {
 	m_worldMap.zoom(delta);
-	m_worldMap.display(m_world);
+	//m_worldMap.display(m_world);
 }

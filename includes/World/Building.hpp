@@ -14,28 +14,22 @@
 
 #include <string>
 #include "../Utils/isometric.hpp"
-#include "TileData.hpp"
+#include "BuildingData.hpp"
 
 class Building {
 
 public:
-	Building(TileData& tile, Ndk::World& world, int drawingOrder);
+	Building(BuildingData data, Nz::Vector2ui position);
 
-	void setScale(float scale);
-	void setPosition(Nz::Vector2f position);
+	unsigned int getMaterialID();
 
-	TileData& getTileData();
-	std::string getMaterialName();
-	float getHeightOffset();
-
-	Nz::Vector2<int> getSize();
+	Nz::Vector2ui getSize();
+	Nz::Vector2ui getPosition();
 
 private:
-	Ndk::EntityHandle m_entity;
-	TileData& m_tileData;
-	float m_heightOffset;
-	std::string m_materialName;
-	int m_size_x, m_size_y;
+	unsigned int m_materialID;
+	Nz::Vector2ui m_size;
+	Nz::Vector2ui m_position;
 };
 
 #endif // !BUILDING_H

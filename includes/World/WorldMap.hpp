@@ -17,8 +17,8 @@
 #include <Nazara/Graphics/TileMap.hpp>
 #include <Nazara/Math\Vector2.hpp>
 
+#include "../Config/TilesConfig.hpp"
 #include "TileData.hpp"
-#include "Tile.hpp"
 #include "Building.hpp"
 #include "../Utils/isometric.hpp"
 
@@ -26,11 +26,11 @@ class WorldMap {
 	
 public:
 	//WorldMap() {};
-	WorldMap(Nz::Vector2i size, Ndk::World& world);
+	WorldMap(Nz::Vector2ui size, Ndk::World& world);
 
-	Tile& getTile(int x, int y);
+	TileData& getTile(Nz::Vector2ui position);
 
-	void display(Ndk::World& world);
+	void update();
 	void addBuilding(Building b, int x, int y);
 
 	bool changeTile(int x, int y, TileData newTileData);
@@ -38,12 +38,12 @@ public:
 	void zoom(int delta);
 
 private:
-	std::vector<Tile> m_tiles{};
-	std::map<Nz::Vector2i, Building> m_buildings{};
+	std::vector<TileData> m_tiles{};
+	std::map<Nz::Vector2ui, Building> m_buildings{};
 
 	Nz::TileMapRef m_tileMap;
 
-	const Nz::Vector2i m_size;
+	const Nz::Vector2ui m_size;
 
 	float m_scale = 0.5f;
 	const float m_max_scale = 0.8f;
