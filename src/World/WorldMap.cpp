@@ -1,6 +1,6 @@
 #include "../../includes/World/WorldMap.hpp"
 
-WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size) {
+WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size)) {
 
 	Nz::MaterialRef tileset = Nz::Material::New();
 	tileset->LoadFromFile("tiles/tileset.png");
@@ -26,8 +26,8 @@ WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size) {
 	//m_tileMap3->EnableTile(Nz::Vector2ui(1, 2), treeRect);
 	//m_tileMap3->EnableTile(Nz::Vector2ui(2, 2), treeRect);
 
-	/*
-	Nz::MaterialRef tree = Nz::Material::New();
+	
+	/*Nz::MaterialRef tree = Nz::Material::New();
 	tree->LoadFromFile("tiles/tree.png");
 	tree->EnableBlending(true);
 	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
@@ -38,12 +38,12 @@ WorldMap::WorldMap(Nz::Vector2i size, Ndk::World& world) : m_size(size) {
 	spr = Nz::Sprite::New(tree);
 	spr->SetOrigin(Nz::Vector3f(0.f, 0.f, 0.f));
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 10000; i++) {
 		Ndk::EntityHandle tree_entity = world.CreateEntity();
 		Ndk::NodeComponent &tNode = tree_entity->AddComponent<Ndk::NodeComponent>();
 		Ndk::GraphicsComponent &tGraphics = tree_entity->AddComponent<Ndk::GraphicsComponent>();
+		tNode.SetPosition(Nz::Vector3f(i * 2.f, i * 2.f, 0.f));
 		tGraphics.Attach(spr);
-		tNode.SetPosition(Nz::Vector3f{ i * 2.f, i * 2.f, 0.f });
 	}*/
 	
 }

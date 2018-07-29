@@ -22,7 +22,10 @@ on top of the main tilemap
 class EnvironmentTileMap {
 
 public:
-	EnvironmentTileMap(Ndk::World& world);
+	EnvironmentTileMap(Ndk::World& world, Nz::Vector2ui mapSize);
+
+	void disableTile(Nz::Vector2ui tilePosition);
+	void enableTile(Nz::Vector2ui tilePosition, int tileIndex);
 
 private:
 	Nz::MaterialRef m_environmentTileSet;
@@ -32,6 +35,8 @@ private:
 
 	Ndk::EntityHandle m_evenEntity;
 	Ndk::EntityHandle m_oddEntity;
+
+	Nz::TileMapRef& getTMForCoords(Nz::Vector2ui tilePosition);
 };
 
 #endif // !ENVIRONMENT_TILE_MAP_H

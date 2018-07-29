@@ -23,9 +23,7 @@
 #include "../Utils/isometric.hpp"
 
 class WorldMap {
-
-	using coordinates = Nz::Vector2i;
-
+	
 public:
 	//WorldMap() {};
 	WorldMap(Nz::Vector2i size, Ndk::World& world);
@@ -41,7 +39,7 @@ public:
 
 private:
 	std::vector<Tile> m_tiles{};
-	std::map<coordinates, Building> m_buildings{};
+	std::map<Nz::Vector2i, Building> m_buildings{};
 
 	Nz::TileMapRef m_tileMap;
 
@@ -51,7 +49,7 @@ private:
 	const float m_max_scale = 0.8f;
 	const float m_min_scale = 0.2f;
 
-	const Nz::Vector2ui m_tileSize {64, 31};
+	const Nz::Vector2ui m_tileSize {64, 32};
 
 	const float m_width_offset = 0.0f;
 };
