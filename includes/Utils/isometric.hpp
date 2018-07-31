@@ -16,6 +16,7 @@
 #include <Nazara/Math\Vector2.hpp>
 
 #include "../Config/TilesConfig.hpp"
+#include <iostream>
 
 class Isometric {
 public:
@@ -32,9 +33,10 @@ public:
 	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
 
-	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition);
+	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition, float mapScale);
 
 	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition);
+	static Nz::Vector2i getCellScaledPixelCoordinates(Nz::Vector2ui cellPosition, float scale);
 };
 
 #endif // !ISOMETRIC_H

@@ -14,11 +14,10 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 
 	m_tileMap->SetMaterial(0, tileset);
 
-	Ndk::EntityHandle m_entity = world.CreateEntity();
-	Ndk::NodeComponent &nodeComp = m_entity->AddComponent<Ndk::NodeComponent>();
-	Ndk::GraphicsComponent &GraphicsComp = m_entity->AddComponent<Ndk::GraphicsComponent>();
-	GraphicsComp.Attach(m_tileMap);
-
+	m_tileMapEntity = world.CreateEntity();
+	Ndk::NodeComponent &nodeComp = m_tileMapEntity->AddComponent<Ndk::NodeComponent>();
+	Ndk::GraphicsComponent &graphicsComp = m_tileMapEntity->AddComponent<Ndk::GraphicsComponent>();
+	graphicsComp.Attach(m_tileMap);
 
 	for (int x = 0; x < m_size.x; x++) {
 		for (int y = 0; y < m_size.y; y++) {
@@ -48,7 +47,7 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position);
+	Nz::Vector2i pixelPosition = Isometric::getCellScaledPixelCoordinates(position, m_scale);
 	nc.SetPosition(Nz::Vector3f{(float) pixelPosition.x, (float) pixelPosition.y, 0.f});
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
@@ -88,6 +87,9 @@ void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 
 void WorldMap::update()
 {
+	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
+	tileMapNode.SetScale(m_scale);
+
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
 			Nz::Vector2ui position{ x, y };
@@ -102,6 +104,19 @@ void WorldMap::update()
 				m_tileMap->DisableTile(position);
 			}
 		}
+	}
+
+	auto it = m_entities.begin();
+	while (it != m_entities.end()) {
+		Nz::Vector2ui tilePosition = (*it).first;
+		Ndk::EntityHandle entity = (*it).second;
+
+		Nz::Vector2i pixelPosition = Isometric::getCellScaledPixelCoordinates(tilePosition, m_scale);
+		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
+		nc.SetScale(m_scale);
+		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
+
+		it++;
 	}
 
 	/*auto it = m_buildings.begin();
@@ -160,6 +175,11 @@ bool WorldMap::changeTile(int x, int y, TileData newTileData)
 	return true;
 }
 
+float WorldMap::getScale()
+{
+	return m_scale;
+}
+
 void WorldMap::zoom(int delta)
 {
 	m_scale += delta * 0.1;
@@ -169,5 +189,7 @@ void WorldMap::zoom(int delta)
 
 	if (m_scale < m_min_scale)
 		m_scale = m_min_scale;
+
+	update();
 }
 

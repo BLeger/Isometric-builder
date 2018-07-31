@@ -98,8 +98,11 @@ Nz::Vector2f Isometric::cellCenter(Nz::Vector2i tilePosition, float tileWidth, f
 	return Nz::Vector2f(xPos, yPos);
 }
 
-Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition)
+Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapScale)
 {
+	mousePosition.x /= mapScale;
+	mousePosition.y /= mapScale;
+
 	float halfH = mainTileSize.y / 2;
 	float ratio = (float)mainTileSize.y / (float)mainTileSize.x;
 	int referenceX = mousePosition.x / mainTileSize.x;
@@ -136,5 +139,15 @@ Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition)
 	}
 
 	return Nz::Vector2i {(int) xPos , (int) yPos};
+}
+
+Nz::Vector2i Isometric::getCellScaledPixelCoordinates(Nz::Vector2ui cellPosition, float scale)
+{
+	Nz::Vector2i pixels = getCellPixelCoordinates(cellPosition);
+
+	pixels.x *= scale;
+	pixels.y *= scale;
+
+	return pixels;
 }
 

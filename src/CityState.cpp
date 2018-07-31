@@ -41,7 +41,7 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
 
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition);
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale());
 
 	Nz::MaterialRef tree = Nz::Material::New();
 	tree->LoadFromFile("tiles/tree.png");
@@ -64,7 +64,7 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 
 void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
 {
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition);
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale());
 	m_worldMap.removeEnvironmentTile(tilePosition);
 	m_worldMap.update();
 }

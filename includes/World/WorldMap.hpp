@@ -41,6 +41,7 @@ public:
 
 	bool changeTile(int x, int y, TileData newTileData);
 
+	float getScale();
 	void zoom(int delta);
 
 private:
@@ -50,12 +51,13 @@ private:
 	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_entities{};
 
 	Nz::TileMapRef m_tileMap;
+	Ndk::EntityHandle m_tileMapEntity;
 
 	const Nz::Vector2ui m_size;
 
-	float m_scale = 0.5f;
-	const float m_max_scale = 0.8f;
-	const float m_min_scale = 0.2f;
+	float m_scale = 1.f;
+	const float m_max_scale = 1.5f;
+	const float m_min_scale = 0.5f;
 
 	const Nz::Vector2ui m_tileSize {64, 32};
 
