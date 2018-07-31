@@ -16,11 +16,14 @@
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara/Graphics/TileMap.hpp>
 #include <Nazara/Math\Vector2.hpp>
+#include <Nazara/Core/Color.hpp>
 
 #include "../Config/TilesConfig.hpp"
 #include "TileData.hpp"
 #include "Building.hpp"
 #include "../Utils/isometric.hpp"
+
+#include "../Components/EnvironmentTileComponent.hpp"
 
 class WorldMap {
 	
@@ -30,6 +33,8 @@ public:
 
 	TileData& getTile(Nz::Vector2ui position);
 
+	void addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite);
+
 	void update();
 	void addBuilding(Building b, int x, int y);
 
@@ -38,8 +43,10 @@ public:
 	void zoom(int delta);
 
 private:
+	Ndk::World& m_worldRef;
+
 	std::vector<TileData> m_tiles{};
-	std::map<Nz::Vector2ui, Building> m_buildings{};
+	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_entities{};
 
 	Nz::TileMapRef m_tileMap;
 

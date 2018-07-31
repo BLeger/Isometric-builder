@@ -6,37 +6,22 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_windowSize(window.GetSize()),
 	m_worldMap(WorldMap{ Nz::Vector2ui{10, 10}, world })
 {
-	//TileData grass{ TileType::Tile_1x1, "grass", 0.f, 1, 1 };
-	//TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
-	//TileData batiment{ TileType::Object_NxN_Attach, "batiment", -185.f, 2, 2 };
-
-	
-	//nodeComp.SetPosition(Nz::Vector3f{ 0, 0, 0 });
-	//nodeComp.SetScale(3.f);
-
-	//m_worldMap.generateMap(world, grass);
-	//m_worldMap.changeTile(2, 2, tree);
-
-	//Building b{ batiment, world, 500 };
-	//m_worldMap.addBuilding(b, 4, 6);
-	
-	//m_worldMap.display(world);
 
 	Nz::EventHandler& eventHandler = window.GetEventHandler();
 
-	/*eventHandler.OnMouseButtonPressed.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseButtonEvent& m)
+	eventHandler.OnMouseButtonPressed.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseButtonEvent& m)
 	{
 		if (m.button == 0) {
 			// Left click
-			mousePressed(Nz::Vector2i(m.x, m.y));
+			mouseLeftPressed(Nz::Vector2i(m.x, m.y));
 		}
 		
 	});
-
+	
 	eventHandler.OnMouseWheelMoved.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseWheelEvent& m)
 	{
 		mouseWheelMoved(m.delta);
-	});*/
+	});
 }
 
 void CityState::Enter(Ndk::StateMachine& fsm)
@@ -52,9 +37,23 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 	return true;
 }
 
-void CityState::mousePressed(Nz::Vector2i mousePosition)
+void CityState::mouseLeftPressed(Nz::Vector2i mousePosition)
 {
-	Nz::Vector2i tilePosition = Isometric::getCellClicked(mousePosition);
+
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition);
+
+	Nz::MaterialRef tree = Nz::Material::New();
+	tree->LoadFromFile("tiles/tree.png");
+	tree->EnableBlending(true);
+	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
+	tree->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
+	tree->EnableDepthWrite(false);
+
+	Nz::SpriteRef spr;
+	spr = Nz::Sprite::New(tree);
+	spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
+
+	m_worldMap.addEnvironmentTile(tilePosition, spr);
 
 	//TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
 	//m_worldMap.changeTile(tilePosition.x, tilePosition.y, tree);

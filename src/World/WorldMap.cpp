@@ -1,6 +1,6 @@
 #include "../../includes/World/WorldMap.hpp"
 
-WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size) {
+WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worldRef(world) {
 
 	Nz::MaterialRef tileset = Nz::Material::New();
 	tileset->LoadFromFile("tiles/tileset.png");
@@ -27,12 +27,32 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size) {
 	}
 	
 	update();
-	
 }
 
 
 TileData& WorldMap::getTile(Nz::Vector2ui position) {
 	return m_tiles.at(m_size.x * position.y + position.x);
+}
+
+void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
+{
+	if (m_entities.find(position) != m_entities.end()) {
+		// There is already a tile at this place
+		std::cout << "Err: tile already occupied" << std::endl;
+		return;
+	}
+
+	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
+	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
+
+	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position);
+	nc.SetPosition(Nz::Vector3f{(float) pixelPosition.x, (float) pixelPosition.y, 0.f});
+
+	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
+	gc.Attach(sprite);
+
+	EnvironmentTileComponent &t = entity->AddComponent<EnvironmentTileComponent>();
+	m_entities.insert(std::make_pair(position, entity));
 }
 
 void WorldMap::update()
@@ -118,6 +138,5 @@ void WorldMap::zoom(int delta)
 
 	if (m_scale < m_min_scale)
 		m_scale = m_min_scale;
-
 }
 

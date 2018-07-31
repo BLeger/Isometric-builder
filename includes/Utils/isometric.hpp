@@ -15,22 +15,26 @@
 #include <Nazara/Renderer/RenderWindow.hpp>
 #include <Nazara/Math\Vector2.hpp>
 
+#include "../Config/TilesConfig.hpp"
+
 class Isometric {
 public:
-	static Nz::Vector2i topLeftCell(Nz::Vector2i position);
-	static Nz::Vector2i topRightCell(Nz::Vector2i position);
-	static Nz::Vector2i bottomLeftCell(Nz::Vector2i position);
-	static Nz::Vector2i bottomRightCell(Nz::Vector2i position);
+	static Nz::Vector2ui topLeftCell(Nz::Vector2ui position);
+	static Nz::Vector2ui topRightCell(Nz::Vector2ui position);
+	static Nz::Vector2ui bottomLeftCell(Nz::Vector2ui position);
+	static Nz::Vector2ui bottomRightCell(Nz::Vector2ui position);
 
-	static std::vector<Nz::Vector2<int>> square(Nz::Vector2i tilePosition, int width, int height);
+	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, int width, int height);
 
 	static Nz::MaterialRef createMaterial(std::string materialName);
 
-	static std::vector<Nz::Vector2i> getSurroundingTiles(Nz::Vector2i position);
+	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
 	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
 
-	static Nz::Vector2i getCellClicked(Nz::Vector2i mousePosition);
+	static Nz::Vector2ui getCellClicked(Nz::Vector2i mousePosition);
+
+	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition);
 };
 
 #endif // !ISOMETRIC_H

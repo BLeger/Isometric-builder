@@ -13,7 +13,7 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 
-
+#include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
 
 class CityState : public Ndk::State {
@@ -24,7 +24,7 @@ public:
 	void Leave(Ndk::StateMachine& fsm) override;
 	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
-	void mousePressed(Nz::Vector2i mousePosition);
+	void mouseLeftPressed(Nz::Vector2i mousePosition);
 	void mouseWheelMoved(float delta);
 
 private:

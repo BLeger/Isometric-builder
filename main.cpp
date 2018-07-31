@@ -6,12 +6,15 @@
 #include <NDK/StateMachine.hpp>
 
 #include "includes/CityState.h"
-
+#include "includes\Components\EnvironmentTileComponent.hpp"
 
 #include <iostream>
 
 int main()
 {
+	Ndk::InitializeComponent<EnvironmentTileComponent>("EnvTile");
+
+
 	Ndk::Application application;
 
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
@@ -46,7 +49,7 @@ int main()
 
 		mainWindow.Display();
 	}
-
+	
 	return EXIT_SUCCESS;
 }
 
