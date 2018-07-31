@@ -1,7 +1,6 @@
 #include "../../includes/World/WorldMap.hpp"
 
 WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worldRef(world) {
-
 	Nz::MaterialRef tileset = Nz::Material::New();
 	tileset->LoadFromFile("tiles/tileset.png");
 	tileset->EnableBlending(true);
@@ -33,6 +32,9 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 
 
 TileData& WorldMap::getTile(Nz::Vector2ui position) {
+	assert(position.x < m_size.x);
+	assert(position.y < m_size.y);
+
 	return m_tiles.at(m_size.x * position.y + position.x);
 }
 
@@ -122,6 +124,11 @@ void WorldMap::update()
 
 		it++;
 	}
+}
+
+bool WorldMap::isPositionCorrect(Nz::Vector2ui position)
+{
+	return position.x >= 0 && position.y >= 0 && position.x < m_size.x && position.y < m_size.y;
 }
 
 void WorldMap::addBuilding(Building b, int x, int y) {

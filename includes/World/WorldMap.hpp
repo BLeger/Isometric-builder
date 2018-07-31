@@ -37,6 +37,8 @@ public:
 	void removeEnvironmentTile(Nz::Vector2ui position);
 
 	void update();
+
+	bool isPositionCorrect(Nz::Vector2ui position);
 	void addBuilding(Building b, int x, int y);
 
 	bool changeTile(int x, int y, TileData newTileData);
@@ -61,7 +63,7 @@ private:
 	const float m_maxScale = 1.5f;
 	const float m_minScale = 0.5f;
 
-	Nz::Vector2f m_cameraOffset{ 50.f, 0.f };
+	Nz::Vector2f m_cameraOffset{ 0.f, 0.f };
 };
 
 #endif // !WORLD_MAP_H

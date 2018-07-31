@@ -133,7 +133,7 @@ Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapSc
 
 Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
 {
-	float xPos = cellPosition.x * mainTileSize.x; // * scale ?
+	float xPos = cellPosition.x * mainTileSize.x;
 	float yPos = cellPosition.y / 2.f * mainTileSize.y;
 
 	if (cellPosition.y % 2 != 0) {
