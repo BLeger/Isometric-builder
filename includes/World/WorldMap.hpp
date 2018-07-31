@@ -44,6 +44,8 @@ public:
 	float getScale();
 	void zoom(int delta);
 
+	Nz::Vector2f getCameraOffset();
+
 private:
 	Ndk::World& m_worldRef;
 
@@ -56,12 +58,10 @@ private:
 	const Nz::Vector2ui m_size;
 
 	float m_scale = 1.f;
-	const float m_max_scale = 1.5f;
-	const float m_min_scale = 0.5f;
+	const float m_maxScale = 1.5f;
+	const float m_minScale = 0.5f;
 
-	const Nz::Vector2ui m_tileSize {64, 32};
-
-	const float m_width_offset = 0.0f;
+	Nz::Vector2f m_cameraOffset{ 50.f, 0.f };
 };
 
 #endif // !WORLD_MAP_H

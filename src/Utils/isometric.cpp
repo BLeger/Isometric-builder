@@ -98,10 +98,13 @@ Nz::Vector2f Isometric::cellCenter(Nz::Vector2i tilePosition, float tileWidth, f
 	return Nz::Vector2f(xPos, yPos);
 }
 
-Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapScale)
+Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapScale, Nz::Vector2f cameraOffset)
 {
 	mousePosition.x /= mapScale;
 	mousePosition.y /= mapScale;
+
+	mousePosition.x -= cameraOffset.x;
+	mousePosition.y -= cameraOffset.y;
 
 	float halfH = mainTileSize.y / 2;
 	float ratio = (float)mainTileSize.y / (float)mainTileSize.x;
@@ -128,7 +131,7 @@ Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapSc
 	return cell;
 }
 
-Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition)
+Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
 {
 	float xPos = cellPosition.x * mainTileSize.x; // * scale ?
 	float yPos = cellPosition.y / 2.f * mainTileSize.y;
@@ -138,16 +141,12 @@ Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition)
 		xPos += 0.5 * mainTileSize.x;
 	}
 
-	return Nz::Vector2i {(int) xPos , (int) yPos};
-}
+	xPos *= scale;
+	yPos *= scale;
 
-Nz::Vector2i Isometric::getCellScaledPixelCoordinates(Nz::Vector2ui cellPosition, float scale)
-{
-	Nz::Vector2i pixels = getCellPixelCoordinates(cellPosition);
+	xPos += cameraOffset.x;
+	yPos += cameraOffset.y;
 
-	pixels.x *= scale;
-	pixels.y *= scale;
-
-	return pixels;
+	return Nz::Vector2i {(int) xPos, (int) yPos };
 }
 

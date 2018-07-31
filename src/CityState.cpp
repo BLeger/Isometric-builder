@@ -35,13 +35,14 @@ void CityState::Leave(Ndk::StateMachine& fsm)
 
 bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 {
+	m_worldMap.update();
 	return true;
 }
 
 void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
 
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale());
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), m_worldMap.getCameraOffset());
 
 	Nz::MaterialRef tree = Nz::Material::New();
 	tree->LoadFromFile("tiles/tree.png");
@@ -54,6 +55,8 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	spr = Nz::Sprite::New(tree);
 	spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
 
+	std::cout << tilePosition.x << std::endl;
+
 	m_worldMap.addEnvironmentTile(tilePosition, spr);
 	m_worldMap.update();
 
@@ -64,7 +67,7 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 
 void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
 {
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale());
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), m_worldMap.getCameraOffset());
 	m_worldMap.removeEnvironmentTile(tilePosition);
 	m_worldMap.update();
 }

@@ -33,10 +33,9 @@ public:
 	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
 
-	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition, float mapScale);
+	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 
-	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition);
-	static Nz::Vector2i getCellScaledPixelCoordinates(Nz::Vector2ui cellPosition, float scale);
+	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 };
 
 #endif // !ISOMETRIC_H

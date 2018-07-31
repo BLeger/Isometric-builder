@@ -9,13 +9,16 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 	tileset->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
 	tileset->EnableDepthWrite(false);
 
-	m_tileMap = Nz::TileMap::New(size, Nz::Vector2f{ (float)m_tileSize.x, (float)m_tileSize.y });
+	m_tileMap = Nz::TileMap::New(size, Nz::Vector2f{ (float)mainTileSize.x, (float)mainTileSize.y });
 	m_tileMap->EnableIsometricMode(true);
 
 	m_tileMap->SetMaterial(0, tileset);
 
 	m_tileMapEntity = world.CreateEntity();
+
 	Ndk::NodeComponent &nodeComp = m_tileMapEntity->AddComponent<Ndk::NodeComponent>();
+	nodeComp.SetPosition(Nz::Vector3f{ m_cameraOffset.x, m_cameraOffset.y, 0.f });
+
 	Ndk::GraphicsComponent &graphicsComp = m_tileMapEntity->AddComponent<Ndk::GraphicsComponent>();
 	graphicsComp.Attach(m_tileMap);
 
@@ -47,8 +50,8 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2i pixelPosition = Isometric::getCellScaledPixelCoordinates(position, m_scale);
-	nc.SetPosition(Nz::Vector3f{(float) pixelPosition.x, (float) pixelPosition.y, 0.f});
+	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	nc.SetPosition(m_cameraOffset);
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
 	gc.Attach(sprite);
@@ -89,6 +92,7 @@ void WorldMap::update()
 {
 	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
 	tileMapNode.SetScale(m_scale);
+	tileMapNode.SetPosition(m_cameraOffset);
 
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
@@ -111,35 +115,13 @@ void WorldMap::update()
 		Nz::Vector2ui tilePosition = (*it).first;
 		Ndk::EntityHandle entity = (*it).second;
 
-		Nz::Vector2i pixelPosition = Isometric::getCellScaledPixelCoordinates(tilePosition, m_scale);
+		Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
 		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
 		nc.SetScale(m_scale);
 		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
 
 		it++;
 	}
-
-	/*auto it = m_buildings.begin();
-	while (it != m_buildings.end()) {
-		coordinates position = (*it).first;
-		Building b = (*it).second;
-
-		float height_offset = b.getHeightOffset();
-		std::cout << height_offset << std::endl;
-
-		float xPos = m_width_offset + (position.x * m_scale * m_tileSize.x);
-		float yPos = (position.y / 2.f * m_scale * m_tileSize.y);
-
-		if (position.y % 2 != 0) {
-			// Odd line are shifted
-			xPos += 0.5 * m_scale*m_tileSize.x;
-		}
-
-		b.setScale(m_scale);
-		b.setPosition(Nz::Vector2f(xPos, yPos + height_offset));
-
-		it++;
-	}*/
 }
 
 void WorldMap::addBuilding(Building b, int x, int y) {
@@ -184,12 +166,17 @@ void WorldMap::zoom(int delta)
 {
 	m_scale += delta * 0.1;
 
-	if (m_scale > m_max_scale)
-		m_scale = m_max_scale;
+	if (m_scale > m_maxScale)
+		m_scale = m_maxScale;
 
-	if (m_scale < m_min_scale)
-		m_scale = m_min_scale;
+	if (m_scale < m_minScale)
+		m_scale = m_minScale;
 
 	update();
+}
+
+Nz::Vector2f WorldMap::getCameraOffset()
+{
+	return m_cameraOffset;
 }
 
