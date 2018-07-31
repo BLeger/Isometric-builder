@@ -98,7 +98,7 @@ Nz::Vector2f Isometric::cellCenter(Nz::Vector2i tilePosition, float tileWidth, f
 	return Nz::Vector2f(xPos, yPos);
 }
 
-Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2i mousePosition)
+Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition)
 {
 	float halfH = mainTileSize.y / 2;
 	float ratio = (float)mainTileSize.y / (float)mainTileSize.x;

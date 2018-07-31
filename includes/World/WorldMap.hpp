@@ -34,6 +34,7 @@ public:
 	TileData& getTile(Nz::Vector2ui position);
 
 	void addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite);
+	void removeEnvironmentTile(Nz::Vector2ui position);
 
 	void update();
 	void addBuilding(Building b, int x, int y);

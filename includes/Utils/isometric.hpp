@@ -32,7 +32,7 @@ public:
 	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
 
-	static Nz::Vector2ui getCellClicked(Nz::Vector2i mousePosition);
+	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition);
 
 	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition);
 };

@@ -10,9 +10,7 @@ enum TileType {
 
 struct TileData {
 	TileType type;
-	unsigned int tileMaterialID;
-	unsigned int envMaterialID;
-	unsigned int buildingMaterialID;
+	unsigned int tileMaterialIndex;
 };
 
 #endif // !TILE_DATA_H

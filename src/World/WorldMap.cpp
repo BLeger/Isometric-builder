@@ -22,7 +22,7 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 
 	for (int x = 0; x < m_size.x; x++) {
 		for (int y = 0; y < m_size.y; y++) {
-			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0, 0, 0 });
+			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0});
 		}
 	}
 	
@@ -42,6 +42,9 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 		return;
 	}
 
+	// Update the tile's data
+	getTile(position).type = TileType::ENV_TILE;
+
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
@@ -55,6 +58,34 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 	m_entities.insert(std::make_pair(position, entity));
 }
 
+void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
+{
+	if (m_entities.find(position) == m_entities.end()) {
+		// There is already a tile at this place
+		std::cout << "Err: this tile is not occupied" << std::endl;
+		return;
+	}
+
+	// Update the tile's data
+	TileData& tile = getTile(position);
+
+	if (tile.type != TileType::ENV_TILE) {
+		std::cout << "Err: this tile is not environment" << std::endl;
+		return;
+	}
+
+	tile.type = TileType::SIMPLE_TILE;
+
+	// Detach and destroy the entity
+	Ndk::EntityHandle entity = m_entities.at(position);
+	Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
+	gc.Clear();
+	entity->Kill();
+
+	// Remove the entity from the map
+	m_entities.erase(m_entities.find(position));
+}
+
 void WorldMap::update()
 {
 	for (unsigned int y = 0; y < m_size.y; y++) {
@@ -64,7 +95,7 @@ void WorldMap::update()
 			
 			// Display or not the tile
 			if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE) {
-				Nz::Rectui textureRect{ tile.tileMaterialID * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
+				Nz::Rectui textureRect{ tile.tileMaterialIndex * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
 				m_tileMap->EnableTile(position, textureRect);
 			}
 			else {

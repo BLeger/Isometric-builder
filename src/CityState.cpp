@@ -11,10 +11,11 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 
 	eventHandler.OnMouseButtonPressed.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseButtonEvent& m)
 	{
-		if (m.button == 0) {
-			// Left click
-			mouseLeftPressed(Nz::Vector2i(m.x, m.y));
-		}
+		Nz::Vector2ui mousePosition {m.x, m.y};
+		if (m.button == 0) // Left click
+			mouseLeftPressed(mousePosition);
+		else if (m.button == 2) // Right click
+			mouseRightPressed(mousePosition);
 		
 	});
 	
@@ -37,7 +38,7 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 	return true;
 }
 
-void CityState::mouseLeftPressed(Nz::Vector2i mousePosition)
+void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
 
 	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition);
@@ -54,10 +55,18 @@ void CityState::mouseLeftPressed(Nz::Vector2i mousePosition)
 	spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
 
 	m_worldMap.addEnvironmentTile(tilePosition, spr);
+	m_worldMap.update();
 
 	//TileData tree{ TileType::Tile_1x1, "tree", -72.f, 1, 1 };
 	//m_worldMap.changeTile(tilePosition.x, tilePosition.y, tree);
 	//m_worldMap.display(m_world);
+}
+
+void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
+{
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition);
+	m_worldMap.removeEnvironmentTile(tilePosition);
+	m_worldMap.update();
 }
 
 void CityState::mouseWheelMoved(float delta)
