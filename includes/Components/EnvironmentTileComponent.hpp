@@ -3,17 +3,11 @@
 
 #include <NDK/Component.hpp>
 
-#include <iostream>
-
 struct EnvironmentTileComponent : public Ndk::Component<EnvironmentTileComponent>
 {
 	EnvironmentTileComponent();
 
 	static Ndk::ComponentIndex componentIndex;
-
-	void test() {
-		std::cout << "test" << std::endl;
-	}
 };
 
 #endif

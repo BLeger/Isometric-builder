@@ -13,6 +13,8 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 
+#include "Systems\WallSystem.hpp"
+
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
 #include "UserTools.hpp"
@@ -31,16 +33,16 @@ public:
 	void mouseWheelMoved(float delta);
 	void keyPressed(const Nz::WindowEvent::KeyEvent& k);
 
-	
-
 private:
-	SpriteLibrary m_spriteLib;
 	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
 
-	UserTools m_currentTool;
-
 	WorldMap m_worldMap;
+
+	UserTools m_currentTool;
+	SpriteLibrary m_spriteLib;
+
+	std::string m_currentSpriteName = "tree";
 };
 
 #endif // !CITY_STATE_H

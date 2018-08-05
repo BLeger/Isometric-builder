@@ -9,14 +9,18 @@
 #include <NDK/Widgets/ButtonWidget.hpp>
 
 #include "includes/CityState.h"
-#include "includes\Components\EnvironmentTileComponent.hpp"
+#include "includes/Components/EnvironmentTileComponent.hpp"
+#include "includes/Components/WallComponent.hpp"
+#include "includes/Systems/WallSystem.hpp"
 
 #include <iostream>
 
 int main()
 {
 	Ndk::InitializeComponent<EnvironmentTileComponent>("EnvTile");
+	Ndk::InitializeComponent<WallComponent>("Wall");
 
+	Ndk::InitializeSystem<WallSystem>();
 
 	Ndk::Application application;
 

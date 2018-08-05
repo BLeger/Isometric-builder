@@ -3,7 +3,13 @@
 SpriteLibrary::SpriteLibrary()
 {
 	createSprite("tree", 32.f);
+	createSprite("wall", 32.f);
 	createSprite("wall_open_ne", 32.f);
+	createSprite("wall_open_no", 32.f);
+	createSprite("wall_open_se", 32.f);
+	createSprite("wall_open_se_no", 32.f);
+	createSprite("wall_open_so_ne", 32.f);
+	createSprite("wall_open_so", 32.f); 
 }
 
 bool SpriteLibrary::spriteExists(std::string name)
