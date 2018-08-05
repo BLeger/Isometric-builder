@@ -2,6 +2,6 @@
 
 Ndk::ComponentIndex WallComponent::componentIndex;
 
-WallComponent::WallComponent()
+WallComponent::WallComponent(Nz::Vector2ui position) : m_position(position)
 {
 }

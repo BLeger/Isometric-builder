@@ -38,14 +38,13 @@ TileData& WorldMap::getTile(Nz::Vector2ui position) {
 	return m_tiles.at(m_size.x * position.y + position.x);
 }
 
-void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
+bool WorldMap::createEntity(Nz::Vector2ui position)
 {
-	if (m_entities.find(position) != m_entities.end()) {
-		// There is already a tile at this place
+	if (!isPositionAvailable(position)) {
 		std::cout << "Err: tile already occupied" << std::endl;
-		return;
+		return false;
 	}
-
+		
 	// Update the tile's data
 	getTile(position).type = TileType::ENV_TILE;
 
@@ -55,19 +54,18 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
 	nc.SetPosition(m_cameraOffset);
 
-	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
-	gc.Attach(sprite, position.y);
-
-	EnvironmentTileComponent &t = entity->AddComponent<EnvironmentTileComponent>();
+	entity->AddComponent<Ndk::GraphicsComponent>();
 	m_entities.insert(std::make_pair(position, entity));
+
+	return true;
 }
 
-void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
+bool WorldMap::deleteEntity(Nz::Vector2ui position)
 {
-	if (m_entities.find(position) == m_entities.end()) {
+	if (isPositionAvailable(position)) {
 		// There is already a tile at this place
 		std::cout << "Err: this tile is not occupied" << std::endl;
-		return;
+		return false;
 	}
 
 	// Update the tile's data
@@ -75,7 +73,7 @@ void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 
 	if (tile.type != TileType::ENV_TILE) {
 		std::cout << "Err: this tile is not environment" << std::endl;
-		return;
+		return false;
 	}
 
 	tile.type = TileType::SIMPLE_TILE;
@@ -88,6 +86,47 @@ void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 
 	// Remove the entity from the map
 	m_entities.erase(m_entities.find(position));
+
+	return true;
+}
+
+void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
+{
+	if (createEntity(position)) {
+		Ndk::EntityHandle& entity = m_entities.at(position);
+		Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
+		gc.Attach(sprite, position.y);
+
+		entity->AddComponent<EnvironmentTileComponent>();
+	}
+}
+
+void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
+{
+	deleteEntity(position);
+}
+
+void WorldMap::addWall(Nz::Vector2ui position)
+{
+	if (createEntity(position)) {
+		Ndk::EntityHandle& entity = m_entities.at(position);
+
+		entity->AddComponent<WallComponent>(position);
+	}
+}
+
+void WorldMap::removeWall(Nz::Vector2ui position)
+{
+	deleteEntity(position);
+}
+
+bool WorldMap::isWall(Nz::Vector2ui position)
+{
+	if (!isPositionCorrect(position) || isPositionAvailable(position))
+		return false;
+
+	Ndk::EntityHandle& entity = m_entities.at(position);
+	return entity->HasComponent<WallComponent>();
 }
 
 void WorldMap::update()
@@ -129,6 +168,14 @@ void WorldMap::update()
 bool WorldMap::isPositionCorrect(Nz::Vector2ui position)
 {
 	return position.x >= 0 && position.y >= 0 && position.x < m_size.x && position.y < m_size.y;
+}
+
+bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
+{
+	if (!isPositionCorrect(position))
+		return false;
+
+	return m_entities.find(position) == m_entities.end();
 }
 
 void WorldMap::addBuilding(Building b, int x, int y) {

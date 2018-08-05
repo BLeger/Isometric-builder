@@ -64,6 +64,9 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	case REMOVE_BUILDING:
 		m_worldMap.removeEnvironmentTile(tilePosition);
 		break;
+	case PLACE_WALL:
+		m_worldMap.addWall(tilePosition);
+		break;
 	default:
 		break;
 	}
@@ -96,6 +99,10 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		case 27:
 			m_currentTool = UserTools::REMOVE_BUILDING;
 			std::cout << "Remove building tool" << std::endl;
+			break;
+		case 28:
+			m_currentTool = UserTools::PLACE_WALL;
+			std::cout << "Place wall tool" << std::endl;
 			break;
 		default:
 			break;

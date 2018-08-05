@@ -24,6 +24,7 @@
 #include "../Utils/isometric.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
+#include "../Components/WallComponent.hpp"
 
 class WorldMap {
 	
@@ -33,12 +34,21 @@ public:
 
 	TileData& getTile(Nz::Vector2ui position);
 
+	bool createEntity(Nz::Vector2ui position);
+	bool deleteEntity(Nz::Vector2ui position);
+
 	void addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite);
 	void removeEnvironmentTile(Nz::Vector2ui position);
+
+	void addWall(Nz::Vector2ui position);
+	void removeWall(Nz::Vector2ui position);
+	bool isWall(Nz::Vector2ui position);
 
 	void update();
 
 	bool isPositionCorrect(Nz::Vector2ui position);
+	bool isPositionAvailable(Nz::Vector2ui position);
+
 	void addBuilding(Building b, int x, int y);
 
 	bool changeTile(int x, int y, TileData newTileData);

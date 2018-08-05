@@ -6,6 +6,7 @@
 #include "../Components/WallComponent.hpp"
 #include "../World/WorldMap.hpp"
 #include "../SpriteLibrary.hpp"
+#include "../Utils/isometric.hpp"
 
 class WallSystem : public Ndk::System<WallSystem>
 {
