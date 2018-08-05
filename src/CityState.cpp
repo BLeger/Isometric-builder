@@ -53,32 +53,24 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	if (!m_worldMap.isPositionCorrect(tilePosition))
 		return;
 
-	Nz::MaterialRef tree = Nz::Material::New();
-	tree->LoadFromFile("tiles/wall_open_ne.png");
+	switch (m_currentTool)
+	{
+	case PLACE_BUILDING:
+		m_worldMap.addEnvironmentTile(tilePosition, m_spriteLib.getSprite("tree"));
+		break;
+	case REMOVE_BUILDING:
+		m_worldMap.removeEnvironmentTile(tilePosition);
+		break;
+	default:
+		break;
+	}
 	
-	tree->EnableBlending(true);
-	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tree->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tree->EnableDepthWrite(false);
-
-	Nz::SpriteRef spr;
-	spr = Nz::Sprite::New(tree);
-	//spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
-	spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
-
-	m_worldMap.addEnvironmentTile(tilePosition, spr);
 	m_worldMap.update();
 }
 
 void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
 {
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), m_worldMap.getCameraOffset());
-
-	if (!m_worldMap.isPositionCorrect(tilePosition))
-		return;
-
-	m_worldMap.removeEnvironmentTile(tilePosition);
-	m_worldMap.update();
+	
 }
 
 void CityState::mouseWheelMoved(float delta)

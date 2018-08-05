@@ -16,6 +16,7 @@
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
 #include "UserTools.hpp"
+#include "SpriteLibrary.hpp"
 
 class CityState : public Ndk::State {
 
@@ -33,6 +34,7 @@ public:
 	
 
 private:
+	SpriteLibrary m_spriteLib;
 	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
 
