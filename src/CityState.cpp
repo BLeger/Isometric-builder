@@ -4,7 +4,8 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
-	m_worldMap(WorldMap{ Nz::Vector2ui{10, 10}, world })
+	m_worldMap(WorldMap{ Nz::Vector2ui{10, 10}, world }),
+	m_currentTool(UserTools::PLACE_BUILDING)
 {
 
 	Nz::EventHandler& eventHandler = window.GetEventHandler();
@@ -22,6 +23,11 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	eventHandler.OnMouseWheelMoved.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseWheelEvent& m)
 	{
 		mouseWheelMoved(m.delta);
+	});
+
+	eventHandler.OnKeyPressed.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::KeyEvent& k)
+	{
+		keyPressed(k);
 	});
 }
 
@@ -48,7 +54,8 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		return;
 
 	Nz::MaterialRef tree = Nz::Material::New();
-	tree->LoadFromFile("tiles/tree.png");
+	tree->LoadFromFile("tiles/wall_open_ne.png");
+	
 	tree->EnableBlending(true);
 	tree->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
 	tree->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
@@ -56,6 +63,7 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 
 	Nz::SpriteRef spr;
 	spr = Nz::Sprite::New(tree);
+	//spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
 	spr->SetOrigin(Nz::Vector3f(0.f, 32.f, 0.f));
 
 	m_worldMap.addEnvironmentTile(tilePosition, spr);
@@ -77,4 +85,24 @@ void CityState::mouseWheelMoved(float delta)
 {
 	m_worldMap.zoom(delta);
 	//m_worldMap.display(m_world);
+}
+
+void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
+{
+	if (k.code >= 26 && k.code <= 36) {
+		// F1 <-> F11
+		switch (k.code)
+		{
+		case 26:
+			m_currentTool = UserTools::PLACE_BUILDING;
+			std::cout << "Place building tool" << std::endl;
+			break;
+		case 27:
+			m_currentTool = UserTools::REMOVE_BUILDING;
+			std::cout << "Remove building tool" << std::endl;
+			break;
+		default:
+			break;
+		}
+	}
 }

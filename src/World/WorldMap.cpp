@@ -56,7 +56,7 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 	nc.SetPosition(m_cameraOffset);
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
-	gc.Attach(sprite);
+	gc.Attach(sprite, position.y);
 
 	EnvironmentTileComponent &t = entity->AddComponent<EnvironmentTileComponent>();
 	m_entities.insert(std::make_pair(position, entity));

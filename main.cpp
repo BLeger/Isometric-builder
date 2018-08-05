@@ -4,6 +4,9 @@
 #include <NDK/Components.hpp>
 #include <NDK/Systems.hpp>
 #include <NDK/StateMachine.hpp>
+#include <NDK/Canvas.hpp>
+#include <NDK/Widgets/CheckboxWidget.hpp>
+#include <NDK/Widgets/ButtonWidget.hpp>
 
 #include "includes/CityState.h"
 #include "includes\Components\EnvironmentTileComponent.hpp"
@@ -18,7 +21,7 @@ int main()
 	Ndk::Application application;
 
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
-	mainWindow.Create(Nz::VideoMode(800, 600, 32), "Test");
+	mainWindow.Create(Nz::VideoMode(900, 600, 32), "Test");
 	mainWindow.EnableVerticalSync(true);
 
 	// World
@@ -31,6 +34,11 @@ int main()
 	Ndk::CameraComponent& viewer = viewEntity->AddComponent<Ndk::CameraComponent>();
 	viewer.SetTarget(&mainWindow);
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
+
+	Ndk::Canvas canvas{ world.CreateHandle(), mainWindow.GetEventHandler(), mainWindow.GetCursorController().CreateHandle() };
+
+	Ndk::ButtonWidget* b = canvas.Add<Ndk::ButtonWidget>();
+	b->Move(500.f, 500.f);
 
 	// We add our state machine with the newly created GameState
 	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));

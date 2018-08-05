@@ -15,6 +15,7 @@
 
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
+#include "UserTools.hpp"
 
 class CityState : public Ndk::State {
 
@@ -27,10 +28,15 @@ public:
 	void mouseLeftPressed(Nz::Vector2ui mousePosition);
 	void mouseRightPressed(Nz::Vector2ui mousePosition);
 	void mouseWheelMoved(float delta);
+	void keyPressed(const Nz::WindowEvent::KeyEvent& k);
+
+	
 
 private:
 	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
+
+	UserTools m_currentTool;
 
 	WorldMap m_worldMap;
 };
