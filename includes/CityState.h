@@ -14,6 +14,7 @@
 #include <Nazara/Renderer/RenderWindow.hpp>
 
 #include "Systems\WallSystem.hpp"
+#include "Systems\WalkerSystem.hpp"
 
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"

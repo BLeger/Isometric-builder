@@ -27,8 +27,6 @@ public:
 
 	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, int width, int height);
 
-	static Nz::MaterialRef createMaterial(std::string materialName);
-
 	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
 	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);

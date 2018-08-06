@@ -129,6 +129,19 @@ bool WorldMap::isWall(Nz::Vector2ui position)
 	return entity->HasComponent<WallComponent>();
 }
 
+void WorldMap::addWalker(Nz::Vector2ui position, std::string name)
+{
+	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
+	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
+
+	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	nc.SetPosition(m_cameraOffset);
+
+	entity->AddComponent<Ndk::GraphicsComponent>();
+	entity->AddComponent<WalkerComponent>(position);
+	m_walkers.push_back(entity);
+}
+
 void WorldMap::update()
 {
 	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();

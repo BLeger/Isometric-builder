@@ -54,18 +54,6 @@ std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, int wid
 	return cells;
 }
 
-Nz::MaterialRef Isometric::createMaterial(std::string materialName)
-{
-	Nz::MaterialRef material = Nz::Material::New();
-	material->LoadFromFile("tiles/" + materialName + ".png");
-	material->EnableBlending(true);
-	material->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	material->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	material->EnableDepthWrite(false);
-
-	return material;
-}
-
 std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position)
 {
 	std::vector<Nz::Vector2ui> tiles{Isometric::bottomLeftCell(position) , Isometric::topLeftCell(position),

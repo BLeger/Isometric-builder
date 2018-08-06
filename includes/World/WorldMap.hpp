@@ -25,6 +25,7 @@
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
+#include "../Components/WalkerComponent.hpp"
 
 class WorldMap {
 	
@@ -43,6 +44,8 @@ public:
 	void addWall(Nz::Vector2ui position);
 	void removeWall(Nz::Vector2ui position);
 	bool isWall(Nz::Vector2ui position);
+
+	void addWalker(Nz::Vector2ui position, std::string name);
 
 	void update();
 
@@ -64,6 +67,7 @@ private:
 
 	std::vector<TileData> m_tiles{};
 	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_entities{};
+	std::vector<Ndk::EntityHandle> m_walkers{};
 
 	Nz::TileMapRef m_tileMap;
 	Ndk::EntityHandle m_tileMapEntity;

@@ -11,7 +11,9 @@
 #include "includes/CityState.h"
 #include "includes/Components/EnvironmentTileComponent.hpp"
 #include "includes/Components/WallComponent.hpp"
+#include "includes/Components/WalkerComponent.hpp"
 #include "includes/Systems/WallSystem.hpp"
+#include "includes/Systems/WalkerSystem.hpp"
 
 #include <iostream>
 
@@ -19,8 +21,10 @@ int main()
 {
 	Ndk::InitializeComponent<EnvironmentTileComponent>("EnvTile");
 	Ndk::InitializeComponent<WallComponent>("Wall");
+	Ndk::InitializeComponent<WalkerComponent>("Walker");
 
 	Ndk::InitializeSystem<WallSystem>();
+	Ndk::InitializeSystem<WalkerSystem>();
 
 	Ndk::Application application;
 
@@ -39,10 +43,10 @@ int main()
 	viewer.SetTarget(&mainWindow);
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
 
-	Ndk::Canvas canvas{ world.CreateHandle(), mainWindow.GetEventHandler(), mainWindow.GetCursorController().CreateHandle() };
+	/*Ndk::Canvas canvas{ world.CreateHandle(), mainWindow.GetEventHandler(), mainWindow.GetCursorController().CreateHandle() };
 
 	Ndk::ButtonWidget* b = canvas.Add<Ndk::ButtonWidget>();
-	b->Move(500.f, 500.f);
+	b->Move(500.f, 500.f);*/
 
 	// We add our state machine with the newly created GameState
 	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
