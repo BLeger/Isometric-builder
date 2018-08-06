@@ -229,6 +229,11 @@ void WorldMap::zoom(int delta)
 	update();
 }
 
+void WorldMap::moveCamera(Nz::Vector2f offset)
+{
+	m_cameraOffset += offset;
+}
+
 Nz::Vector2f WorldMap::getCameraOffset()
 {
 	return m_cameraOffset;

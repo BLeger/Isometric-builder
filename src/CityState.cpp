@@ -87,7 +87,7 @@ void CityState::mouseWheelMoved(float delta)
 
 void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 {
-	//std::cout << k.code << std::endl;
+	std::cout << k.code << std::endl;
 	if (k.code >= 26 && k.code <= 36) {
 		// F1 <-> F11
 		switch (k.code)
@@ -116,31 +116,31 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		case 77:
 			m_currentSpriteName = "tree";
 			break;
-		case 78:
-			m_currentSpriteName = "wall";
-			break;
-		case 79:
-			m_currentSpriteName = "wall_open_ne";
-			break;
-		case 80:
-			m_currentSpriteName = "wall_open_no";
-			break;
-		case 81:
-			m_currentSpriteName = "wall_open_se";
-			break;
-		case 82:
-			m_currentSpriteName = "wall_open_so";
-			break;
-		case 83:
-			m_currentSpriteName = "wall_open_se_no";
-			break;
-		case 84:
-			m_currentSpriteName = "wall_open_so_ne";
-			break;
 		default:
 			break;
 		}
 
 		std::cout << m_currentSpriteName << std::endl;
+	}
+
+	if (k.code >= 41 && k.code <= 44) {
+		// Directions
+		switch (k.code)
+		{
+		case 41:
+			m_worldMap.moveCamera(Nz::Vector2f{ 0.f, -10.f });
+			break;
+		case 42:
+			m_worldMap.moveCamera(Nz::Vector2f{ 10.f, 0.f });
+			break;
+		case 43:
+			m_worldMap.moveCamera(Nz::Vector2f{ -10.f, 0.f });
+			break;
+		case 44:
+			m_worldMap.moveCamera(Nz::Vector2f{ 0.f, 10.f });
+			break;
+		default:
+			break;
+		}
 	}
 }

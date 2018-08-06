@@ -56,6 +56,7 @@ public:
 	float getScale();
 	void zoom(int delta);
 
+	void moveCamera(Nz::Vector2f offset);
 	Nz::Vector2f getCameraOffset();
 
 private:
