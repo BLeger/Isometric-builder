@@ -11,8 +11,10 @@
 #include "includes/CityState.h"
 #include "includes/Components/EnvironmentTileComponent.hpp"
 #include "includes/Components/WallComponent.hpp"
+#include "includes/Components/AnimationComponent.hpp"
 #include "includes/Components/WalkerComponent.hpp"
 #include "includes/Systems/WallSystem.hpp"
+#include "includes/Systems/AnimationSystem.hpp"
 #include "includes/Systems/WalkerSystem.hpp"
 
 #include <iostream>
@@ -22,9 +24,11 @@ int main()
 	Ndk::InitializeComponent<EnvironmentTileComponent>("EnvTile");
 	Ndk::InitializeComponent<WallComponent>("Wall");
 	Ndk::InitializeComponent<WalkerComponent>("Walker");
+	Ndk::InitializeComponent<AnimationComponent>("Anima");
 
 	Ndk::InitializeSystem<WallSystem>();
 	Ndk::InitializeSystem<WalkerSystem>();
+	Ndk::InitializeSystem<AnimationSystem>();
 
 	Ndk::Application application;
 

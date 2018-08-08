@@ -9,7 +9,11 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 {
 	// Activate systems
 	m_world.AddSystem<WallSystem>(m_worldMap, m_spriteLib);
-	m_world.AddSystem<WalkerSystem>();
+	m_world.AddSystem<WalkerSystem>(m_worldMap);
+	m_world.AddSystem<AnimationSystem>();
+
+
+	m_worldMap.addWalker(Nz::Vector2ui{ 4, 4 }, m_spriteLib.getSprite("character_animations"));
 
 	// Events
 	Nz::EventHandler& eventHandler = window.GetEventHandler();

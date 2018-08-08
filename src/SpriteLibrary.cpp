@@ -20,6 +20,8 @@ SpriteLibrary::SpriteLibrary()
 	createSprite("wall_no_ne_se", 32.f);
 	createSprite("wall_ne_so_se", 32.f);
 	createSprite("wall_no_so_se", 32.f);
+
+	createSprite("character_animations", 0.f);
 }
 
 bool SpriteLibrary::spriteExists(std::string name)
@@ -46,5 +48,6 @@ void SpriteLibrary::createSprite(std::string name, float heightOffset)
 
 Nz::SpriteRef & SpriteLibrary::getSprite(std::string name)
 {
+	assert(spriteExists(name));
 	return m_sprites.at(name);
 }
