@@ -51,7 +51,7 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale); // USELESS ?
 	nc.SetPosition(m_cameraOffset);
 
 	entity->AddComponent<Ndk::GraphicsComponent>();
@@ -113,11 +113,14 @@ void WorldMap::addWall(Nz::Vector2ui position)
 
 		entity->AddComponent<WallComponent>(position);
 	}
+
+	updateSurrondingsWalls(position);
 }
 
 void WorldMap::removeWall(Nz::Vector2ui position)
 {
 	deleteEntity(position);
+	updateSurrondingsWalls(position);
 }
 
 bool WorldMap::isWall(Nz::Vector2ui position)
@@ -129,6 +132,19 @@ bool WorldMap::isWall(Nz::Vector2ui position)
 	return entity->HasComponent<WallComponent>();
 }
 
+void WorldMap::updateSurrondingsWalls(Nz::Vector2ui position)
+{
+	std::vector<Nz::Vector2ui> surrondings = Isometric::getSurroundingTiles(position);
+
+	for (Nz::Vector2ui pos : surrondings) {
+		if (isWall(pos)) {
+			Ndk::EntityHandle& entity = m_entities.at(pos);
+			WallComponent &wall = entity->GetComponent<WallComponent>();
+			wall.m_needsUpdate = true;
+		}
+	}
+}
+
 void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 {
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
@@ -137,9 +153,12 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
 	nc.SetPosition(m_cameraOffset);
 
-	entity->AddComponent<Ndk::GraphicsComponent>();
+	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
 	entity->AddComponent<WalkerComponent>(position);
-	entity->AddComponent<AnimationComponent>(sprite, Nz::Vector2f{ 43.f, 64.f });
+	AnimationComponent &ac = entity->AddComponent<AnimationComponent>(sprite, Nz::Vector2f{ 43.f, 64.f });
+
+	gc.Attach(ac.getSprite());
+	ac.enable();
 	m_walkers.push_back(entity);
 }
 

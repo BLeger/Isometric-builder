@@ -11,6 +11,7 @@ struct WallComponent : public Ndk::Component<WallComponent>
 	static Ndk::ComponentIndex componentIndex;
 
 	Nz::Vector2ui m_position;
+	bool m_needsUpdate = true;
 };
 
 #endif

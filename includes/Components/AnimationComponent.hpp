@@ -11,6 +11,7 @@ struct AnimationComponent : public Ndk::Component<AnimationComponent>
 
 	void enable(bool b = true);
 	void disable();
+	bool isEnabled();
 
 	void addTime(float elapsed);
 	bool timeToStep();

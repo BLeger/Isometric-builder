@@ -46,6 +46,7 @@ public:
 	void addWall(Nz::Vector2ui position);
 	void removeWall(Nz::Vector2ui position);
 	bool isWall(Nz::Vector2ui position);
+	void updateSurrondingsWalls(Nz::Vector2ui position);
 
 	void addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite);
 

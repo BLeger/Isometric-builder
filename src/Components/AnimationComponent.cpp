@@ -9,6 +9,10 @@ AnimationComponent::AnimationComponent(Nz::SpriteRef & sprite, Nz::Vector2f imgS
 	m_currentStep = 0;
 	m_numberOfSteps = sprite->GetSize().x / imgSize.x;
 	m_timeSinceStepChange = 0;
+	m_enabled = false;
+
+	m_sprite->SetSize(m_imageSize);
+	m_sprite->SetTextureRect(Nz::Rectui{ 0, 0, (unsigned int)(m_imageSize.x), (unsigned int)(m_imageSize.y) });
 }
 
 void AnimationComponent::enable(bool b)
@@ -19,6 +23,11 @@ void AnimationComponent::enable(bool b)
 void AnimationComponent::disable()
 {
 	m_enabled = false;
+}
+
+bool AnimationComponent::isEnabled()
+{
+	return m_enabled;
 }
 
 void AnimationComponent::addTime(float elapsed)

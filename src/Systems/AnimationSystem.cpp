@@ -13,14 +13,17 @@ AnimationSystem::AnimationSystem()
 void AnimationSystem::OnUpdate(float elapsed)
 {
 	for (auto& entity : GetEntities()) {
-		Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
 		AnimationComponent &ac = entity->GetComponent<AnimationComponent>();
-	
-		ac.addTime(elapsed);
-		if (ac.timeToStep()) 
-			ac.incrementStep();
 
-		gc.Clear();
-		gc.Attach(ac.getSprite());
+		if (ac.isEnabled()) {
+			Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
+
+			ac.addTime(elapsed);
+			if (ac.timeToStep())
+				ac.incrementStep();
+
+			gc.Clear();
+			gc.Attach(ac.getSprite());
+		}
 	}
 }
