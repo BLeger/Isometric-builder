@@ -54,6 +54,7 @@ public:
 
 	bool isPositionCorrect(Nz::Vector2ui position);
 	bool isPositionAvailable(Nz::Vector2ui position);
+	bool isWalkable(Nz::Vector2ui position);
 
 	void addBuilding(Building b, int x, int y);
 

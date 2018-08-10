@@ -13,7 +13,9 @@ struct WalkerComponent : public Ndk::Component<WalkerComponent>
 	float m_speed;
 
 	Nz::Vector2ui m_tilePosition;
-	Nz::Vector2f m_relativePosition; // Position in the tile
+	Nz::Vector2ui m_pixelPosition; // Position on the screen assuming scale = 1 and cameraOffset is null
+
+	//std::queue<Nz::Vector2ui> m_path;
 };
 
 #endif

@@ -211,6 +211,12 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 	return m_entities.find(position) == m_entities.end();
 }
 
+bool WorldMap::isWalkable(Nz::Vector2ui position)
+{
+	std::cerr << "isWalkable function not implemented";
+	return true;
+}
+
 void WorldMap::addBuilding(Building b, int x, int y) {
 	/*Nz::Vector2<int> buildingSize = b.getSize();
 
