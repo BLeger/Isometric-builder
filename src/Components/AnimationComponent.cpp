@@ -7,7 +7,7 @@ AnimationComponent::AnimationComponent(Nz::SpriteRef & sprite, Nz::Vector2f imgS
 	m_sprite(sprite), m_imageSize(imgSize), m_animationLine(animationLine)
 {
 	m_currentStep = 0;
-	m_numberOfSteps = sprite->GetSize().x / imgSize.x;
+	m_numberOfSteps = (int)(sprite->GetSize().x / imgSize.x);
 	m_timeSinceStepChange = 0;
 	m_enabled = false;
 

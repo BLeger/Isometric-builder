@@ -21,7 +21,7 @@ SpriteLibrary::SpriteLibrary()
 	createSprite("wall_ne_so_se", 32.f);
 	createSprite("wall_no_so_se", 32.f);
 
-	createSprite("character_animations", 0.f);
+	createSprite("character_animations", 64.f);
 }
 
 bool SpriteLibrary::spriteExists(std::string name)

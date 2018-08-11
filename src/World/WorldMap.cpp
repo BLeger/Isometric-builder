@@ -21,8 +21,8 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 	Ndk::GraphicsComponent &graphicsComp = m_tileMapEntity->AddComponent<Ndk::GraphicsComponent>();
 	graphicsComp.Attach(m_tileMap);
 
-	for (int x = 0; x < m_size.x; x++) {
-		for (int y = 0; y < m_size.y; y++) {
+	for (unsigned int x = 0; x < m_size.x; x++) {
+		for (unsigned int y = 0; y < m_size.y; y++) {
 			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0});
 		}
 	}
@@ -255,9 +255,9 @@ float WorldMap::getScale()
 	return m_scale;
 }
 
-void WorldMap::zoom(int delta)
+void WorldMap::zoom(float delta)
 {
-	m_scale += delta * 0.1;
+	m_scale += delta * 0.1f;
 
 	if (m_scale > m_maxScale)
 		m_scale = m_maxScale;

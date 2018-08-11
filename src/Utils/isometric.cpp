@@ -124,12 +124,12 @@ Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapSc
 	mousePosition.x -= cameraOffset.x;
 	mousePosition.y -= cameraOffset.y;
 
-	float halfH = mainTileSize.y / 2;
+	float halfH = (float)mainTileSize.y / 2.f;
 	float ratio = (float)mainTileSize.y / (float)mainTileSize.x;
 	int referenceX = mousePosition.x / mainTileSize.x;
 	int referenceY = (mousePosition.y / mainTileSize.y);
-	float relativeX = mousePosition.x - referenceX * mainTileSize.x;
-	float relativeY = mousePosition.y - referenceY * mainTileSize.y;
+	int relativeX = mousePosition.x - referenceX * mainTileSize.x;
+	int relativeY = mousePosition.y - referenceY * mainTileSize.y;
 
 	referenceY *= 2;
 
@@ -156,7 +156,7 @@ Nz::Vector2ui Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, flo
 
 	if (cellPosition.y % 2 != 0) {
 		// Odd line are shifted
-		xPos += 0.5 * mainTileSize.x;
+		xPos += 0.5f * mainTileSize.x;
 	}
 
 	xPos *= scale;

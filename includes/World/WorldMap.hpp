@@ -61,7 +61,7 @@ public:
 	bool changeTile(int x, int y, TileData newTileData);
 
 	float getScale();
-	void zoom(int delta);
+	void zoom(float delta);
 
 	void moveCamera(Nz::Vector2f offset);
 	Nz::Vector2f getCameraOffset();
