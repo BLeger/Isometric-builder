@@ -32,6 +32,46 @@ Nz::Vector2ui Isometric::bottomRightCell(Nz::Vector2ui position)
 	return Nz::Vector2ui(position.x + 1, position.y + 1);
 }
 
+Nz::Vector2ui Isometric::getCell(Nz::Vector2ui position, Direction direction)
+{
+	switch (direction)
+	{
+	case NORTH_EST:
+		return topRightCell(position);
+		break;
+	case NORTH_WEST:
+		return topLeftCell(position);
+		break;
+	case SOUTH_EST:
+		return bottomRightCell(position);
+		break;
+	case SOUTH_WEST:
+		return bottomLeftCell(position);
+		break;
+	default:
+		return position;
+		break;
+	}
+}
+
+Direction Isometric::getDirection(Nz::Vector2ui start, Nz::Vector2ui destination)
+{
+	if (destination == topLeftCell(start)) {
+		return Direction::NORTH_WEST;
+	}
+	else if (destination == topRightCell(start)) {
+		return Direction::NORTH_EST;
+	}
+	else if (destination == bottomLeftCell(start)) {
+		return Direction::SOUTH_WEST;
+	}
+	else if (destination == bottomRightCell(start)) {
+		return Direction::SOUTH_EST;
+	}
+
+	throw std::exception{"Theses tiles are not next to each other"};
+}
+
 std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, int width, int height)
 {
 	std::vector<Nz::Vector2ui> cells{};
@@ -70,21 +110,11 @@ std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position
 	return surroundingTiles;
 }
 
-float Isometric::distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight)
+/*float Isometric::distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight)
 {
 	Nz::Vector2f center = cellCenter(tilePosition, tileWidth, tileHeight);
 	return pow(center.x - mousePosition.x, 2) + pow(center.y - mousePosition.y, 2);
-}
-
-Nz::Vector2f Isometric::cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight)
-{
-	float xPos = tilePosition.x * tileWidth + (tileWidth / 2);
-	if (tilePosition.y % 2 != 0)
-		xPos += tileWidth / 2;
-
-	float yPos = tilePosition.y / 2.f * tileHeight + (tileHeight / 2);
-	return Nz::Vector2f(xPos, yPos);
-}
+}*/
 
 Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapScale, Nz::Vector2f cameraOffset)
 {
@@ -119,7 +149,7 @@ Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapSc
 	return cell;
 }
 
-Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
+Nz::Vector2ui Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
 {
 	float xPos = cellPosition.x * mainTileSize.x;
 	float yPos = cellPosition.y / 2.f * mainTileSize.y;
@@ -135,6 +165,15 @@ Nz::Vector2i Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, floa
 	xPos += cameraOffset.x;
 	yPos += cameraOffset.y;
 
-	return Nz::Vector2i {(int) xPos, (int) yPos };
+	return Nz::Vector2ui {(unsigned int) xPos, (unsigned int) yPos };
 }
 
+Nz::Vector2ui Isometric::cellPixelCenter(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
+{
+	Nz::Vector2ui cellPixel = getCellPixelCoordinates(cellPosition, scale, cameraOffset);
+
+	cellPixel.x += mainTileSize.x / 2;
+	cellPixel.y += mainTileSize.y / 2;
+
+	return cellPixel;
+}

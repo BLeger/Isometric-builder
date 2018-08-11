@@ -51,7 +51,7 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale); // USELESS ?
+	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale); // USELESS ?
 	nc.SetPosition(m_cameraOffset);
 
 	entity->AddComponent<Ndk::GraphicsComponent>();
@@ -150,7 +150,7 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
 	nc.SetPosition(m_cameraOffset);
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
@@ -189,7 +189,7 @@ void WorldMap::update()
 		Nz::Vector2ui tilePosition = (*it).first;
 		Ndk::EntityHandle entity = (*it).second;
 
-		Nz::Vector2i pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
 		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
 		nc.SetScale(m_scale);
 		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });

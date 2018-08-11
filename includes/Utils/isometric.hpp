@@ -16,7 +16,9 @@
 #include <Nazara/Math\Vector2.hpp>
 
 #include "../Config/TilesConfig.hpp"
+#include "Direction.hpp"
 #include <iostream>
+#include <exception>
 
 class Isometric {
 public:
@@ -24,16 +26,20 @@ public:
 	static Nz::Vector2ui topRightCell(Nz::Vector2ui position);
 	static Nz::Vector2ui bottomLeftCell(Nz::Vector2ui position);
 	static Nz::Vector2ui bottomRightCell(Nz::Vector2ui position);
+	static Nz::Vector2ui getCell(Nz::Vector2ui position, Direction direction);
+
+	static Direction getDirection(Nz::Vector2ui start, Nz::Vector2ui destination);
 
 	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, int width, int height);
 
 	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
-	static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
-	static Nz::Vector2f cellCenter(Nz::Vector2i tilePosition, float tileWidth, float tileHeight);
+	//static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
+	
 
 	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 
-	static Nz::Vector2i getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
+	static Nz::Vector2ui getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
+	static Nz::Vector2ui cellPixelCenter(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 };
 
 #endif // !ISOMETRIC_H

@@ -6,6 +6,8 @@
 #include "../Components/WalkerComponent.hpp"
 #include "../World/WorldMap.hpp"
 
+#include <exception>
+
 class WalkerSystem : public Ndk::System<WalkerSystem>
 {
 public:
