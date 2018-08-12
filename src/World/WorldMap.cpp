@@ -193,6 +193,19 @@ void WorldMap::update()
 
 		it++;
 	}
+
+	auto itb = m_buildings.begin();
+	while (itb != m_buildings.end()) {
+		Nz::Vector2ui tilePosition = (*itb).first;
+		Ndk::EntityHandle entity = (*itb).second;
+
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
+		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
+		nc.SetScale(m_scale);
+		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
+
+		itb++;
+	}
 }
 
 bool WorldMap::isPositionCorrect(Nz::Vector2ui position)
@@ -202,10 +215,10 @@ bool WorldMap::isPositionCorrect(Nz::Vector2ui position)
 
 bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 {
-	if (!isPositionCorrect(position))
-		return false;
+	assert(isPositionCorrect(position));
 
-	return m_entities.find(position) == m_entities.end();
+	TileData& tile = getTile(position);
+	return (m_entities.find(position) == m_entities.end()) && tile.type != TileType::BUILDING_BODY && tile.type != TileType::BUILDING_ROOT;
 }
 
 bool WorldMap::isWalkable(Nz::Vector2ui position)
@@ -221,11 +234,17 @@ void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2
 		return;
 	}
 
+	// Keep track of the hight y position of the cells for renderOrder
+	int maxY = 0;
+
 	// Update the data of all the tiles below the building
 	std::vector<Nz::Vector2ui> cells = Isometric::square(position, size);
 	for (Nz::Vector2ui pos : cells) {
 		getTile(pos).type = TileType::BUILDING_BODY;
 		// TODO : Add a ref to the building root
+
+		if (pos.y > maxY)
+			maxY = pos.y;
 	}
 
 	getTile(position).type = TileType::BUILDING_ROOT;
@@ -233,7 +252,9 @@ void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	entity->AddComponent<Ndk::NodeComponent>();
 	entity->AddComponent<Ndk::GraphicsComponent>();
-	entity->AddComponent<BuildingComponent>(position, size, name);
+
+	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, size, name);
+	building.setRenderOrder(maxY);
 
 	m_buildings.insert(std::make_pair(position, entity));
 }

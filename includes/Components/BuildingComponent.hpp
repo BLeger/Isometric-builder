@@ -20,9 +20,15 @@ struct BuildingComponent : public Ndk::Component<BuildingComponent>
 
 	std::string getSpriteName();
 
+	void updated(bool b = true);
+
+	int getRenderOrder();
+	void setRenderOrder(int order);
+
 	static Ndk::ComponentIndex componentIndex;
 
 private:
+	int m_renderOrder = 0;
 	unsigned int m_state;
 	std::string m_name;
 

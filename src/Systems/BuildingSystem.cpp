@@ -20,7 +20,10 @@ void BuildingSystem::OnUpdate(float elapsed)
 			Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
 
 			Nz::SpriteRef& spr = m_spriteLib.getSprite(building.getSpriteName());
-			gc.Attach(spr);
+			gc.Clear();
+			gc.Attach(spr, building.getRenderOrder());
+
+			building.updated(true);
 		}
 	}
 }

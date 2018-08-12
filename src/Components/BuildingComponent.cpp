@@ -7,6 +7,7 @@ BuildingComponent::BuildingComponent(Nz::Vector2ui position, Nz::Vector2ui size,
 	m_position(position), m_size(size), m_name(name)
 {
 	m_state = 0;
+	m_renderOrder = 0;
 	m_needSpriteUpdate = true;
 }
 
@@ -38,4 +39,19 @@ Nz::Vector2ui BuildingComponent::getSize()
 std::string BuildingComponent::getSpriteName()
 {
 	return m_name + "_" + std::to_string(m_state);
+}
+
+void BuildingComponent::updated(bool b)
+{
+	m_needSpriteUpdate = b;
+}
+
+int BuildingComponent::getRenderOrder()
+{
+	return m_renderOrder;
+}
+
+void BuildingComponent::setRenderOrder(int order)
+{
+	m_renderOrder = order;
 }

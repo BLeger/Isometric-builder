@@ -13,8 +13,8 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
 
-
-	m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));
+	m_worldMap.addBuilding(Nz::Vector2ui{ 3, 3 }, "house", Nz::Vector2ui{ 2, 2 });
+	//m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));
 
 	// Events
 	Nz::EventHandler& eventHandler = window.GetEventHandler();
