@@ -13,9 +13,11 @@
 #include "includes/Components/WallComponent.hpp"
 #include "includes/Components/AnimationComponent.hpp"
 #include "includes/Components/WalkerComponent.hpp"
+#include "includes/Components/BuildingComponent.hpp"
 #include "includes/Systems/WallSystem.hpp"
 #include "includes/Systems/AnimationSystem.hpp"
 #include "includes/Systems/WalkerSystem.hpp"
+#include "includes/Systems/BuildingSystem.hpp"
 
 #include <iostream>
 
@@ -25,10 +27,12 @@ int main()
 	Ndk::InitializeComponent<WallComponent>("Wall");
 	Ndk::InitializeComponent<WalkerComponent>("Walker");
 	Ndk::InitializeComponent<AnimationComponent>("Anima");
+	Ndk::InitializeComponent<BuildingComponent>("Build");
 
 	Ndk::InitializeSystem<WallSystem>();
 	Ndk::InitializeSystem<WalkerSystem>();
 	Ndk::InitializeSystem<AnimationSystem>();
+	Ndk::InitializeSystem<BuildingSystem>();
 
 	Ndk::Application application;
 

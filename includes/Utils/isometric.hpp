@@ -30,7 +30,7 @@ public:
 
 	static Direction getDirection(Nz::Vector2ui start, Nz::Vector2ui destination);
 
-	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, int width, int height);
+	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, Nz::Vector2ui size);
 
 	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
 	//static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);

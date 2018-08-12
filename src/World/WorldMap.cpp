@@ -51,9 +51,6 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale); // USELESS ?
-	nc.SetPosition(m_cameraOffset);
-
 	entity->AddComponent<Ndk::GraphicsComponent>();
 	m_entities.insert(std::make_pair(position, entity));
 
@@ -217,24 +214,28 @@ bool WorldMap::isWalkable(Nz::Vector2ui position)
 	return true;
 }
 
-void WorldMap::addBuilding(Building b, int x, int y) {
-	/*Nz::Vector2<int> buildingSize = b.getSize();
-
-	// Get the coordinates of all the cell occupied by the building
-	std::vector<Nz::Vector2<int>> cells = Isometric::square(Nz::Vector2i(x, y), buildingSize.x, buildingSize.y);
-
-	// All the cells occupied by the building are converted to body cells
-	for (Nz::Vector2<int> cell : cells) {
-		Tile& bodyTile = getTile(cell.x, cell.y);
-		//bodyTile.setType(TileType::Object_NxN_Body);
+void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size) 
+{
+	if (!isPositionAvailable(position)) {
+		std::cout << "Err: tile already occupied" << std::endl;
+		return;
 	}
 
-	// The main cell of the building displays the building
-	//Tile& attachTile = getTile(x, y);
-	//attachTile.setType(TileType::Object_NxN_Attach);
-	//attachTile.setTileDatas(b.getTileData());
+	// Update the data of all the tiles below the building
+	std::vector<Nz::Vector2ui> cells = Isometric::square(position, size);
+	for (Nz::Vector2ui pos : cells) {
+		getTile(pos).type = TileType::BUILDING_BODY;
+		// TODO : Add a ref to the building root
+	}
 
-	m_buildings.insert(std::make_pair(coordinates{ x, y }, b));*/
+	getTile(position).type = TileType::BUILDING_ROOT;
+
+	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
+	entity->AddComponent<Ndk::NodeComponent>();
+	entity->AddComponent<Ndk::GraphicsComponent>();
+	entity->AddComponent<BuildingComponent>(position, size, name);
+
+	m_buildings.insert(std::make_pair(position, entity));
 }
 
 bool WorldMap::changeTile(int x, int y, TileData newTileData)

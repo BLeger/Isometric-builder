@@ -20,13 +20,13 @@
 
 #include "../Config/TilesConfig.hpp"
 #include "TileData.hpp"
-#include "Building.hpp"
 #include "../Utils/isometric.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
 #include "../Components/WalkerComponent.hpp"
 #include "../Components/AnimationComponent.hpp"
+#include "../Components/BuildingComponent.hpp"
 
 
 class WorldMap {
@@ -56,7 +56,7 @@ public:
 	bool isPositionAvailable(Nz::Vector2ui position);
 	bool isWalkable(Nz::Vector2ui position);
 
-	void addBuilding(Building b, int x, int y);
+	void addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size);
 
 	bool changeTile(int x, int y, TileData newTileData);
 
@@ -71,6 +71,7 @@ private:
 
 	std::vector<TileData> m_tiles{};
 	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_entities{};
+	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_buildings{};
 	std::vector<Ndk::EntityHandle> m_walkers{};
 
 	Nz::TileMapRef m_tileMap;

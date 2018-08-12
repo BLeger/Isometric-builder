@@ -11,6 +11,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world.AddSystem<WallSystem>(m_worldMap, m_spriteLib);
 	m_world.AddSystem<WalkerSystem>(m_worldMap);
 	m_world.AddSystem<AnimationSystem>();
+	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
 
 
 	m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));

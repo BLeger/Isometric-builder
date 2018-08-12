@@ -72,16 +72,16 @@ Direction Isometric::getDirection(Nz::Vector2ui start, Nz::Vector2ui destination
 	throw std::exception{"Theses tiles are not next to each other"};
 }
 
-std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, int width, int height)
+std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, Nz::Vector2ui size)
 {
 	std::vector<Nz::Vector2ui> cells{};
 
-	for (int i = 0; i < width; i++) {
+	for (int i = 0; i < size.x; i++) {
 		cells.push_back(Nz::Vector2ui(tilePosition.x, tilePosition.y));
 
 		Nz::Vector2ui lineStart = tilePosition;
 
-		for (int j = 0; j < height - 1; j++) {
+		for (int j = 0; j < size.y - 1; j++) {
 			Nz::Vector2ui botRight = bottomRightCell(tilePosition);
 			cells.push_back(botRight);
 			tilePosition = botRight;

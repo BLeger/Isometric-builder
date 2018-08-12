@@ -16,6 +16,7 @@
 #include "Systems\WallSystem.hpp"
 #include "Systems\WalkerSystem.hpp"
 #include "Systems\AnimationSystem.hpp"
+#include "Systems\BuildingSystem.hpp"
 
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
