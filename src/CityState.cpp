@@ -4,7 +4,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
-	m_worldMap(WorldMap{ Nz::Vector2ui{10, 10}, world }),
+	m_worldMap(WorldMap{ Nz::Vector2ui{100, 100}, world }),
 	m_currentTool(UserTools::PLACE_BUILDING)
 {
 	// Activate systems
@@ -13,7 +13,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
 
-	m_worldMap.addBuilding(Nz::Vector2ui{ 3, 3 }, "house", Nz::Vector2ui{ 2, 2 });
+	//m_worldMap.addBuilding(Nz::Vector2ui{ 3, 3 }, "house", Nz::Vector2ui{ 2, 2 });
 	//m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));
 
 	// Events
@@ -50,7 +50,7 @@ void CityState::Leave(Ndk::StateMachine& fsm)
 
 bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 {
-	m_worldMap.update();
+	//m_worldMap.update();
 	return true;
 }
 
@@ -72,6 +72,9 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		break;
 	case PLACE_WALL:
 		m_worldMap.addWall(tilePosition);
+		break;
+	case PLACE_ROAD:
+		m_worldMap.addRoad(tilePosition);
 		break;
 	default:
 		break;
@@ -109,6 +112,10 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		case 28:
 			m_currentTool = UserTools::PLACE_WALL;
 			std::cout << "Place wall tool" << std::endl;
+			break;
+		case 29:
+			m_currentTool = UserTools::PLACE_ROAD;
+			std::cout << "Place road tool" << std::endl;
 			break;
 		default:
 			break;
@@ -149,4 +156,6 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 			break;
 		}
 	}
+
+	m_worldMap.update();
 }

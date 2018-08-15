@@ -4,7 +4,8 @@
 enum UserTools {
 	PLACE_BUILDING,
 	REMOVE_BUILDING,
-	PLACE_WALL
+	PLACE_WALL,
+	PLACE_ROAD
 };
 
 #endif // !USER_TOOLS_H

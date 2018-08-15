@@ -27,7 +27,20 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 		}
 	}
 	
+	generateTerrain();
 	update();
+}
+
+void WorldMap::generateTerrain()
+{
+	HeightMap hm{ m_size };
+
+	for (unsigned int x = 0; x < m_size.x; x++) {
+		for (unsigned int y = 0; y < m_size.y; y++) {
+			Nz::Vector2ui position{ x, y };
+			getTile(position).tileMaterialIndex = hm.getTile(position);
+		}
+	}
 }
 
 
@@ -103,6 +116,20 @@ void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 	deleteEntity(position);
 }
 
+void WorldMap::addRoad(Nz::Vector2ui position)
+{
+	if (!isPositionCorrect(position) || !isPositionAvailable(position))
+		return;
+
+	TileData& tile = getTile(position);
+	tile.type = TileType::ROAD;
+	tile.tileMaterialIndex = 2;
+}
+
+void WorldMap::removeRoad(Nz::Vector2ui position)
+{
+}
+
 void WorldMap::addWall(Nz::Vector2ui position)
 {
 	if (createEntity(position)) {
@@ -171,7 +198,7 @@ void WorldMap::update()
 			TileData& tile = getTile(position);
 			
 			// Display or not the tile
-			if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE) {
+			if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD) {
 				Nz::Rectui textureRect{ tile.tileMaterialIndex * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
 				m_tileMap->EnableTile(position, textureRect);
 			}

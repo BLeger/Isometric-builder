@@ -21,6 +21,7 @@
 #include "../Config/TilesConfig.hpp"
 #include "TileData.hpp"
 #include "../Utils/isometric.hpp"
+#include "../HeightMap.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
@@ -34,6 +35,7 @@ class WorldMap {
 public:
 	//WorldMap() {};
 	WorldMap(Nz::Vector2ui size, Ndk::World& world);
+	void generateTerrain();
 
 	TileData& getTile(Nz::Vector2ui position);
 
@@ -42,6 +44,9 @@ public:
 
 	void addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite);
 	void removeEnvironmentTile(Nz::Vector2ui position);
+
+	void addRoad(Nz::Vector2ui position);
+	void removeRoad(Nz::Vector2ui position);
 
 	void addWall(Nz::Vector2ui position);
 	void removeWall(Nz::Vector2ui position);

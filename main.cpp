@@ -19,6 +19,8 @@
 #include "includes/Systems/WalkerSystem.hpp"
 #include "includes/Systems/BuildingSystem.hpp"
 
+#include "includes\HeightMap.hpp"
+
 #include <iostream>
 
 int main()
@@ -38,7 +40,7 @@ int main()
 
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
 	mainWindow.Create(Nz::VideoMode(900, 600, 32), "Test");
-	//mainWindow.EnableVerticalSync(true);
+	mainWindow.EnableVerticalSync(true);
 
 	// World
 	Ndk::World& world = application.AddWorld();
@@ -51,10 +53,10 @@ int main()
 	viewer.SetTarget(&mainWindow);
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
 
-	/*Ndk::Canvas canvas{ world.CreateHandle(), mainWindow.GetEventHandler(), mainWindow.GetCursorController().CreateHandle() };
 
-	Ndk::ButtonWidget* b = canvas.Add<Ndk::ButtonWidget>();
-	b->Move(500.f, 500.f);*/
+	HeightMap h{ Nz::Vector2ui{10, 10} };
+
+
 
 	// We add our state machine with the newly created GameState
 	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
