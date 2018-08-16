@@ -4,7 +4,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
-	m_worldMap(WorldMap{ Nz::Vector2ui{100, 100}, world }),
+	m_worldMap(WorldMap{ Nz::Vector2ui{70, 140}, world }),
 	m_currentTool(UserTools::PLACE_BUILDING)
 {
 	// Activate systems

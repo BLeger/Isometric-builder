@@ -21,7 +21,7 @@
 #include "../Config/TilesConfig.hpp"
 #include "TileData.hpp"
 #include "../Utils/isometric.hpp"
-#include "../HeightMap.hpp"
+#include "../WorldGeneration/NoiseGenerator.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
@@ -86,7 +86,7 @@ private:
 
 	float m_scale = 1.f;
 	const float m_maxScale = 1.5f;
-	const float m_minScale = 0.5f;
+	const float m_minScale = 0.1f;
 
 	Nz::Vector2f m_cameraOffset{ 0.f, 0.f };
 };

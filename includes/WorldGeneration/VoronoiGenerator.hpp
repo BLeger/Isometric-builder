@@ -1,21 +1,19 @@
-#ifndef HEIGHT_MAP_H
-#define HEIGHT_MAP_H
+#ifndef VORONOI_GENERATOR_H
+#define VORONOI_GENERATOR_H
 
 #include <NDK/Application.hpp>
 #include <Nazara/Math/Vector2.hpp>
 #include <Nazara/Utility.hpp>
 
-#include <Nazara\Noise\Perlin.hpp>
-#include <Nazara\Noise\Simplex.hpp>
-
 #include <cmath>
 #include <iostream>
 #include <algorithm>
+#include <random>
 
-class HeightMap {
+class VoronoiGenerator {
 
 public:
-	HeightMap(Nz::Vector2ui size);
+	VoronoiGenerator(Nz::Vector2ui size);
 
 	int getTile(Nz::Vector2ui position);
 	void setTile(Nz::Vector2ui position, int tile);
@@ -33,11 +31,11 @@ private:
 	std::vector<int> m_map;
 	std::vector<Nz::Vector2ui> m_centers;
 
-	const int CENTERS_PROPORTION = 20;
-	const int WATER_PROPORTION = 3;
+	const int CENTERS_PROPORTION = 10;
+	const int WATER_PROPORTION = 15;
 
 	const int GRASS = 0;
 	const int WATER = 1;
 };
 
-#endif // !HEIGHT_MAP_H
+#endif // !VORONOI_GENERATOR_H

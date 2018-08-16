@@ -53,11 +53,6 @@ int main()
 	viewer.SetTarget(&mainWindow);
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
 
-
-	HeightMap h{ Nz::Vector2ui{10, 10} };
-
-
-
 	// We add our state machine with the newly created GameState
 	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
 

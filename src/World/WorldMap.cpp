@@ -33,12 +33,12 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 
 void WorldMap::generateTerrain()
 {
-	HeightMap hm{ m_size };
+	NoiseGenerator generator{ m_size };
 
 	for (unsigned int x = 0; x < m_size.x; x++) {
 		for (unsigned int y = 0; y < m_size.y; y++) {
 			Nz::Vector2ui position{ x, y };
-			getTile(position).tileMaterialIndex = hm.getTile(position);
+			getTile(position).tileMaterialIndex = generator.getTile(position);
 		}
 	}
 }
