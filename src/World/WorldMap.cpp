@@ -21,8 +21,8 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 	Ndk::GraphicsComponent &graphicsComp = m_tileMapEntity->AddComponent<Ndk::GraphicsComponent>();
 	graphicsComp.Attach(m_tileMap);
 
-	for (unsigned int x = 0; x < m_size.x; x++) {
-		for (unsigned int y = 0; y < m_size.y; y++) {
+	for (unsigned int y = 0; y < m_size.y; y++) {
+		for (unsigned int x = 0; x < m_size.x; x++) {
 			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0});
 		}
 	}
@@ -35,10 +35,11 @@ void WorldMap::generateTerrain()
 {
 	NoiseGenerator generator{ m_size };
 
-	for (unsigned int x = 0; x < m_size.x; x++) {
-		for (unsigned int y = 0; y < m_size.y; y++) {
+	for (unsigned int y = 0; y < m_size.y; y++) {
+		for (unsigned int x = 0; x < m_size.x; x++) {
 			Nz::Vector2ui position{ x, y };
 			getTile(position).tileMaterialIndex = generator.getTile(position);
+			updateTile(position);
 		}
 	}
 }
@@ -109,11 +110,14 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
 
 		entity->AddComponent<EnvironmentTileComponent>();
 	}
+
+	updateTile(position);
 }
 
 void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 {
 	deleteEntity(position);
+	updateTile(position);
 }
 
 void WorldMap::addRoad(Nz::Vector2ui position)
@@ -124,10 +128,12 @@ void WorldMap::addRoad(Nz::Vector2ui position)
 	TileData& tile = getTile(position);
 	tile.type = TileType::ROAD;
 	tile.tileMaterialIndex = 3;
+	updateTile(position);
 }
 
 void WorldMap::removeRoad(Nz::Vector2ui position)
 {
+	updateTile(position);
 }
 
 void WorldMap::addWall(Nz::Vector2ui position)
@@ -139,12 +145,14 @@ void WorldMap::addWall(Nz::Vector2ui position)
 	}
 
 	updateSurrondingsWalls(position);
+	updateTile(position);
 }
 
 void WorldMap::removeWall(Nz::Vector2ui position)
 {
 	deleteEntity(position);
 	updateSurrondingsWalls(position);
+	updateTile(position);
 }
 
 bool WorldMap::isWall(Nz::Vector2ui position)
@@ -190,30 +198,14 @@ void WorldMap::update()
 {
 	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
 	tileMapNode.SetScale(m_scale);
-	tileMapNode.SetPosition(m_cameraOffset);
-
-	for (unsigned int y = 0; y < m_size.y; y++) {
-		for (unsigned int x = 0; x < m_size.x; x++) {
-			Nz::Vector2ui position{ x, y };
-			TileData& tile = getTile(position);
-			
-			// Display or not the tile
-			if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD) {
-				Nz::Rectui textureRect{ tile.tileMaterialIndex * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
-				m_tileMap->EnableTile(position, textureRect);
-			}
-			else {
-				m_tileMap->DisableTile(position);
-			}
-		}
-	}
+	//tileMapNode.SetPosition(m_cameraOffset);
 
 	auto it = m_entities.begin();
 	while (it != m_entities.end()) {
 		Nz::Vector2ui tilePosition = (*it).first;
 		Ndk::EntityHandle entity = (*it).second;
 
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
 		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
 		nc.SetScale(m_scale);
 		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
@@ -226,12 +218,26 @@ void WorldMap::update()
 		Nz::Vector2ui tilePosition = (*itb).first;
 		Ndk::EntityHandle entity = (*itb).second;
 
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale, m_cameraOffset);
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
 		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
 		nc.SetScale(m_scale);
 		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
 
 		itb++;
+	}
+}
+
+void WorldMap::updateTile(Nz::Vector2ui position)
+{
+	TileData& tile = getTile(position);
+
+	// Display or not the tile
+	if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD) {
+		Nz::Rectui textureRect{ tile.tileMaterialIndex * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
+		m_tileMap->EnableTile(position, textureRect);
+	}
+	else {
+		m_tileMap->DisableTile(position);
 	}
 }
 
@@ -317,9 +323,10 @@ void WorldMap::zoom(float delta)
 	update();
 }
 
-void WorldMap::moveCamera(Nz::Vector2f offset)
+void WorldMap::setCameraOffset(Nz::Vector2f offset)
 {
-	m_cameraOffset += offset;
+	std::cout << "Setting camera offset" << std::endl;
+	m_cameraOffset = offset;
 }
 
 Nz::Vector2f WorldMap::getCameraOffset()

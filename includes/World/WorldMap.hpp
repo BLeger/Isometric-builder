@@ -56,6 +56,7 @@ public:
 	void addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite);
 
 	void update();
+	void updateTile(Nz::Vector2ui position);
 
 	bool isPositionCorrect(Nz::Vector2ui position);
 	bool isPositionAvailable(Nz::Vector2ui position);
@@ -68,7 +69,7 @@ public:
 	float getScale();
 	void zoom(float delta);
 
-	void moveCamera(Nz::Vector2f offset);
+	void setCameraOffset(Nz::Vector2f offset);
 	Nz::Vector2f getCameraOffset();
 
 private:

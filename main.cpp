@@ -52,7 +52,7 @@ int main()
 	viewer.SetProjectionType(Nz::ProjectionType_Orthogonal);
 
 	// We add our state machine with the newly created GameState
-	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow));
+	Ndk::StateMachine fsm(std::make_shared<CityState>(world, mainWindow, viewEntity));
 
 	application.EnableFPSCounter(true);
 

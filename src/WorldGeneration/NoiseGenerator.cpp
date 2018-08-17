@@ -12,10 +12,8 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 	int seed = uni(rng);
 
 	Nz::Perlin perlin{ (unsigned int)seed };
-	//Nz::Simplex simplex{ (unsigned int)seed };
 
-	float hmin = 2.f;
-	float hmax = -2.f;
+	std::map<Nz::Vector2ui, float> heightMap;
 
 	// Generate a height map
 	float freq = 1.f;
@@ -24,19 +22,10 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 			float nx = x / size.x - 0.5f;
 			float ny = y / size.y - 0.5f;
 
-			//std::cout << nx << " - " << ny << std::endl;
-			//std::cout << perlin.Get(nx, ny, 1.f) << std::endl;
-			float height = perlin.Get(freq * nx, freq * ny, 1.f);
+			float height = perlin.Get(1.f * nx, 1.f * ny, 1.f)  + 0.5f * perlin.Get(2.f * nx, 2.f * ny, 1.f) + 0.25f * perlin.Get(4.f * nx, 4.f * ny, 1.f);
+			heightMap.insert(std::make_pair(Nz::Vector2ui{(unsigned int)x, (unsigned int)y}, height));
 
-			if (height < hmin)
-				hmin = height;
-
-			if (height > hmax)
-				hmax = height;
-
-			//std::cout << height << std::endl;
 			int tile = -1;
-
 			if (height < -0.3f) {
 				tile = DEEP_WATER;
 			}
@@ -53,12 +42,6 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 			m_map.push_back(tile);
 		}
 	}
-
-	std::cout << "Min : " << hmin << std::endl;
-	std::cout << "Max : " << hmax << std::endl;
-
-
-	
 }
 
 int NoiseGenerator::getTile(Nz::Vector2ui position)

@@ -1,11 +1,12 @@
 #include "../includes/CityState.h"
 
-CityState::CityState(Ndk::World& world, Nz::RenderWindow& window) :
+CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHandle& camera) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
 	m_worldMap(WorldMap{ Nz::Vector2ui{70, 140}, world }),
-	m_currentTool(UserTools::PLACE_BUILDING)
+	m_currentTool(UserTools::PLACE_BUILDING),
+	m_camera(camera)
 {
 	// Activate systems
 	m_world.AddSystem<WallSystem>(m_worldMap, m_spriteLib);
@@ -57,7 +58,7 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
 
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), m_worldMap.getCameraOffset());
+	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 
 	if (!m_worldMap.isPositionCorrect(tilePosition))
 		return;
@@ -96,7 +97,7 @@ void CityState::mouseWheelMoved(float delta)
 
 void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 {
-	std::cout << k.code << std::endl;
+	//std::cout << k.code << std::endl;
 	if (k.code >= 26 && k.code <= 36) {
 		// F1 <-> F11
 		switch (k.code)
@@ -138,24 +139,31 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 
 	if (k.code >= 41 && k.code <= 44) {
 		// Directions
+
+		float movingStep = 20.f;
+
+		Ndk::NodeComponent &nc = m_camera->GetComponent<Ndk::NodeComponent>();
+
+		Nz::Vector3f position = nc.GetPosition();
+		Nz::Vector2f newCameraOffset{ position.x, position.y };
 		switch (k.code)
 		{
 		case 41:
-			m_worldMap.moveCamera(Nz::Vector2f{ 0.f, -10.f });
+			newCameraOffset.y -= movingStep;
 			break;
 		case 42:
-			m_worldMap.moveCamera(Nz::Vector2f{ 10.f, 0.f });
+			newCameraOffset.x += movingStep;
 			break;
 		case 43:
-			m_worldMap.moveCamera(Nz::Vector2f{ -10.f, 0.f });
+			newCameraOffset.x -= movingStep;
 			break;
 		case 44:
-			m_worldMap.moveCamera(Nz::Vector2f{ 0.f, 10.f });
+			newCameraOffset.y += movingStep;
 			break;
 		default:
 			break;
 		}
+		nc.SetPosition(newCameraOffset);
+		m_worldMap.setCameraOffset(newCameraOffset);
 	}
-
-	m_worldMap.update();
 }

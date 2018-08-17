@@ -26,7 +26,7 @@
 class CityState : public Ndk::State {
 
 public:
-	CityState(Ndk::World& world, Nz::RenderWindow& window);
+	CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHandle& camera);
 	void Enter(Ndk::StateMachine& fsm) override;
 	void Leave(Ndk::StateMachine& fsm) override;
 	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
@@ -39,9 +39,10 @@ public:
 private:
 	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
+	Ndk::EntityHandle& m_camera;
 
 	WorldMap m_worldMap;
-
+	
 	UserTools m_currentTool;
 	SpriteLibrary m_spriteLib;
 
