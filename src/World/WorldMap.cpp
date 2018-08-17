@@ -123,7 +123,7 @@ void WorldMap::addRoad(Nz::Vector2ui position)
 
 	TileData& tile = getTile(position);
 	tile.type = TileType::ROAD;
-	tile.tileMaterialIndex = 2;
+	tile.tileMaterialIndex = 3;
 }
 
 void WorldMap::removeRoad(Nz::Vector2ui position)

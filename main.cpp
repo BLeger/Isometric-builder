@@ -19,8 +19,6 @@
 #include "includes/Systems/WalkerSystem.hpp"
 #include "includes/Systems/BuildingSystem.hpp"
 
-#include "includes\HeightMap.hpp"
-
 #include <iostream>
 
 int main()

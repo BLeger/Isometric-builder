@@ -18,7 +18,7 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 	float hmax = -2.f;
 
 	// Generate a height map
-	float freq = 0.5f;
+	float freq = 1.f;
 	for (float y = 0; y < size.y; y++) {
 		for (float x = 0; x < size.x; x++) {
 			float nx = x / size.x - 0.5f;
@@ -35,12 +35,22 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 				hmax = height;
 
 			//std::cout << height << std::endl;
-			if (height < -0.2f) {
-				m_map.push_back(WATER);
+			int tile = -1;
+
+			if (height < -0.3f) {
+				tile = DEEP_WATER;
+			}
+			else if (height < -0.2f) {
+				tile = WATER;
+			}
+			else if (height < -0.15f) {
+				tile = SAND;
 			}
 			else {
-				m_map.push_back(GRASS);
+				tile = GRASS;
 			}
+
+			m_map.push_back(tile);
 		}
 	}
 
