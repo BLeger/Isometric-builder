@@ -29,6 +29,14 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 			mouseRightPressed(mousePosition);
 		
 	});
+
+	eventHandler.OnMouseButtonReleased.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseButtonEvent& m)
+	{
+		Nz::Vector2ui mousePosition{ m.x, m.y };
+		if (m.button == 0) // Left click
+			mouseLeftReleased(mousePosition);
+
+	});
 	
 	eventHandler.OnMouseWheelMoved.Connect([this](const Nz::EventHandler*, const Nz::WindowEvent::MouseWheelEvent& m)
 	{
@@ -57,7 +65,6 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 
 void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
-
 	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 
 	if (!m_worldMap.isPositionCorrect(tilePosition))
@@ -75,13 +82,36 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		m_worldMap.addWall(tilePosition);
 		break;
 	case PLACE_ROAD:
-		m_worldMap.addRoad(tilePosition);
+		m_placingRoad = true;
+		m_roadPlacementStart = tilePosition;
+		//m_worldMap.addRoad(tilePosition);
 		break;
 	default:
 		break;
 	}
 	
 	m_worldMap.update();
+}
+
+void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
+{
+	std::cout << "Released" << std::endl;
+	if (m_currentTool == UserTools::PLACE_ROAD) {
+		m_placingRoad = false;
+
+		Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+		PathFinder p{ m_worldMap };
+
+		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
+		std::cout << m_roadPlacementStart.x << " - " << m_roadPlacementStart.y << std::endl;
+		std::cout << tilePosition.x << " - " << tilePosition.y << std::endl;
+		auto it = path.begin();
+		while (it != path.end()) {
+			Nz::Vector2ui pos = *it;
+			m_worldMap.addRoad(pos);
+			it++;
+		}
+	}
 }
 
 void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)

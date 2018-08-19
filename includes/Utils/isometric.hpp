@@ -19,9 +19,12 @@
 #include "Direction.hpp"
 #include <iostream>
 #include <exception>
+#include <cmath>
 
 class Isometric {
 public:
+	static int manhattanDistance(Nz::Vector2ui start, Nz::Vector2ui end);
+
 	static Nz::Vector2ui topLeftCell(Nz::Vector2ui position);
 	static Nz::Vector2ui topRightCell(Nz::Vector2ui position);
 	static Nz::Vector2ui bottomLeftCell(Nz::Vector2ui position);

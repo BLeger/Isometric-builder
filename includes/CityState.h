@@ -22,6 +22,7 @@
 #include "World/WorldMap.hpp"
 #include "UserTools.hpp"
 #include "SpriteLibrary.hpp"
+#include "Utils\PathFinder.hpp"
 
 class CityState : public Ndk::State {
 
@@ -32,6 +33,7 @@ public:
 	bool Update(Ndk::StateMachine& fsm, float elapsedTime) override;
 
 	void mouseLeftPressed(Nz::Vector2ui mousePosition);
+	void mouseLeftReleased(Nz::Vector2ui mousePosition);
 	void mouseRightPressed(Nz::Vector2ui mousePosition);
 	void mouseWheelMoved(float delta);
 	void keyPressed(const Nz::WindowEvent::KeyEvent& k);
@@ -44,6 +46,10 @@ private:
 	WorldMap m_worldMap;
 	
 	UserTools m_currentTool;
+
+	// Road placement
+	bool m_placingRoad = false;
+	Nz::Vector2ui m_roadPlacementStart;
 	SpriteLibrary m_spriteLib;
 
 	std::string m_currentSpriteName = "tree";

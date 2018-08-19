@@ -1,5 +1,10 @@
 #include "../../includes/Utils/isometric.hpp"
 
+int Isometric::manhattanDistance(Nz::Vector2ui start, Nz::Vector2ui end)
+{
+	return std::abs((int)end.x - (int)start.x) + std::abs((int)end.y - (int)start.y);
+}
+
 Nz::Vector2ui Isometric::topLeftCell(Nz::Vector2ui position)
 {
 	if (position.y % 2 == 0) {
@@ -101,9 +106,9 @@ std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position
 
 	std::vector<Nz::Vector2ui> surroundingTiles {};
 
-	for (Nz::Vector2ui position : tiles) {
-		if (position.x >= 0 && position.y >= 0) {
-			surroundingTiles.push_back(position);
+	for (Nz::Vector2ui pos : tiles) {
+		if (pos.x >= 0 && pos.y >= 0 && pos.x < position.x + 2 && pos.y < position.y + 2) {
+			surroundingTiles.push_back(pos);
 		}
 	}
 
