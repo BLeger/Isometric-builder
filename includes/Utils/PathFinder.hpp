@@ -2,6 +2,7 @@
 #define PATH_FINDER_H
 
 #include "../World/WorldMap.hpp"
+#include "Direction.hpp"
 
 #include <algorithm>
 
@@ -9,13 +10,15 @@ struct node{
 	Nz::Vector2ui position;
 	float base_cost;
 	float heuristic_cost;
+	int numberOfTurns;
+	Direction comeFrom;
 };
 
 class CompareNodes {
 public:
 	bool operator() (const node& lhs, const node&rhs) const
 	{
-		return (lhs.base_cost + lhs.heuristic_cost > rhs.base_cost + rhs.heuristic_cost);
+		return (lhs.base_cost + lhs.heuristic_cost + (lhs.numberOfTurns * 0) > rhs.base_cost + rhs.heuristic_cost + (rhs.numberOfTurns * 0));
 	}
 };
 

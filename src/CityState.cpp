@@ -95,7 +95,6 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 
 void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 {
-	std::cout << "Released" << std::endl;
 	if (m_currentTool == UserTools::PLACE_ROAD) {
 		m_placingRoad = false;
 
@@ -103,13 +102,10 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 		PathFinder p{ m_worldMap };
 
 		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
-		std::cout << m_roadPlacementStart.x << " - " << m_roadPlacementStart.y << std::endl;
-		std::cout << tilePosition.x << " - " << tilePosition.y << std::endl;
-		auto it = path.begin();
-		while (it != path.end()) {
-			Nz::Vector2ui pos = *it;
+		while(!path.empty()){
+			Nz::Vector2ui pos = path.front();
+			path.pop_front();
 			m_worldMap.addRoad(pos);
-			it++;
 		}
 	}
 }

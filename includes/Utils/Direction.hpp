@@ -5,7 +5,8 @@ enum Direction {
 	NORTH_EST,
 	NORTH_WEST,
 	SOUTH_EST,
-	SOUTH_WEST
+	SOUTH_WEST,
+	NONE
 };
 
 #endif // !DIRECTIONS_H
