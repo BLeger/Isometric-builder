@@ -19,6 +19,7 @@
 #include <Nazara/Core/Color.hpp>
 
 #include "../Config/TilesConfig.hpp"
+#include "../Config/Tiles.hpp"
 #include "TileData.hpp"
 #include "../Utils/isometric.hpp"
 #include "../WorldGeneration/NoiseGenerator.hpp"

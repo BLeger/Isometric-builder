@@ -12,6 +12,8 @@ enum TileType {
 struct TileData {
 	TileType type;
 	unsigned int tileMaterialIndex;
+	bool water = false;
+	bool road = false;
 };
 
 #endif // !TILE_DATA_H

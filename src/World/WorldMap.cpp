@@ -38,7 +38,13 @@ void WorldMap::generateTerrain()
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
 			Nz::Vector2ui position{ x, y };
-			getTile(position).tileMaterialIndex = generator.getTile(position);
+			int material = generator.getTile(position);
+			TileData& tile = getTile(position);
+			tile.tileMaterialIndex = material;
+
+			if (material == WATER || material == DEEP_WATER) {
+				tile.water = true;
+			}
 			updateTile(position);
 		}
 	}
@@ -251,7 +257,9 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 	assert(isPositionCorrect(position));
 
 	TileData& tile = getTile(position);
-	return (m_entities.find(position) == m_entities.end()) && tile.type != TileType::BUILDING_BODY && tile.type != TileType::BUILDING_ROOT;
+	return (m_entities.find(position) == m_entities.end()) && 
+		tile.type != TileType::BUILDING_BODY && tile.type != TileType::BUILDING_ROOT &&
+		!tile.water;
 }
 
 bool WorldMap::isWalkable(Nz::Vector2ui position)

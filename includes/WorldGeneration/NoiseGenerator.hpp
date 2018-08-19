@@ -6,6 +6,8 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Noise/Perlin.hpp>
 
+#include "../Config/Tiles.hpp"
+
 #include <cmath>
 #include <iostream>
 #include <algorithm>
@@ -24,11 +26,6 @@ private:
 	Nz::Vector2ui m_size;
 
 	std::vector<int> m_map;
-	
-	const int GRASS = 0;
-	const int WATER = 1;
-	const int DEEP_WATER = 2;
-	const int SAND = 4;
 };
 
 #endif // !NOISE_GENERATOR_H
