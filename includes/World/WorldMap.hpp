@@ -23,6 +23,7 @@
 #include "TileData.hpp"
 #include "../Utils/isometric.hpp"
 #include "../WorldGeneration/NoiseGenerator.hpp"
+#include "../SpriteLibrary.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
@@ -36,7 +37,7 @@ class WorldMap {
 public:
 	//WorldMap() {};
 	WorldMap(Nz::Vector2ui size, Ndk::World& world);
-	void generateTerrain();
+	void generateTerrain(SpriteLibrary& spriteLib);
 
 	TileData& getTile(Nz::Vector2ui position);
 

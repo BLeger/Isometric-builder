@@ -52,7 +52,7 @@ private:
 	Nz::Vector2ui m_roadPlacementStart;
 	SpriteLibrary m_spriteLib;
 
-	std::string m_currentSpriteName = "tree";
+	std::string m_currentSpriteName = "rock";
 };
 
 #endif // !CITY_STATE_H

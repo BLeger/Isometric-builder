@@ -26,12 +26,11 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worl
 			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0});
 		}
 	}
-	
-	generateTerrain();
+
 	update();
 }
 
-void WorldMap::generateTerrain()
+void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 {
 	NoiseGenerator generator{ m_size };
 
@@ -45,9 +44,23 @@ void WorldMap::generateTerrain()
 			if (material == WATER || material == DEEP_WATER) {
 				tile.water = true;
 			}
+
+			/*if (generator.hasEnvTile(position)) {
+				int envTile = generator.getEnvTile(position);
+				switch (envTile)
+				{
+				case 0:
+					addEnvironmentTile(position, spriteLib.getSprite("tree"));
+					break;
+				default:
+					break;
+				}
+			}*/
 			updateTile(position);
 		}
 	}
+
+	update();
 }
 
 
@@ -70,6 +83,10 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
+
+	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	nc.SetScale(m_scale);
+	nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
 
 	entity->AddComponent<Ndk::GraphicsComponent>();
 	m_entities.insert(std::make_pair(position, entity));
@@ -202,35 +219,7 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 
 void WorldMap::update()
 {
-	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
-	tileMapNode.SetScale(m_scale);
-	//tileMapNode.SetPosition(m_cameraOffset);
-
-	auto it = m_entities.begin();
-	while (it != m_entities.end()) {
-		Nz::Vector2ui tilePosition = (*it).first;
-		Ndk::EntityHandle entity = (*it).second;
-
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
-		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
-		nc.SetScale(m_scale);
-		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
-
-		it++;
-	}
-
-	auto itb = m_buildings.begin();
-	while (itb != m_buildings.end()) {
-		Nz::Vector2ui tilePosition = (*itb).first;
-		Ndk::EntityHandle entity = (*itb).second;
-
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
-		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
-		nc.SetScale(m_scale);
-		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
-
-		itb++;
-	}
+	
 }
 
 void WorldMap::updateTile(Nz::Vector2ui position)
@@ -328,12 +317,38 @@ void WorldMap::zoom(float delta)
 	if (m_scale < m_minScale)
 		m_scale = m_minScale;
 
-	update();
+	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
+	tileMapNode.SetScale(m_scale);
+
+	auto it = m_entities.begin();
+	while (it != m_entities.end()) {
+		Nz::Vector2ui tilePosition = (*it).first;
+		Ndk::EntityHandle entity = (*it).second;
+
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
+		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
+		nc.SetScale(m_scale);
+		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
+
+		it++;
+	}
+
+	auto itb = m_buildings.begin();
+	while (itb != m_buildings.end()) {
+		Nz::Vector2ui tilePosition = (*itb).first;
+		Ndk::EntityHandle entity = (*itb).second;
+
+		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
+		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
+		nc.SetScale(m_scale);
+		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
+
+		itb++;
+	}
 }
 
 void WorldMap::setCameraOffset(Nz::Vector2f offset)
 {
-	std::cout << "Setting camera offset" << std::endl;
 	m_cameraOffset = offset;
 }
 

@@ -14,7 +14,10 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
 
+	m_worldMap.generateTerrain(m_spriteLib);
+
 	//m_worldMap.addBuilding(Nz::Vector2ui{ 3, 3 }, "house", Nz::Vector2ui{ 2, 2 });
+	//m_worldMap.addBuilding(Nz::Vector2ui{ 1, 3 }, "house", Nz::Vector2ui{ 2, 2 });
 	//m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));
 
 	// Events
@@ -84,7 +87,6 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	case PLACE_ROAD:
 		m_placingRoad = true;
 		m_roadPlacementStart = tilePosition;
-		//m_worldMap.addRoad(tilePosition);
 		break;
 	default:
 		break;
@@ -175,16 +177,16 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		switch (k.code)
 		{
 		case 41:
-			newCameraOffset.y -= movingStep;
+			newCameraOffset.y += movingStep;
 			break;
 		case 42:
-			newCameraOffset.x += movingStep;
-			break;
-		case 43:
 			newCameraOffset.x -= movingStep;
 			break;
+		case 43:
+			newCameraOffset.x += movingStep;
+			break;
 		case 44:
-			newCameraOffset.y += movingStep;
+			newCameraOffset.y -= movingStep;
 			break;
 		default:
 			break;

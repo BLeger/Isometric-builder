@@ -6,6 +6,7 @@
 #include <Nazara/Utility.hpp>
 
 #include <string>
+#include <iostream>
 #include <map>
 
 class SpriteLibrary {
