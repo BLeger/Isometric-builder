@@ -1,4 +1,4 @@
-#include "TileMap.hpp"
+#include "../../includes/World/TileMap.hpp"
 
 TileMap::TileMap(const Nz::Vector2ui& mapSize, const Nz::Vector2f& tileSize, std::size_t materialCount) :
 	m_tiles(mapSize.x * mapSize.y),
