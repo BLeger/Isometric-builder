@@ -76,7 +76,7 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	switch (m_currentTool)
 	{
 	case PLACE_BUILDING:
-		m_worldMap.addEnvironmentTile(tilePosition, m_spriteLib.getSprite(m_currentSpriteName));
+		m_worldMap.addEnvironmentTile(tilePosition, m_currentTile);
 		break;
 	case REMOVE_BUILDING:
 		m_worldMap.removeEnvironmentTile(tilePosition);
@@ -156,13 +156,12 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		switch (k.code)
 		{
 		case 77:
-			m_currentSpriteName = "tree";
+			m_currentTile = TREE;
 			break;
 		default:
 			break;
 		}
 
-		std::cout << m_currentSpriteName << std::endl;
 	}
 
 	if (k.code >= 41 && k.code <= 44) {

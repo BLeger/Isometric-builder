@@ -1,25 +1,7 @@
 #include "../../includes/World/WorldMap.hpp"
 
-WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : m_size(size), m_worldRef(world) {
-	Nz::MaterialRef tileset = Nz::Material::New();
-	tileset->LoadFromFile("tiles/tileset.png");
-	tileset->EnableBlending(true);
-	tileset->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tileset->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tileset->EnableDepthWrite(false);
-
-	m_tileMap = Nz::TileMap::New(size, Nz::Vector2f{ (float)mainTileSize.x, (float)mainTileSize.y });
-	m_tileMap->EnableIsometricMode(true);
-
-	m_tileMap->SetMaterial(0, tileset);
-
-	m_tileMapEntity = world.CreateEntity();
-
-	Ndk::NodeComponent &nodeComp = m_tileMapEntity->AddComponent<Ndk::NodeComponent>();
-	nodeComp.SetPosition(Nz::Vector3f{ m_cameraOffset.x, m_cameraOffset.y, 0.f });
-
-	Ndk::GraphicsComponent &graphicsComp = m_tileMapEntity->AddComponent<Ndk::GraphicsComponent>();
-	graphicsComp.Attach(m_tileMap);
+WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : 
+	m_size(size), m_worldRef(world), m_terrain(Terrain{ world, size }) {
 
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
@@ -37,25 +19,17 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
 			Nz::Vector2ui position{ x, y };
-			int material = generator.getTile(position);
-			TileData& tile = getTile(position);
-			tile.tileMaterialIndex = material;
 
-			if (material == WATER || material == DEEP_WATER) {
+			TileData& tile = getTile(position);
+			tile.material = generator.getTile(position);
+
+			if (tile.material == WATER || tile.material == DEEP_WATER) {
 				tile.water = true;
 			}
 
-			/*if (generator.hasEnvTile(position)) {
-				int envTile = generator.getEnvTile(position);
-				switch (envTile)
-				{
-				case 0:
-					addEnvironmentTile(position, spriteLib.getSprite("tree"));
-					break;
-				default:
-					break;
-				}
-			}*/
+			if (generator.hasEnvTile(position)) {
+				addEnvironmentTile(position, generator.getEnvTile(position));
+			}
 			updateTile(position);
 		}
 	}
@@ -124,16 +98,10 @@ bool WorldMap::deleteEntity(Nz::Vector2ui position)
 	return true;
 }
 
-void WorldMap::addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite)
+void WorldMap::addEnvironmentTile(Nz::Vector2ui position, TileDef env)
 {
-	if (createEntity(position)) {
-		Ndk::EntityHandle& entity = m_entities.at(position);
-		Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
-		gc.Attach(sprite, position.y);
-
-		entity->AddComponent<EnvironmentTileComponent>();
-	}
-
+	TileData& tile = getTile(position);
+	tile.material = env;
 	updateTile(position);
 }
 
@@ -149,8 +117,8 @@ void WorldMap::addRoad(Nz::Vector2ui position)
 		return;
 
 	TileData& tile = getTile(position);
-	tile.type = TileType::ROAD;
-	tile.tileMaterialIndex = 3;
+	tile.type = TileType::ROAD_TILE;
+	tile.material = ROAD;
 	updateTile(position);
 }
 
@@ -227,12 +195,11 @@ void WorldMap::updateTile(Nz::Vector2ui position)
 	TileData& tile = getTile(position);
 
 	// Display or not the tile
-	if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD) {
-		Nz::Rectui textureRect{ tile.tileMaterialIndex * mainTileSize.x, 0u, mainTileSize.x, mainTileSize.y };
-		m_tileMap->EnableTile(position, textureRect);
+	if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD_TILE) {
+		m_terrain.EnableTile(0, position, tile.material);
 	}
 	else {
-		m_tileMap->DisableTile(position);
+		m_terrain.DisableTile(0, position);
 	}
 }
 
@@ -317,34 +284,7 @@ void WorldMap::zoom(float delta)
 	if (m_scale < m_minScale)
 		m_scale = m_minScale;
 
-	Ndk::NodeComponent &tileMapNode = m_tileMapEntity->GetComponent<Ndk::NodeComponent>();
-	tileMapNode.SetScale(m_scale);
-
-	auto it = m_entities.begin();
-	while (it != m_entities.end()) {
-		Nz::Vector2ui tilePosition = (*it).first;
-		Ndk::EntityHandle entity = (*it).second;
-
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
-		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
-		nc.SetScale(m_scale);
-		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
-
-		it++;
-	}
-
-	auto itb = m_buildings.begin();
-	while (itb != m_buildings.end()) {
-		Nz::Vector2ui tilePosition = (*itb).first;
-		Ndk::EntityHandle entity = (*itb).second;
-
-		Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(tilePosition, m_scale);
-		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
-		nc.SetScale(m_scale);
-		nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
-
-		itb++;
-	}
+	m_terrain.scale(m_scale);
 }
 
 void WorldMap::setCameraOffset(Nz::Vector2f offset)

@@ -38,7 +38,7 @@ int main()
 
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
 	mainWindow.Create(Nz::VideoMode(900, 600, 32), "Test");
-	//mainWindow.EnableVerticalSync(true);
+	mainWindow.EnableVerticalSync(true);
 
 	// World
 	Ndk::World& world = application.AddWorld();

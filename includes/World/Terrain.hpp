@@ -23,13 +23,17 @@ class Terrain {
 public:
 	Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel = 0, int m_superiorLevel = 0);
 
-	void EnableTile(int level, Nz::Vector2ui position, TileDef tile);
+	void EnableTile(int level, Nz::Vector2ui position, TileDef& tile);
 
 	void DisableTile(int level, Nz::Vector2ui position);
 	void DisableTiles();
 	void DisableTiles(int level);
 
+	void scale(float value);
+
 private:
+	void addMaterial(int level, Nz::MaterialRef& material, Nz::Vector2f imageSize, Nz::Vector2ui tileSize);
+	unsigned int m_materialCount = 0;
 
 	Nz::Vector2ui m_mapSize;
 	int m_inferiorLevel;

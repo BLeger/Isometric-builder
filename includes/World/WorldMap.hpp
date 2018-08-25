@@ -24,6 +24,7 @@
 #include "../Utils/isometric.hpp"
 #include "../WorldGeneration/NoiseGenerator.hpp"
 #include "../SpriteLibrary.hpp"
+#include "Terrain.hpp"
 
 #include "../Components/EnvironmentTileComponent.hpp"
 #include "../Components/WallComponent.hpp"
@@ -44,7 +45,7 @@ public:
 	bool createEntity(Nz::Vector2ui position);
 	bool deleteEntity(Nz::Vector2ui position);
 
-	void addEnvironmentTile(Nz::Vector2ui position, Nz::SpriteRef sprite);
+	void addEnvironmentTile(Nz::Vector2ui position, TileDef env);
 	void removeEnvironmentTile(Nz::Vector2ui position);
 
 	void addRoad(Nz::Vector2ui position);
@@ -82,8 +83,7 @@ private:
 	std::map<Nz::Vector2ui, Ndk::EntityHandle> m_buildings{};
 	std::vector<Ndk::EntityHandle> m_walkers{};
 
-	Nz::TileMapRef m_tileMap;
-	Ndk::EntityHandle m_tileMapEntity;
+	Terrain m_terrain;
 
 	const Nz::Vector2ui m_size;
 
