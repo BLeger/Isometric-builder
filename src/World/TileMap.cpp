@@ -175,7 +175,7 @@ void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, 
 	InvalidateInstanceData(invalidatedLayers);
 }
 
-void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectui& rect, const Nz::Color& color, std::size_t materialIndex)
+void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const int& tileIndex, const Nz::Color& color, std::size_t materialIndex)
 {
 	NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
 
@@ -190,6 +190,9 @@ void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectui& rect, c
 	float invWidth = 1.f / diffuseMap->GetWidth();
 	float invHeight = 1.f / diffuseMap->GetHeight();
 
-	Nz::Rectf unnormalizedCoords(invWidth * rect.x, invHeight * rect.y, invWidth * rect.width, invHeight * rect.height);
+	MaterialData materialData = m_materialData.at(materialIndex);
+	Nz::Rectui texture{ tileIndex * (unsigned int)materialData.imageSize.x, 0u, (unsigned int)materialData.imageSize.x, (unsigned int)materialData.imageSize.y };
+
+	Nz::Rectf unnormalizedCoords(invWidth * texture.x, invHeight * texture.y, invWidth * texture.width, invHeight * texture.height);
 	EnableTile(tilePos, unnormalizedCoords, color, materialIndex);
 }

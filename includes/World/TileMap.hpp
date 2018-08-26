@@ -38,7 +38,7 @@ public:
 	void DisableTiles();
 
 	void EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
-	void EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectui& rect, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
+	void EnableTile(const Nz::Vector2ui& tilePos, const int& tileIndex, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
 
 	using InstancedRenderable::SetMaterial;
 
