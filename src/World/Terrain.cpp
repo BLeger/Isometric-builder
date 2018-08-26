@@ -39,6 +39,7 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, 
 void Terrain::EnableTile(int level, Nz::Vector2ui position, TileDef& tile)
 {
 	assert(m_tileMaps[level]->GetMaterialCount() > tile.materialIndex);
+	DisableTile(level, position);
 	m_tileMaps[level]->EnableTile(position, tile.tileIndex, Nz::Color::White, tile.materialIndex);
 }
 

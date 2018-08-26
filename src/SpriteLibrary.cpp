@@ -2,8 +2,6 @@
 
 SpriteLibrary::SpriteLibrary()
 {
-	createSprite("tree", 24.f);
-
 	createSprite("wall", 32.f);
 	createSprite("wall_ne", 32.f);
 	createSprite("wall_no", 32.f);
@@ -21,7 +19,6 @@ SpriteLibrary::SpriteLibrary()
 	createSprite("wall_ne_so_se", 32.f);
 	createSprite("wall_no_so_se", 32.f);
 
-	createSprite("rock", 32.f);
 	createSprite("house_0", 90.f);
 
 	createSprite("character_animations", 64.f);

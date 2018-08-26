@@ -103,6 +103,8 @@ void WorldMap::addEnvironmentTile(Nz::Vector2ui position, TileDef env)
 	TileData& tile = getTile(position);
 	tile.material = env;
 	updateTile(position);
+	TileDef t = GRASS;
+	m_terrain.EnableTile(0, position, t);
 }
 
 void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
