@@ -39,9 +39,9 @@ public:
 	//static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	
 
-	static Nz::Vector2ui getCellClicked(Nz::Vector2ui mousePosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
-
-	static Nz::Vector2ui getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
+	static Nz::Vector2ui pixelToCell(Nz::Vector2ui pixelPosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
+	static Nz::Vector2ui cellToPixel(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
+	
 	static Nz::Vector2ui cellPixelCenter(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 };
 

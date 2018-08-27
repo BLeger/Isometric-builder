@@ -68,7 +68,8 @@ bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 
 void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 {
-	Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+	Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+	tilePosition = m_worldMap.getHoveredCell(tilePosition);
 
 	if (!m_worldMap.isPositionCorrect(tilePosition))
 		return;
@@ -91,8 +92,6 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	default:
 		break;
 	}
-	
-	m_worldMap.update();
 }
 
 void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
@@ -100,7 +99,7 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 	if (m_currentTool == UserTools::PLACE_ROAD) {
 		m_placingRoad = false;
 
-		Nz::Vector2ui tilePosition = Isometric::getCellClicked(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 		PathFinder p{ m_worldMap };
 
 		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);

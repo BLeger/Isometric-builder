@@ -52,7 +52,7 @@ private:
 	Nz::Vector2ui m_roadPlacementStart;
 	SpriteLibrary m_spriteLib;
 
-	TileDef m_currentTile = GRASS;
+	TileDef m_currentTile = ROCK;
 };
 
 #endif // !CITY_STATE_H

@@ -45,6 +45,9 @@ public:
 	bool createEntity(Nz::Vector2ui position);
 	bool deleteEntity(Nz::Vector2ui position);
 
+	Nz::Vector2ui getHoveredCell(Nz::Vector2ui flatCell);
+	int getTileHeight(Nz::Vector2ui position);
+
 	void addEnvironmentTile(Nz::Vector2ui position, TileDef env);
 	void removeEnvironmentTile(Nz::Vector2ui position);
 
@@ -58,7 +61,6 @@ public:
 
 	void addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite);
 
-	void update();
 	void updateTile(Nz::Vector2ui position);
 
 	bool isPositionCorrect(Nz::Vector2ui position);
@@ -67,13 +69,14 @@ public:
 
 	void addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size);
 
-	bool changeTile(int x, int y, TileData newTileData);
-
 	float getScale();
 	void zoom(float delta);
 
 	void setCameraOffset(Nz::Vector2f offset);
 	Nz::Vector2f getCameraOffset();
+
+	const int m_minElevation = 0;
+	const int m_maxElevation = 1;
 
 private:
 	Ndk::World& m_worldRef;

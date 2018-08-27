@@ -27,5 +27,6 @@ const TileDef ROAD{ 0, 3, "road" };
 const TileDef SAND { 0, 4, "sand" };
 
 const TileDef TREE{ 1, 0, "tree" };
+const TileDef ROCK{ 1, 1, "rock" };
 
 #endif // !TILES_H

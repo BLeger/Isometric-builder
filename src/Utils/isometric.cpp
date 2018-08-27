@@ -121,20 +121,20 @@ std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position
 	return pow(center.x - mousePosition.x, 2) + pow(center.y - mousePosition.y, 2);
 }*/
 
-Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapScale, Nz::Vector2f cameraOffset)
+Nz::Vector2ui Isometric::pixelToCell(Nz::Vector2ui pixelPosition, float mapScale, Nz::Vector2f cameraOffset)
 {
-	mousePosition.x /= mapScale;
-	mousePosition.y /= mapScale;
+	pixelPosition.x /= mapScale;
+	pixelPosition.y /= mapScale;
 
-	mousePosition.x -= cameraOffset.x;
-	mousePosition.y -= cameraOffset.y;
+	pixelPosition.x -= cameraOffset.x;
+	pixelPosition.y -= cameraOffset.y;
 
 	float halfH = (float)mainTileSize.y / 2.f;
 	float ratio = (float)mainTileSize.y / (float)mainTileSize.x;
-	int referenceX = mousePosition.x / mainTileSize.x;
-	int referenceY = (mousePosition.y / mainTileSize.y);
-	int relativeX = mousePosition.x - referenceX * mainTileSize.x;
-	int relativeY = mousePosition.y - referenceY * mainTileSize.y;
+	int referenceX = pixelPosition.x / mainTileSize.x;
+	int referenceY = (pixelPosition.y / mainTileSize.y);
+	int relativeX = pixelPosition.x - referenceX * mainTileSize.x;
+	int relativeY = pixelPosition.y - referenceY * mainTileSize.y;
 
 	referenceY *= 2;
 
@@ -154,7 +154,7 @@ Nz::Vector2ui Isometric::getCellClicked(Nz::Vector2ui mousePosition, float mapSc
 	return cell;
 }
 
-Nz::Vector2ui Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
+Nz::Vector2ui Isometric::cellToPixel(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
 {
 	float xPos = cellPosition.x * mainTileSize.x;
 	float yPos = cellPosition.y / 2.f * mainTileSize.y;
@@ -175,7 +175,7 @@ Nz::Vector2ui Isometric::getCellPixelCoordinates(Nz::Vector2ui cellPosition, flo
 
 Nz::Vector2ui Isometric::cellPixelCenter(Nz::Vector2ui cellPosition, float scale, Nz::Vector2f cameraOffset)
 {
-	Nz::Vector2ui cellPixel = getCellPixelCoordinates(cellPosition, scale, cameraOffset);
+	Nz::Vector2ui cellPixel = cellToPixel(cellPosition, scale, cameraOffset);
 
 	cellPixel.x += mainTileSize.x / 2;
 	cellPixel.y += mainTileSize.y / 2;

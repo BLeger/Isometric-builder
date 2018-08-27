@@ -63,7 +63,7 @@ void WalkerSystem::OnUpdate(float elapsed)
 			nc.SetPosition(Nz::Vector2f{ (float)walker.m_pixelPosition.x * mapScale + cameraOffset.x, (float)walker.m_pixelPosition.y * mapScale + cameraOffset.y });
 
 			// Update the tile position
-			walker.m_tilePosition = Isometric::getCellClicked(walker.m_pixelPosition, mapScale, cameraOffset);
+			walker.m_tilePosition = Isometric::pixelToCell(walker.m_pixelPosition, mapScale, cameraOffset);
 
 			if (entity->HasComponent<AnimationComponent>()) {
 				// Enable or disable the walker animation component

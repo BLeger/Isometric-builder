@@ -21,16 +21,19 @@
 
 class Terrain {
 public:
-	Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel = 0, int m_superiorLevel = 0);
+	Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, int superiorLevel);
 
-	void EnableGroundTile(int level, Nz::Vector2ui position, TileDef& tile);
-	void EnableEnvironmentTile(int level, Nz::Vector2ui position, TileDef& tile);
+	void EnableGroundTile(Nz::Vector2ui position, TileDef& tile);
+	void EnableEnvironmentTile( Nz::Vector2ui position, TileDef& tile);
 
-	void DisableGroundTile(int level, Nz::Vector2ui position);
-	void DisableEnvironmentTile(int level, Nz::Vector2ui position);
+	void DisableGroundTile(Nz::Vector2ui position);
+	void DisableEnvironmentTile( Nz::Vector2ui position);
 
 	void DisableTiles();
 	void DisableTiles(int level);
+
+	void setHeight(Nz::Vector2ui position, int height);
+	int getHeight(Nz::Vector2ui position);
 
 	void scale(float value);
 
@@ -44,6 +47,8 @@ private:
 	Nz::Vector2ui m_mapSize;
 	int m_inferiorLevel;
 	int m_superiorLevel;
+
+	std::vector<int> m_heightMap;
 
 	std::map<int, Ndk::EntityHandle> m_groundTileMapEntities;
 	std::map<int, TileMapRef> m_groundTileMaps;

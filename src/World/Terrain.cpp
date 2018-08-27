@@ -1,8 +1,9 @@
 #include "..\..\includes\World\Terrain.hpp"
 
-Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, int m_superiorLevel) :
-	m_inferiorLevel(m_inferiorLevel), m_superiorLevel(m_superiorLevel), m_mapSize(mapSize)
+Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, int superiorLevel) :
+	m_inferiorLevel(inferiorLevel), m_superiorLevel(superiorLevel), m_mapSize(mapSize)
 {
+	// Materials
 	Nz::MaterialRef tileset_64_32 = Nz::Material::New();
 	tileset_64_32->LoadFromFile("tiles/64_32_tileset.png");
 	tileset_64_32->EnableBlending(true);
@@ -19,6 +20,7 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, 
 
 	int numberOfMaterials = 2;
 
+	// Tilemaps
 	for (int level = m_inferiorLevel; level < m_superiorLevel + 1; level++) {
 		// Create entity
 		m_groundTileMapEntities.insert(std::make_pair(level, world.CreateEntity()));
@@ -29,8 +31,8 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, 
 		Ndk::GraphicsComponent &envGC = m_environmentTileMapEntities[level]->AddComponent<Ndk::GraphicsComponent>();
 		Ndk::NodeComponent &envNC = m_environmentTileMapEntities[level]->AddComponent<Ndk::NodeComponent>();
 
-		groundNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * level, 0.f });
-		envNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * level, 0.f });
+		groundNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * -level, 0.f });
+		envNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * -level, 0.f });
 
 		// Create tilemap
 		m_groundTileMaps.insert(std::make_pair(level, TileMap::New(m_mapSize, mainTileSizef, numberOfMaterials)));
@@ -39,30 +41,38 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, 
 		// Add materials
 		addMaterial(level, tileset_64_32, Nz::Vector2f{ 64.f, 32.f }, Nz::Vector2ui{ 1, 1 });
 		addMaterial(level, tileset_64_64, Nz::Vector2f{ 64.f, 64.f }, Nz::Vector2ui{ 1, 1 });
+		m_materialCount = 0;
 
-		groundGC.Attach(m_groundTileMaps[level]);
-		envGC.Attach(m_environmentTileMaps[level]);
+		groundGC.Attach(m_groundTileMaps[level], level + 10);
+		envGC.Attach(m_environmentTileMaps[level], level + 10);
+	}
+
+	// Height map
+	for (int y = 0; y < m_mapSize.y; y++) {
+		for (int x = 0; x < m_mapSize.x; x++) {
+			m_heightMap.push_back(0);
+		}
 	}
 }
 
-void Terrain::EnableGroundTile(int level, Nz::Vector2ui position, TileDef& tile)
+void Terrain::EnableGroundTile(Nz::Vector2ui position, TileDef& tile)
 {
-	EnableTile(m_groundTileMaps.at(level), position, tile);
+	EnableTile(m_groundTileMaps.at(getHeight(position)), position, tile);
 }
 
-void Terrain::EnableEnvironmentTile(int level, Nz::Vector2ui position, TileDef & tile)
+void Terrain::EnableEnvironmentTile(Nz::Vector2ui position, TileDef & tile)
 {
-	EnableTile(m_environmentTileMaps.at(level), position, tile);
+	EnableTile(m_environmentTileMaps.at(getHeight(position)), position, tile);
 }
 
-void Terrain::DisableGroundTile(int level, Nz::Vector2ui position)
+void Terrain::DisableGroundTile(Nz::Vector2ui position)
 {
-	DisableTile(m_groundTileMaps.at(level), position);
+	DisableTile(m_groundTileMaps.at(getHeight(position)), position);
 }
 
-void Terrain::DisableEnvironmentTile(int level, Nz::Vector2ui position)
+void Terrain::DisableEnvironmentTile(Nz::Vector2ui position)
 {
-	DisableTile(m_environmentTileMaps.at(level), position);
+	DisableTile(m_environmentTileMaps.at(getHeight(position)), position);
 }
 
 void Terrain::DisableTiles()
@@ -76,6 +86,23 @@ void Terrain::DisableTiles(int level)
 {
 	m_groundTileMaps[level]->DisableTiles();
 	m_environmentTileMaps[level]->DisableTiles();
+}
+
+void Terrain::setHeight(Nz::Vector2ui position, int height)
+{
+	assert(height >= m_inferiorLevel && height <= m_superiorLevel);
+	assert(position.x >= 0 && position.x < m_mapSize.x);
+	assert(position.y >= 0 && position.y < m_mapSize.y);
+
+	m_heightMap[m_mapSize.x * position.y + position.x] = height;
+}
+
+int Terrain::getHeight(Nz::Vector2ui position)
+{
+	assert(position.x >= 0 && position.x < m_mapSize.x);
+	assert(position.y >= 0 && position.y < m_mapSize.y);
+
+	return m_heightMap.at(m_mapSize.x * position.y + position.x);
 }
 
 void Terrain::scale(float value)

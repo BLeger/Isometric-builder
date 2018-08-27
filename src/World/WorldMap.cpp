@@ -1,19 +1,19 @@
 #include "../../includes/World/WorldMap.hpp"
 
 WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) : 
-	m_size(size), m_worldRef(world), m_terrain(Terrain{ world, size }) {
-
+	m_size(size), m_worldRef(world), m_terrain(Terrain{ world, size, m_minElevation, m_maxElevation})
+{
 	for (unsigned int y = 0; y < m_size.y; y++) {
 		for (unsigned int x = 0; x < m_size.x; x++) {
 			m_tiles.push_back(TileData{ TileType::SIMPLE_TILE, 0});
 		}
 	}
-
-	update();
 }
 
 void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 {
+	m_terrain.setHeight(Nz::Vector2ui{ 5, 5 }, 1);
+
 	NoiseGenerator generator{ m_size };
 
 	for (unsigned int y = 0; y < m_size.y; y++) {
@@ -34,7 +34,9 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 		}
 	}
 
-	update();
+	TileData& tile = getTile(Nz::Vector2ui{ 5, 5 });
+	tile.groundMaterial = DEEP_WATER;
+	updateTile(Nz::Vector2ui{ 5, 5 });
 }
 
 
@@ -58,7 +60,7 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	Nz::Vector2ui pixelPosition = Isometric::cellToPixel(position, m_scale);
 	nc.SetScale(m_scale);
 	nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
 
@@ -98,16 +100,37 @@ bool WorldMap::deleteEntity(Nz::Vector2ui position)
 	return true;
 }
 
+/*
+ * Temporary names
+ * Return correct cell hovered by the mouse according to the "supposed" cell at elevation 0
+ */
+Nz::Vector2ui WorldMap::getHoveredCell(Nz::Vector2ui flatCell)
+{
+	for (int elevation = m_minElevation; elevation < m_maxElevation + 1; elevation++) {
+		if (elevation != 0) {
+			Nz::Vector2ui possibleCell{ flatCell.x, flatCell.y + 2 * elevation };
+			if (getTileHeight(possibleCell) == elevation)
+				return possibleCell;
+		}	
+	}
+
+	return flatCell;
+}
+
+int WorldMap::getTileHeight(Nz::Vector2ui position)
+{
+	return m_terrain.getHeight(position);
+}
+
 void WorldMap::addEnvironmentTile(Nz::Vector2ui position, TileDef env)
 {
-	TileData& tile = getTile(position);
-	tile.environmentMaterial = env;
+	getTile(position).environmentMaterial = env;
 	updateTile(position);
 }
 
 void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 {
-	deleteEntity(position);
+	getTile(position).environmentMaterial = VOID;
 	updateTile(position);
 }
 
@@ -173,7 +196,7 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
 
-	Nz::Vector2ui pixelPosition = Isometric::getCellPixelCoordinates(position, m_scale);
+	Nz::Vector2ui pixelPosition = Isometric::cellToPixel(position, m_scale);
 	nc.SetPosition(m_cameraOffset);
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
@@ -185,27 +208,17 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 	m_walkers.push_back(entity);
 }
 
-void WorldMap::update()
-{
-	
-}
-
 void WorldMap::updateTile(Nz::Vector2ui position)
 {
 	TileData& tile = getTile(position);
 
-	// Display or not the tile
-	/*if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD_TILE) {
-		m_terrain.EnableTile(0, position, tile.material);
-	}
-	else {
-		m_terrain.DisableTile(0, position);
-	}*/
-
-	m_terrain.EnableGroundTile(0, position, tile.groundMaterial);
+	m_terrain.EnableGroundTile(position, tile.groundMaterial);
 
 	if (tile.environmentMaterial != VOID) {
-		m_terrain.EnableEnvironmentTile(0, position, tile.environmentMaterial);
+		m_terrain.EnableEnvironmentTile(position, tile.environmentMaterial);
+	}
+	else {
+		m_terrain.DisableEnvironmentTile(position);
 	}
 }
 
@@ -260,19 +273,6 @@ void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2
 	building.setRenderOrder(maxY);
 
 	m_buildings.insert(std::make_pair(position, entity));
-}
-
-bool WorldMap::changeTile(int x, int y, TileData newTileData)
-{
-	if (false) {
-		// Condition d'impossibilité de changement
-		return false;
-	}
-
-	//Tile& tile = getTile(x, y);
-	//tile.setTileDatas(newTileData);
-
-	return true;
 }
 
 float WorldMap::getScale()
