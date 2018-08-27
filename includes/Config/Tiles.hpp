@@ -11,7 +11,14 @@ struct TileDef {
 	{
 		return materialIndex == rhs.materialIndex && tileIndex == rhs.tileIndex && tileSize == rhs.tileSize;
 	}
+
+	bool operator!=(const TileDef& rhs)
+	{
+		return materialIndex != rhs.materialIndex || tileIndex != rhs.tileIndex || tileSize != rhs.tileSize;
+	}
 };
+
+const TileDef VOID{ -1, -1, "void" };
 
 const TileDef GRASS { 0, 0, "grass" };
 const TileDef WATER { 0, 1, "water" };

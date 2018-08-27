@@ -17,35 +17,52 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel, 
 	tileset_64_64->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
 	tileset_64_64->EnableDepthWrite(false);
 
+	int numberOfMaterials = 2;
+
 	for (int level = m_inferiorLevel; level < m_superiorLevel + 1; level++) {
 		// Create entity
-		m_tileMapEntities.insert(std::make_pair(level, world.CreateEntity()));
-		Ndk::GraphicsComponent &gc = m_tileMapEntities[level]->AddComponent<Ndk::GraphicsComponent>();
-		Ndk::NodeComponent &nc = m_tileMapEntities[level]->AddComponent<Ndk::NodeComponent>();
+		m_groundTileMapEntities.insert(std::make_pair(level, world.CreateEntity()));
+		Ndk::GraphicsComponent &groundGC = m_groundTileMapEntities[level]->AddComponent<Ndk::GraphicsComponent>();
+		Ndk::NodeComponent &groundNC = m_groundTileMapEntities[level]->AddComponent<Ndk::NodeComponent>();
 
-		nc.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * level, 0.f });
+		m_environmentTileMapEntities.insert(std::make_pair(level, world.CreateEntity()));
+		Ndk::GraphicsComponent &envGC = m_environmentTileMapEntities[level]->AddComponent<Ndk::GraphicsComponent>();
+		Ndk::NodeComponent &envNC = m_environmentTileMapEntities[level]->AddComponent<Ndk::NodeComponent>();
+
+		groundNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * level, 0.f });
+		envNC.SetPosition(Nz::Vector3f{ 0.f, mainTileSizef.y * level, 0.f });
 
 		// Create tilemap
-		m_tileMaps.insert(std::make_pair(level, TileMap::New(m_mapSize, mainTileSizef, 2)));
+		m_groundTileMaps.insert(std::make_pair(level, TileMap::New(m_mapSize, mainTileSizef, numberOfMaterials)));
+		m_environmentTileMaps.insert(std::make_pair(level, TileMap::New(m_mapSize, mainTileSizef, numberOfMaterials)));
 		
 		// Add materials
 		addMaterial(level, tileset_64_32, Nz::Vector2f{ 64.f, 32.f }, Nz::Vector2ui{ 1, 1 });
 		addMaterial(level, tileset_64_64, Nz::Vector2f{ 64.f, 64.f }, Nz::Vector2ui{ 1, 1 });
 
-		gc.Attach(m_tileMaps[level]);
+		groundGC.Attach(m_groundTileMaps[level]);
+		envGC.Attach(m_environmentTileMaps[level]);
 	}
 }
 
-void Terrain::EnableTile(int level, Nz::Vector2ui position, TileDef& tile)
+void Terrain::EnableGroundTile(int level, Nz::Vector2ui position, TileDef& tile)
 {
-	assert(m_tileMaps[level]->GetMaterialCount() > tile.materialIndex);
-	DisableTile(level, position);
-	m_tileMaps[level]->EnableTile(position, tile.tileIndex, Nz::Color::White, tile.materialIndex);
+	EnableTile(m_groundTileMaps.at(level), position, tile);
 }
 
-void Terrain::DisableTile(int level, Nz::Vector2ui position)
+void Terrain::EnableEnvironmentTile(int level, Nz::Vector2ui position, TileDef & tile)
 {
-	m_tileMaps[level]->DisableTile(position);
+	EnableTile(m_environmentTileMaps.at(level), position, tile);
+}
+
+void Terrain::DisableGroundTile(int level, Nz::Vector2ui position)
+{
+	DisableTile(m_groundTileMaps.at(level), position);
+}
+
+void Terrain::DisableEnvironmentTile(int level, Nz::Vector2ui position)
+{
+	DisableTile(m_environmentTileMaps.at(level), position);
 }
 
 void Terrain::DisableTiles()
@@ -57,25 +74,43 @@ void Terrain::DisableTiles()
 
 void Terrain::DisableTiles(int level)
 {
-	m_tileMaps[level]->DisableTiles();
+	m_groundTileMaps[level]->DisableTiles();
+	m_environmentTileMaps[level]->DisableTiles();
 }
 
 void Terrain::scale(float value)
 {
-	auto it = m_tileMapEntities.begin();
+	for (int level = m_inferiorLevel; level < m_superiorLevel + 1; level++) {
+		Ndk::EntityHandle& ground = m_groundTileMapEntities.at(level);
+		Ndk::EntityHandle& environment = m_environmentTileMapEntities.at(level);
 
-	while (it != m_tileMapEntities.end()) {
-		Ndk::EntityHandle& entity = (*it).second;
-		Ndk::NodeComponent &nc = entity->GetComponent<Ndk::NodeComponent>();
-		nc.SetScale(value);
-		it++;
+		Ndk::NodeComponent &groundNC = ground->GetComponent<Ndk::NodeComponent>();
+		Ndk::NodeComponent &envNC = environment->GetComponent<Ndk::NodeComponent>();
+
+		groundNC.SetScale(value);
+		envNC.SetScale(value);
 	}
+}
+
+void Terrain::EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef & tile)
+{
+	assert(tilemap->GetMaterialCount() > tile.materialIndex);
+	tilemap->DisableTile(position);
+	tilemap->EnableTile(position, tile.tileIndex, Nz::Color::White, tile.materialIndex);
+}
+
+void Terrain::DisableTile(TileMapRef & tilemap, Nz::Vector2ui position)
+{
+	tilemap->DisableTile(position);
 }
 
 void Terrain::addMaterial(int level, Nz::MaterialRef& material, Nz::Vector2f imageSize, Nz::Vector2ui tileSize)
 {
-	m_tileMaps[level]->SetMaterial(m_materialCount, material);
-	m_tileMaps[level]->setMaterialData(m_materialCount, imageSize, tileSize);
+	m_groundTileMaps[level]->SetMaterial(m_materialCount, material);
+	m_groundTileMaps[level]->setMaterialData(m_materialCount, imageSize, tileSize);
+
+	m_environmentTileMaps[level]->SetMaterial(m_materialCount, material);
+	m_environmentTileMaps[level]->setMaterialData(m_materialCount, imageSize, tileSize);
 
 	m_materialCount++;
 }

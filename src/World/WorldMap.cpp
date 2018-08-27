@@ -21,9 +21,9 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 			Nz::Vector2ui position{ x, y };
 
 			TileData& tile = getTile(position);
-			tile.material = generator.getTile(position);
+			tile.groundMaterial = generator.getTile(position);
 
-			if (tile.material == WATER || tile.material == DEEP_WATER) {
+			if (tile.groundMaterial == WATER || tile.groundMaterial == DEEP_WATER) {
 				tile.water = true;
 			}
 
@@ -101,10 +101,8 @@ bool WorldMap::deleteEntity(Nz::Vector2ui position)
 void WorldMap::addEnvironmentTile(Nz::Vector2ui position, TileDef env)
 {
 	TileData& tile = getTile(position);
-	tile.material = env;
+	tile.environmentMaterial = env;
 	updateTile(position);
-	TileDef t = GRASS;
-	m_terrain.EnableTile(0, position, t);
 }
 
 void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
@@ -120,7 +118,7 @@ void WorldMap::addRoad(Nz::Vector2ui position)
 
 	TileData& tile = getTile(position);
 	tile.type = TileType::ROAD_TILE;
-	tile.material = ROAD;
+	tile.groundMaterial = ROAD;
 	updateTile(position);
 }
 
@@ -197,11 +195,17 @@ void WorldMap::updateTile(Nz::Vector2ui position)
 	TileData& tile = getTile(position);
 
 	// Display or not the tile
-	if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD_TILE) {
+	/*if (tile.type == TileType::SIMPLE_TILE || tile.type == TileType::ENV_TILE || tile.type == TileType::ROAD_TILE) {
 		m_terrain.EnableTile(0, position, tile.material);
 	}
 	else {
 		m_terrain.DisableTile(0, position);
+	}*/
+
+	m_terrain.EnableGroundTile(0, position, tile.groundMaterial);
+
+	if (tile.environmentMaterial != VOID) {
+		m_terrain.EnableEnvironmentTile(0, position, tile.environmentMaterial);
 	}
 }
 

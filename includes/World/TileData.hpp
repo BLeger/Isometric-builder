@@ -11,8 +11,9 @@ enum TileType {
 
 struct TileData {
 	TileType type;
-	TileDef material;
-	TileDef origialMaterial = material;
+	TileDef groundMaterial;
+	TileDef origialGroundMaterial = groundMaterial;
+	TileDef environmentMaterial = VOID;
 	bool water = false;
 	bool road = false;
 };

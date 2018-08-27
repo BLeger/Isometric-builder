@@ -23,24 +23,33 @@ class Terrain {
 public:
 	Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int m_inferiorLevel = 0, int m_superiorLevel = 0);
 
-	void EnableTile(int level, Nz::Vector2ui position, TileDef& tile);
+	void EnableGroundTile(int level, Nz::Vector2ui position, TileDef& tile);
+	void EnableEnvironmentTile(int level, Nz::Vector2ui position, TileDef& tile);
 
-	void DisableTile(int level, Nz::Vector2ui position);
+	void DisableGroundTile(int level, Nz::Vector2ui position);
+	void DisableEnvironmentTile(int level, Nz::Vector2ui position);
+
 	void DisableTiles();
 	void DisableTiles(int level);
 
 	void scale(float value);
 
 private:
+	void EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef& tile);
+	void DisableTile(TileMapRef& tilemap, Nz::Vector2ui position);
+
 	void addMaterial(int level, Nz::MaterialRef& material, Nz::Vector2f imageSize, Nz::Vector2ui tileSize);
 	unsigned int m_materialCount = 0;
 
 	Nz::Vector2ui m_mapSize;
 	int m_inferiorLevel;
 	int m_superiorLevel;
-	
-	std::map<int, Ndk::EntityHandle> m_tileMapEntities;
-	std::map<int, TileMapRef> m_tileMaps;
+
+	std::map<int, Ndk::EntityHandle> m_groundTileMapEntities;
+	std::map<int, TileMapRef> m_groundTileMaps;
+
+	std::map<int, Ndk::EntityHandle> m_environmentTileMapEntities;
+	std::map<int, TileMapRef> m_environmentTileMaps;
 };
 
 #endif // !TERRAIN_HPP
