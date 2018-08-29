@@ -14,7 +14,9 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 				float nx = x / size.x - 0.5f;
 				float ny = y / size.y - 0.5f;
 
-				float height = perlin.Get(1.f * nx, 1.f * ny, 1.f) + 0.5f * perlin.Get(2.f * nx, 2.f * ny, 1.f) + 0.25f * perlin.Get(4.f * nx, 4.f * ny, 1.f);
+				float height = perlin.Get(1.f * nx, 1.f * ny, 1.f) +
+								0.5f * perlin.Get(2.f * nx, 2.f * ny, 1.f) + 
+								0.25f * perlin.Get(4.f * nx, 4.f * ny, 1.f);
 
 				TileDef tile = GRASS;
 				int elevation = 0;
@@ -49,9 +51,6 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 			}
 		}
 	}
-
-	
-	
 
 	// Generating trees
 	Nz::Perlin perlin = initPerlin();

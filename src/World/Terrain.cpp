@@ -55,14 +55,14 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, in
 	}
 }
 
-void Terrain::EnableGroundTile(Nz::Vector2ui position, TileDef& tile)
+void Terrain::EnableGroundTile(Nz::Vector2ui position, TileDef& tile, Nz::Color color)
 {
-	EnableTile(m_groundTileMaps.at(getHeight(position)), position, tile);
+	EnableTile(m_groundTileMaps.at(getHeight(position)), position, tile, color);
 }
 
-void Terrain::EnableEnvironmentTile(Nz::Vector2ui position, TileDef & tile)
+void Terrain::EnableEnvironmentTile(Nz::Vector2ui position, TileDef & tile, Nz::Color color)
 {
-	EnableTile(m_environmentTileMaps.at(getHeight(position)), position, tile);
+	EnableTile(m_environmentTileMaps.at(getHeight(position)), position, tile, color);
 }
 
 void Terrain::DisableGroundTile(Nz::Vector2ui position)
@@ -119,11 +119,11 @@ void Terrain::scale(float value)
 	}
 }
 
-void Terrain::EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef & tile)
+void Terrain::EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef & tile, Nz::Color color)
 {
 	assert(tilemap->GetMaterialCount() > tile.materialIndex);
 	tilemap->DisableTile(position);
-	tilemap->EnableTile(position, tile.tileIndex, Nz::Color::White, tile.materialIndex);
+	tilemap->EnableTile(position, tile.tileIndex, color, tile.materialIndex);
 }
 
 void Terrain::DisableTile(TileMapRef & tilemap, Nz::Vector2ui position)

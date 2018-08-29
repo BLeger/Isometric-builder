@@ -106,7 +106,7 @@ Nz::Vector2ui WorldMap::getHoveredCell(Nz::Vector2ui flatCell)
 	for (int elevation = m_minElevation; elevation < m_maxElevation + 1; elevation++) {
 		if (elevation != 0) {
 			Nz::Vector2ui possibleCell{ flatCell.x, flatCell.y + 2 * elevation };
-			if (getTileHeight(possibleCell) == elevation)
+			if (isPositionCorrect(possibleCell) && getTileHeight(possibleCell) == elevation)
 				return possibleCell;
 		}	
 	}
@@ -238,6 +238,17 @@ bool WorldMap::isWalkable(Nz::Vector2ui position)
 {
 	std::cerr << "isWalkable function not implemented";
 	return true;
+}
+
+void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
+{
+	m_previewPosition = position;
+	m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Red);
+}
+
+void WorldMap::resetPreview()
+{
+	updateTile(m_previewPosition);
 }
 
 void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size) 

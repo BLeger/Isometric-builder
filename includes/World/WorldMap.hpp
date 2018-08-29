@@ -67,6 +67,9 @@ public:
 	bool isPositionAvailable(Nz::Vector2ui position);
 	bool isWalkable(Nz::Vector2ui position);
 
+	void previewEntity(Nz::Vector2ui position, TileDef tile);
+	void resetPreview();
+
 	void addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size);
 
 	float getScale();
@@ -87,6 +90,8 @@ private:
 	std::vector<Ndk::EntityHandle> m_walkers{};
 
 	Terrain m_terrain;
+
+	Nz::Vector2ui m_previewPosition{};
 
 	const Nz::Vector2ui m_size;
 

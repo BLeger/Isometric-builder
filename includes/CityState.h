@@ -36,6 +36,7 @@ public:
 	void mouseLeftReleased(Nz::Vector2ui mousePosition);
 	void mouseRightPressed(Nz::Vector2ui mousePosition);
 	void mouseWheelMoved(float delta);
+	void mouseMoved(Nz::Vector2ui mousePosition);
 	void keyPressed(const Nz::WindowEvent::KeyEvent& k);
 
 private:
@@ -46,6 +47,8 @@ private:
 	WorldMap m_worldMap;
 	
 	UserTools m_currentTool;
+
+	bool m_actionPreview = true;
 
 	// Road placement
 	bool m_placingRoad = false;

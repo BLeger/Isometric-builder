@@ -23,8 +23,8 @@ class Terrain {
 public:
 	Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, int superiorLevel);
 
-	void EnableGroundTile(Nz::Vector2ui position, TileDef& tile);
-	void EnableEnvironmentTile( Nz::Vector2ui position, TileDef& tile);
+	void EnableGroundTile(Nz::Vector2ui position, TileDef& tile, Nz::Color color = Nz::Color::White);
+	void EnableEnvironmentTile( Nz::Vector2ui position, TileDef& tile, Nz::Color color = Nz::Color::White);
 
 	void DisableGroundTile(Nz::Vector2ui position);
 	void DisableEnvironmentTile( Nz::Vector2ui position);
@@ -38,7 +38,7 @@ public:
 	void scale(float value);
 
 private:
-	void EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef& tile);
+	void EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef& tile, Nz::Color color = Nz::Color::White);
 	void DisableTile(TileMapRef& tilemap, Nz::Vector2ui position);
 
 	void addMaterial(int level, Nz::MaterialRef& material, Nz::Vector2f imageSize, Nz::Vector2ui tileSize);
