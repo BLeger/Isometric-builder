@@ -12,8 +12,6 @@ WorldMap::WorldMap(Nz::Vector2ui size, Ndk::World& world) :
 
 void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 {
-	m_terrain.setHeight(Nz::Vector2ui{ 5, 5 }, 1);
-
 	NoiseGenerator generator{ m_size };
 
 	for (unsigned int y = 0; y < m_size.y; y++) {
@@ -22,6 +20,9 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 
 			TileData& tile = getTile(position);
 			tile.groundMaterial = generator.getTile(position);
+
+			int height = generator.getHeight(position);
+			m_terrain.setHeight(position, height);
 
 			if (tile.groundMaterial == WATER || tile.groundMaterial == DEEP_WATER) {
 				tile.water = true;
@@ -33,10 +34,6 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 			updateTile(position);
 		}
 	}
-
-	TileData& tile = getTile(Nz::Vector2ui{ 5, 5 });
-	tile.groundMaterial = DEEP_WATER;
-	updateTile(Nz::Vector2ui{ 5, 5 });
 }
 
 

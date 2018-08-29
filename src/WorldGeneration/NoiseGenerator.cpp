@@ -5,8 +5,8 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 	// Generate a height map for tiles
 	{
 		Nz::Perlin perlin = initPerlin();
-
-		//std::map<Nz::Vector2ui, float> heightMap;
+		
+		std::vector<Nz::Vector2ui> elevatedTiles;
 
 		float freq = 1.f;
 		for (float y = 0; y < size.y; y++) {
@@ -15,9 +15,9 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 				float ny = y / size.y - 0.5f;
 
 				float height = perlin.Get(1.f * nx, 1.f * ny, 1.f) + 0.5f * perlin.Get(2.f * nx, 2.f * ny, 1.f) + 0.25f * perlin.Get(4.f * nx, 4.f * ny, 1.f);
-				//heightMap.insert(std::make_pair(Nz::Vector2ui{ (unsigned int)x, (unsigned int)y }, height));
 
 				TileDef tile = GRASS;
+				int elevation = 0;
 				if (height < -0.3f) {
 					tile = DEEP_WATER;
 				}
@@ -28,10 +28,29 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 					tile = SAND;
 				}
 
+				if (height > 0.35f) {
+					elevation = 1;
+					elevatedTiles.push_back(Nz::Vector2ui{ (unsigned int)x, (unsigned int)y });
+				}
+
+				m_heightMap.push_back(elevation);
 				m_map.push_back(tile);
 			}
 		}
+
+		for (auto position : elevatedTiles) {
+			std::vector<Nz::Vector2ui> surrondings = Isometric::getSurroundingTiles(position);
+
+			for (auto p : surrondings) {
+				if (p.x >= 0 && p.x < m_size.x && p.y >= 0 && p.y < m_size.y) {
+					if (getHeight(p) == getHeight(position) - 1)
+						m_envMap.insert(std::make_pair(p, ROCK));
+				}
+			}
+		}
 	}
+
+	
 	
 
 	// Generating trees
@@ -49,7 +68,7 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 				if (height > 0.25f) {
 					int random = randomInt(0, 100);
 					if (random < 20) {
-						m_envMap.insert(std::make_pair(position, TREE));
+						//m_envMap.insert(std::make_pair(position, TREE));
 					}
 				}
 			}
@@ -59,12 +78,26 @@ NoiseGenerator::NoiseGenerator(Nz::Vector2ui size) : m_size(size)
 
 TileDef NoiseGenerator::getTile(Nz::Vector2ui position)
 {
+	assert(position.x >= 0 && position.x < m_size.x);
+	assert(position.y >= 0 && position.y < m_size.y);
+
 	return m_map.at(m_size.x * position.y + position.x);
 }
 
 void NoiseGenerator::setTile(Nz::Vector2ui position, TileDef tile)
 {
+	assert(position.x >= 0 && position.x < m_size.x);
+	assert(position.y >= 0 && position.y < m_size.y);
+
 	m_map[m_size.x * position.y + position.x] = tile;
+}
+
+int NoiseGenerator::getHeight(Nz::Vector2ui position)
+{
+	assert(position.x >= 0 && position.x < m_size.x);
+	assert(position.y >= 0 && position.y < m_size.y);
+
+	return m_heightMap.at(m_size.x * position.y + position.x);
 }
 
 bool NoiseGenerator::hasEnvTile(Nz::Vector2ui position)
