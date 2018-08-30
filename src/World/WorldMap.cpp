@@ -50,9 +50,6 @@ bool WorldMap::createEntity(Nz::Vector2ui position)
 		std::cout << "Err: tile already occupied" << std::endl;
 		return false;
 	}
-		
-	// Update the tile's data
-	getTile(position).type = TileType::ENV_TILE;
 
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
@@ -78,10 +75,10 @@ bool WorldMap::deleteEntity(Nz::Vector2ui position)
 	// Update the tile's data
 	TileData& tile = getTile(position);
 
-	if (tile.type != TileType::ENV_TILE) {
+	/*if (tile.type != TileType::ENV_TILE) {
 		std::cout << "Err: this tile is not environment" << std::endl;
 		return false;
-	}
+	}*/
 
 	tile.type = TileType::SIMPLE_TILE;
 
@@ -149,14 +146,18 @@ void WorldMap::removeRoad(Nz::Vector2ui position)
 
 void WorldMap::addWall(Nz::Vector2ui position)
 {
-	if (createEntity(position)) {
-		Ndk::EntityHandle& entity = m_entities.at(position);
-
-		entity->AddComponent<WallComponent>(position);
+	if (!isPositionAvailable(position)) {
+		std::cout << "Err: tile already occupied" << std::endl;
+		return;
 	}
+	
+	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
+	entity->AddComponent<WallComponent>(position);
+	m_entities.insert(std::make_pair(position, entity));
+
+	getTile(position).type = TileType::WALL_TILE;
 
 	updateSurrondingsWalls(position);
-	updateTile(position);
 }
 
 void WorldMap::removeWall(Nz::Vector2ui position)
@@ -243,12 +244,36 @@ bool WorldMap::isWalkable(Nz::Vector2ui position)
 void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 {
 	m_previewPosition = position;
-	m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Red);
+
+	TileData& t = getTile(position);
+
+	if (t.environmentMaterial == VOID) {
+		m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Red);
+	}
+	else {
+		m_terrain.EnableEnvironmentTile(position, t.environmentMaterial, Nz::Color::Red);
+	}
 }
 
 void WorldMap::resetPreview()
 {
-	updateTile(m_previewPosition);
+	TileData& t = getTile(m_previewPosition);
+
+	if (t.environmentMaterial == VOID) {
+		m_terrain.DisableEnvironmentTile(m_previewPosition);
+	}
+	else {
+		m_terrain.EnableEnvironmentTile(m_previewPosition, t.environmentMaterial);
+	}
+}
+
+void WorldMap::setTileDef(Nz::Vector2ui position, TileDef tile)
+{
+	TileData& t = getTile(position);
+
+	// TEMPORARY
+	assert(t.type == TileType::WALL_TILE);
+	t.environmentMaterial = tile;
 }
 
 void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size) 
@@ -310,4 +335,3 @@ Nz::Vector2f WorldMap::getCameraOffset()
 {
 	return m_cameraOffset;
 }
-

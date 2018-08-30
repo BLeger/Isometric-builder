@@ -4,10 +4,18 @@ Ndk::SystemIndex WallSystem::systemIndex;
 
 WallSystem::WallSystem(WorldMap& map, SpriteLibrary& spriteLib) : m_worldMap(map), m_spriteLib(spriteLib)
 {
-	Requires<WallComponent, Ndk::GraphicsComponent, Ndk::NodeComponent>();
+	Requires<WallComponent>();
 	SetUpdateOrder(5);
 	SetMaximumUpdateRate(10.f);
 	//SetUpdateRate(10.f);
+}
+
+TileDef WallSystem::getTileDef(std::string spriteName)
+{
+	for (auto tile : WALLS) {
+		if (tile.name == spriteName)
+			return tile;
+	}
 }
 
 void WallSystem::OnUpdate(float elapsed)
@@ -17,9 +25,6 @@ void WallSystem::OnUpdate(float elapsed)
 		if (wall.m_needsUpdate) {
 			wall.m_needsUpdate = false;
 			
-			Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
-			gc.Clear();
-
 			Nz::Vector2ui position = wall.m_position;
 
 			int numberOfSurrondingWall = 0;
@@ -38,11 +43,13 @@ void WallSystem::OnUpdate(float elapsed)
 				}
 			}
 
+			TileDef tile;
+
 			if (numberOfSurrondingWall == 0) {
-				gc.Attach(m_spriteLib.getSprite("wall"), position.y);
+				tile = WALL;
 			}
 			else if (numberOfSurrondingWall == 4) {
-
+				tile = WALL;
 			}
 			else {
 				std::string spriteName = "wall";
@@ -50,8 +57,11 @@ void WallSystem::OnUpdate(float elapsed)
 					spriteName += s;
 				}
 
-				gc.Attach(m_spriteLib.getSprite(spriteName), position.y);
+				tile = getTileDef(spriteName);
 			}
+			
+			m_worldMap.setTileDef(position, tile);
+			m_worldMap.updateTile(position);
 		}
 	}
 }

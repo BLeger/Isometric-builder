@@ -14,11 +14,15 @@ public:
 	WallSystem(WorldMap& map, SpriteLibrary& spriteLib);
 	~WallSystem() = default;
 
+	
+
 	static Ndk::SystemIndex systemIndex;
 
 private:
 	WorldMap& m_worldMap;
 	SpriteLibrary& m_spriteLib;
+
+	TileDef getTileDef(std::string spriteName);
 
 	void OnUpdate(float elapsed) override;
 };

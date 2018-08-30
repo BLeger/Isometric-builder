@@ -70,6 +70,8 @@ public:
 	void previewEntity(Nz::Vector2ui position, TileDef tile);
 	void resetPreview();
 
+	void setTileDef(Nz::Vector2ui position, TileDef tile);
+
 	void addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size);
 
 	float getScale();

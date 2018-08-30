@@ -48,7 +48,7 @@ private:
 	
 	UserTools m_currentTool;
 
-	bool m_actionPreview = true;
+	bool m_actionPreview = false;
 
 	// Road placement
 	bool m_placingRoad = false;

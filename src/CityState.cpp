@@ -8,17 +8,13 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	m_currentTool(UserTools::PLACE_BUILDING),
 	m_camera(camera)
 {
+	m_worldMap.generateTerrain(m_spriteLib);
+
 	// Activate systems
 	m_world.AddSystem<WallSystem>(m_worldMap, m_spriteLib);
 	m_world.AddSystem<WalkerSystem>(m_worldMap);
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
-
-	m_worldMap.generateTerrain(m_spriteLib);
-
-	//m_worldMap.addBuilding(Nz::Vector2ui{ 3, 3 }, "house", Nz::Vector2ui{ 2, 2 });
-	//m_worldMap.addBuilding(Nz::Vector2ui{ 1, 3 }, "house", Nz::Vector2ui{ 2, 2 });
-	//m_worldMap.addWalker(Nz::Vector2ui{ 0, 0 }, m_spriteLib.getSprite("character_animations"));
 
 	// Events
 	Nz::EventHandler& eventHandler = window.GetEventHandler();

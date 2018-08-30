@@ -18,7 +18,14 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, in
 	tileset_64_64->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
 	tileset_64_64->EnableDepthWrite(false);
 
-	int numberOfMaterials = 2;
+	Nz::MaterialRef tileset_wall = Nz::Material::New();
+	tileset_wall->LoadFromFile("tiles/wall_tileset.png");
+	tileset_wall->EnableBlending(true);
+	tileset_wall->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
+	tileset_wall->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
+	tileset_wall->EnableDepthWrite(false);
+
+	int numberOfMaterials = 3;
 
 	// Tilemaps
 	for (int level = m_inferiorLevel; level < m_superiorLevel + 1; level++) {
@@ -41,6 +48,7 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, in
 		// Add materials
 		addMaterial(level, tileset_64_32, Nz::Vector2f{ 64.f, 32.f }, Nz::Vector2ui{ 1, 1 });
 		addMaterial(level, tileset_64_64, Nz::Vector2f{ 64.f, 64.f }, Nz::Vector2ui{ 1, 1 });
+		addMaterial(level, tileset_wall, Nz::Vector2f{ 64.f, 70.f }, Nz::Vector2ui{ 1, 1 });
 		m_materialCount = 0;
 
 		groundGC.Attach(m_groundTileMaps[level], level + 10);

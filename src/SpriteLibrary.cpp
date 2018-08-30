@@ -2,23 +2,6 @@
 
 SpriteLibrary::SpriteLibrary()
 {
-	createSprite("wall", 32.f);
-	createSprite("wall_ne", 32.f);
-	createSprite("wall_no", 32.f);
-	createSprite("wall_se", 32.f);
-	createSprite("wall_so", 32.f);
-	createSprite("wall_no_se", 32.f);
-	createSprite("wall_ne_so", 32.f);
-	createSprite("wall_no_so", 32.f);
-	createSprite("wall_ne_se", 32.f);
-	createSprite("wall_so_se", 32.f);
-	createSprite("wall_no_ne", 32.f);
-
-	createSprite("wall_no_ne_so", 32.f);
-	createSprite("wall_no_ne_se", 32.f);
-	createSprite("wall_ne_so_se", 32.f);
-	createSprite("wall_no_so_se", 32.f);
-
 	createSprite("house_0", 90.f);
 
 	createSprite("character_animations", 64.f);
