@@ -25,7 +25,7 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 			m_terrain.setHeight(position, height);
 
 			if (tile.groundMaterial == WATER || tile.groundMaterial == DEEP_WATER) {
-				tile.water = true;
+				tile.type = TileType::WATER_TILE;
 			}
 
 			if (generator.hasEnvTile(position)) {
@@ -118,13 +118,22 @@ int WorldMap::getTileHeight(Nz::Vector2ui position)
 
 void WorldMap::addEnvironmentTile(Nz::Vector2ui position, TileDef env)
 {
-	getTile(position).environmentMaterial = env;
+	if (!isPositionAvailable(position)) {
+		std::cout << "Err: tile already occupied" << std::endl;
+		return;
+	}
+
+	TileData& tile = getTile(position);
+	tile.environmentMaterial = env;
+	tile.type = TileType::ENVIRONMENT_TILE;
 	updateTile(position);
 }
 
 void WorldMap::removeEnvironmentTile(Nz::Vector2ui position)
 {
-	getTile(position).environmentMaterial = VOID;
+	TileData& tile = getTile(position);
+	tile.environmentMaterial = VOID;
+	tile.type = TileType::SIMPLE_TILE;
 	updateTile(position);
 }
 
@@ -169,7 +178,10 @@ void WorldMap::removeWall(Nz::Vector2ui position)
 
 bool WorldMap::isWall(Nz::Vector2ui position)
 {
-	if (!isPositionCorrect(position) || isPositionAvailable(position))
+	if (!isPositionCorrect(position))
+		return false;
+
+	if (m_entities.find(position) == m_entities.end())
 		return false;
 
 	Ndk::EntityHandle& entity = m_entities.at(position);
@@ -182,6 +194,7 @@ void WorldMap::updateSurrondingsWalls(Nz::Vector2ui position)
 
 	for (Nz::Vector2ui pos : surrondings) {
 		if (isWall(pos)) {
+			std::cout << "test" << std::endl;
 			Ndk::EntityHandle& entity = m_entities.at(pos);
 			WallComponent &wall = entity->GetComponent<WallComponent>();
 			wall.m_needsUpdate = true;
@@ -230,9 +243,7 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 	assert(isPositionCorrect(position));
 
 	TileData& tile = getTile(position);
-	return (m_entities.find(position) == m_entities.end()) && 
-		tile.type != TileType::BUILDING_BODY && tile.type != TileType::BUILDING_ROOT &&
-		!tile.water;
+	return tile.type == TileType::SIMPLE_TILE;
 }
 
 bool WorldMap::isWalkable(Nz::Vector2ui position)

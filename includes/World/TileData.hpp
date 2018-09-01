@@ -3,8 +3,10 @@
 
 enum TileType {
 	SIMPLE_TILE, // Just a tile
+	ENVIRONMENT_TILE,
 	ROAD_TILE,
 	WALL_TILE,
+	WATER_TILE,
 	BUILDING_ROOT, // A building is placed on this tile
 	BUILDING_BODY // A building overlaps on this tile
 };
@@ -14,8 +16,6 @@ struct TileData {
 	TileDef groundMaterial;
 	TileDef origialGroundMaterial = groundMaterial;
 	TileDef environmentMaterial = VOID;
-	bool water = false;
-	bool road = false;
 };
 
 #endif // !TILE_DATA_H

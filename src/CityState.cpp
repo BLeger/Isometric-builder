@@ -11,7 +11,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	m_worldMap.generateTerrain(m_spriteLib);
 
 	// Activate systems
-	m_world.AddSystem<WallSystem>(m_worldMap, m_spriteLib);
+	m_world.AddSystem<WallSystem>(m_worldMap);
 	m_world.AddSystem<WalkerSystem>(m_worldMap);
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);

@@ -2,7 +2,7 @@
 
 Ndk::SystemIndex WallSystem::systemIndex;
 
-WallSystem::WallSystem(WorldMap& map, SpriteLibrary& spriteLib) : m_worldMap(map), m_spriteLib(spriteLib)
+WallSystem::WallSystem(WorldMap& map) : m_worldMap(map)
 {
 	Requires<WallComponent>();
 	SetUpdateOrder(5);
@@ -16,6 +16,8 @@ TileDef WallSystem::getTileDef(std::string spriteName)
 		if (tile.name == spriteName)
 			return tile;
 	}
+
+	return VOID;
 }
 
 void WallSystem::OnUpdate(float elapsed)
