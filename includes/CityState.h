@@ -48,6 +48,7 @@ private:
 	
 	UserTools m_currentTool;
 
+	Nz::Vector2ui m_lastMousePosition{ 0u, 0u };
 	bool m_actionPreview = false;
 
 	// Road placement

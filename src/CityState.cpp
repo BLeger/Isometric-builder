@@ -125,10 +125,14 @@ void CityState::mouseWheelMoved(float delta)
 
 void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 {
+	m_worldMap.resetPreview();
+	m_lastMousePosition = mousePosition;
+
+	if (!m_actionPreview)
+		return;
+
 	Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 	tilePosition = m_worldMap.getHoveredCell(tilePosition);
-
-	m_worldMap.resetPreview();
 
 	if (m_worldMap.isPositionCorrect(tilePosition)) {
 		m_worldMap.previewEntity(tilePosition, m_currentTile);
@@ -147,6 +151,7 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 			m_currentTool = UserTools::PLACE_BUILDING;
 			std::cout << "Place building tool" << std::endl;
 			actionPreview = true;
+			m_currentTile = ROCK;
 			break;
 		case 27:
 			m_currentTool = UserTools::REMOVE_BUILDING;
@@ -156,6 +161,7 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 			m_currentTool = UserTools::PLACE_WALL;
 			std::cout << "Place wall tool" << std::endl;
 			actionPreview = true;
+			m_currentTile = WALL;
 			break;
 		case 29:
 			m_currentTool = UserTools::PLACE_ROAD;
@@ -167,6 +173,7 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		}
 
 		m_actionPreview = actionPreview;
+		mouseMoved(m_lastMousePosition);
 	}
 
 	if (k.code >= 76 && k.code <= 85) {
