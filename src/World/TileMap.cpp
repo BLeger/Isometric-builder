@@ -39,18 +39,6 @@ Nz::Vector2f TileMap::GetSize() const
 	return Nz::Vector2f(m_mapSize) * m_tileSize;
 }
 
-void TileMap::setMaterialData(std::size_t materialIndex, Nz::Vector2f imageSize, Nz::Vector2ui tiles)
-{
-	MaterialData material{ materialIndex, imageSize, tiles };
-
-	if (m_materialData.find(materialIndex) == m_materialData.end()) {
-		m_materialData.insert(std::make_pair(materialIndex, material));
-	}
-	else {
-		m_materialData[materialIndex] = material;
-	}
-}
-
 void TileMap::MakeBoundingVolume() const
 {
 	Nz::Vector2f size = GetSize();
@@ -89,22 +77,22 @@ void TileMap::UpdateData(InstanceData* instanceData) const
 			std::size_t x = tileIndex % m_mapSize.x;
 			std::size_t y = tileIndex / m_mapSize.x;
 
-			MaterialData materialData = m_materialData.at(tile.layerIndex);
+			TileSize ts = tile.tileSize;
 
 			Nz::Vector3f tileLeftBottomCorner;
 			tileLeftBottomCorner.Set(x * m_tileSize.x + m_tileSize.x / 2.f * (y % 2), (y / 2.f * -m_tileSize.y) - m_tileSize.y, 0.f);
 
 			// Move tiles that are higher than 1 down
-			if (materialData.tiles.y > 1) {
-				tileLeftBottomCorner.y -= m_tileSize.y * (1.f / materialData.tiles.y);
+			if (ts.tilesNumber.y > 1) {
+				tileLeftBottomCorner.y -= m_tileSize.y * (1.f / ts.tilesNumber.y);
 			}
 
 			*colorPtr++ = tile.color;
-			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + materialData.imageSize.y * Nz::Vector3f::Up());
+			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + ts.imageSize.y * Nz::Vector3f::Up());
 			*texCoordPtr++ = tile.textureCoords.GetCorner(Nz::RectCorner_LeftTop);
 
 			*colorPtr++ = tile.color;
-			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + materialData.imageSize.x * Nz::Vector3f::Right() + materialData.imageSize.y * Nz::Vector3f::Up());
+			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + ts.imageSize.x * Nz::Vector3f::Right() + ts.imageSize.y * Nz::Vector3f::Up());
 			*texCoordPtr++ = tile.textureCoords.GetCorner(Nz::RectCorner_RightTop);
 
 			*colorPtr++ = tile.color;
@@ -112,7 +100,7 @@ void TileMap::UpdateData(InstanceData* instanceData) const
 			*texCoordPtr++ = tile.textureCoords.GetCorner(Nz::RectCorner_LeftBottom);
 
 			*colorPtr++ = tile.color;
-			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + materialData.imageSize.x * Nz::Vector3f::Right());
+			*posPtr++ = instanceData->transformMatrix.Transform(tileLeftBottomCorner + ts.imageSize.x * Nz::Vector3f::Right());
 			*texCoordPtr++ = tile.textureCoords.GetCorner(Nz::RectCorner_RightBottom);
 		}
 		spriteCount += layer.tiles.size();
@@ -146,7 +134,7 @@ void TileMap::DisableTiles()
 	InvalidateInstanceData(0xFFFFFFFF);
 }
 
-void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, const Nz::Color& color, std::size_t materialIndex)
+void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, const TileSize& tileSize, const Nz::Color& color, std::size_t materialIndex)
 {
 	NazaraAssert(tilePos.x < m_mapSize.x && tilePos.y < m_mapSize.y, "Tile position is out of bounds");
 	NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
@@ -171,28 +159,22 @@ void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, 
 	tile.color = color;
 	tile.textureCoords = coords;
 	tile.layerIndex = materialIndex;
+	tile.tileSize = tileSize;
 
 	InvalidateInstanceData(invalidatedLayers);
 }
 
-void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const int& tileIndex, const Nz::Color& color, std::size_t materialIndex)
+void TileMap::EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectui& texture, const TileSize& tileSize, const Nz::Color& color, std::size_t materialIndex)
 {
 	NazaraAssert(materialIndex < m_layers.size(), "Material out of bounds");
 
 	const Nz::MaterialRef& material = GetMaterial(materialIndex);
 	NazaraAssert(material->HasDiffuseMap(), "Material has no diffuse map");
 
-	if (m_materialData.find(materialIndex) == m_materialData.end()) {
-		setMaterialData(materialIndex, m_tileSize, Nz::Vector2ui{ 1, 1 });
-	}
-
 	Nz::Texture* diffuseMap = material->GetDiffuseMap();
 	float invWidth = 1.f / diffuseMap->GetWidth();
 	float invHeight = 1.f / diffuseMap->GetHeight();
 
-	MaterialData materialData = m_materialData.at(materialIndex);
-	Nz::Rectui texture{ tileIndex * (unsigned int)materialData.imageSize.x, 0u, (unsigned int)materialData.imageSize.x, (unsigned int)materialData.imageSize.y };
-
 	Nz::Rectf unnormalizedCoords(invWidth * texture.x, invHeight * texture.y, invWidth * texture.width, invHeight * texture.height);
-	EnableTile(tilePos, unnormalizedCoords, color, materialIndex);
+	EnableTile(tilePos, unnormalizedCoords, tileSize, color, materialIndex);
 }

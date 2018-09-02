@@ -1,29 +1,10 @@
 #include "..\..\includes\World\Terrain.hpp"
 
 Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, int superiorLevel) :
-	m_inferiorLevel(inferiorLevel), m_superiorLevel(superiorLevel), m_mapSize(mapSize)
+	m_inferiorLevel(inferiorLevel), m_superiorLevel(superiorLevel), m_mapSize(mapSize), m_textureManager(TextureManager{})
 {
 	// Materials
-	Nz::MaterialRef tileset_64_32 = Nz::Material::New();
-	tileset_64_32->LoadFromFile("tiles/64_32_tileset.png");
-	tileset_64_32->EnableBlending(true);
-	tileset_64_32->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tileset_64_32->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tileset_64_32->EnableDepthWrite(false);
-
-	Nz::MaterialRef tileset_64_64 = Nz::Material::New();
-	tileset_64_64->LoadFromFile("tiles/64_64_tileset.png");
-	tileset_64_64->EnableBlending(true);
-	tileset_64_64->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tileset_64_64->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tileset_64_64->EnableDepthWrite(false);
-
-	Nz::MaterialRef tileset_wall = Nz::Material::New();
-	tileset_wall->LoadFromFile("tiles/wall_tileset.png");
-	tileset_wall->EnableBlending(true);
-	tileset_wall->SetDstBlend(Nz::BlendFunc_InvSrcAlpha);
-	tileset_wall->SetSrcBlend(Nz::BlendFunc_SrcAlpha);
-	tileset_wall->EnableDepthWrite(false);
+	Nz::MaterialRef tileset = m_textureManager.loadMaterial();
 
 	int numberOfMaterials = 3;
 
@@ -46,9 +27,7 @@ Terrain::Terrain(Ndk::World& world, Nz::Vector2ui mapSize, int inferiorLevel, in
 		m_environmentTileMaps.insert(std::make_pair(level, TileMap::New(m_mapSize, mainTileSizef, numberOfMaterials)));
 		
 		// Add materials
-		addMaterial(level, tileset_64_32, Nz::Vector2f{ 64.f, 32.f }, Nz::Vector2ui{ 1, 1 });
-		addMaterial(level, tileset_64_64, Nz::Vector2f{ 64.f, 64.f }, Nz::Vector2ui{ 1, 1 });
-		addMaterial(level, tileset_wall, Nz::Vector2f{ 64.f, 70.f }, Nz::Vector2ui{ 1, 1 });
+		addMaterial(level, tileset, Nz::Vector2f{ 64.f, 32.f }, Nz::Vector2ui{ 1, 1 });
 		m_materialCount = 0;
 
 		groundGC.Attach(m_groundTileMaps[level], level + 10);
@@ -129,9 +108,8 @@ void Terrain::scale(float value)
 
 void Terrain::EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef & tile, Nz::Color color)
 {
-	assert(tilemap->GetMaterialCount() > tile.materialIndex);
 	tilemap->DisableTile(position);
-	tilemap->EnableTile(position, tile.tileIndex, color, tile.materialIndex);
+	tilemap->EnableTile(position, m_textureManager.getTextureCoords(tile), m_textureManager.getTileSize(tile), color, 0);
 }
 
 void Terrain::DisableTile(TileMapRef & tilemap, Nz::Vector2ui position)
@@ -142,10 +120,7 @@ void Terrain::DisableTile(TileMapRef & tilemap, Nz::Vector2ui position)
 void Terrain::addMaterial(int level, Nz::MaterialRef& material, Nz::Vector2f imageSize, Nz::Vector2ui tileSize)
 {
 	m_groundTileMaps[level]->SetMaterial(m_materialCount, material);
-	m_groundTileMaps[level]->setMaterialData(m_materialCount, imageSize, tileSize);
-
 	m_environmentTileMaps[level]->SetMaterial(m_materialCount, material);
-	m_environmentTileMaps[level]->setMaterialData(m_materialCount, imageSize, tileSize);
 
 	m_materialCount++;
 }

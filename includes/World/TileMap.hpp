@@ -10,15 +10,11 @@
 #include <Nazara/Utility/VertexStruct.hpp>
 #include <Nazara/Graphics/Debug.hpp>
 
+#include "../Utils/TextureManager.hpp"
+
 #include <set>
 #include <map>
 #include <iostream>
-
-struct MaterialData {
-	std::size_t materialIndex;
-	Nz::Vector2f imageSize;
-	Nz::Vector2ui tiles;
-};
 
 class TileMap;
 
@@ -37,12 +33,11 @@ public:
 	void DisableTile(const Nz::Vector2ui& tilePos);
 	void DisableTiles();
 
-	void EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
-	void EnableTile(const Nz::Vector2ui& tilePos, const int& tileIndex, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
+	void EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectf& coords, const TileSize& tileSize, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
+	void EnableTile(const Nz::Vector2ui& tilePos, const Nz::Rectui& texture, const TileSize& tileSize, const Nz::Color& color = Nz::Color::White, std::size_t materialIndex = 0U);
 
 	using InstancedRenderable::SetMaterial;
 
-	void setMaterialData(std::size_t materialIndex, Nz::Vector2f imageSize, Nz::Vector2ui tiles);
 private:
 	void MakeBoundingVolume() const override;
 	void UpdateData(InstanceData* instanceData) const override;
@@ -54,6 +49,7 @@ private:
 		std::size_t layerIndex = 0U;
 		Nz::Color color = Nz::Color::White;
 		Nz::Rectf textureCoords = Nz::Rectf::Zero();
+		TileSize tileSize;
 		bool enabled = false;
 	};
 
@@ -66,8 +62,6 @@ private:
 	std::vector<Layer> m_layers;
 	Nz::Vector2ui m_mapSize;
 	Nz::Vector2f m_tileSize;
-
-	std::map<std::size_t, MaterialData> m_materialData;
 };
 
 #endif

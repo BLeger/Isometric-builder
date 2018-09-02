@@ -16,6 +16,7 @@
 #include "../Config/TilesConfig.hpp"
 #include "../Config/Tiles.hpp"
 #include "TileMap.hpp"
+#include "../Utils/TextureManager.hpp"
 
 #include <map>
 
@@ -47,6 +48,8 @@ private:
 	Nz::Vector2ui m_mapSize;
 	int m_inferiorLevel;
 	int m_superiorLevel;
+
+	TextureManager m_textureManager;
 
 	std::vector<int> m_heightMap;
 
