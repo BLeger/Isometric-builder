@@ -153,6 +153,11 @@ void WorldMap::removeRoad(Nz::Vector2ui position)
 	updateTile(position);
 }
 
+bool WorldMap::isRoad(Nz::Vector2ui position)
+{
+	return getTile(position).type == TileType::ROAD_TILE;
+}
+
 void WorldMap::addWall(Nz::Vector2ui position)
 {
 	if (!isPositionAvailable(position)) {
@@ -243,12 +248,6 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 
 	TileData& tile = getTile(position);
 	return tile.type == TileType::SIMPLE_TILE;
-}
-
-bool WorldMap::isWalkable(Nz::Vector2ui position)
-{
-	std::cerr << "isWalkable function not implemented";
-	return true;
 }
 
 void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)

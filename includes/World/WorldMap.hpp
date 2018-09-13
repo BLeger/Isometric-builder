@@ -53,6 +53,7 @@ public:
 
 	void addRoad(Nz::Vector2ui position);
 	void removeRoad(Nz::Vector2ui position);
+	bool isRoad(Nz::Vector2ui position);
 
 	void addWall(Nz::Vector2ui position);
 	void removeWall(Nz::Vector2ui position);
@@ -65,7 +66,6 @@ public:
 
 	bool isPositionCorrect(Nz::Vector2ui position);
 	bool isPositionAvailable(Nz::Vector2ui position);
-	bool isWalkable(Nz::Vector2ui position);
 
 	void previewEntity(Nz::Vector2ui position, TileDef tile);
 	void resetPreview();

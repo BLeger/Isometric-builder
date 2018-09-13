@@ -1,9 +1,6 @@
 #include "..\..\includes\Utils\PathFinder.hpp"
 
-PathFinder::PathFinder(WorldMap & map) : m_worldMap(map)
-{
-
-}
+PathFinder::PathFinder(WorldMap & map) : m_worldMap(map) {}
 
 std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2ui end)
 {
@@ -35,7 +32,9 @@ std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2u
 		// Generating successors
 		std::vector<Nz::Vector2ui> surrondings = Isometric::getSurroundingTiles(best.position);
 		for (Nz::Vector2ui pos : surrondings) {
-			if (m_worldMap.isPositionCorrect(pos) && m_worldMap.isPositionAvailable(pos) && std::find(closedList.begin(), closedList.end(), pos) == closedList.end()) {
+			if (m_worldMap.isPositionCorrect(pos) && (m_worldMap.isPositionAvailable(pos) || m_worldMap.isRoad(pos))
+				&& std::find(closedList.begin(), closedList.end(), pos) == closedList.end()) {
+
 				closedList.push_back(pos);
 				// If the position has not been explored yet
 				Direction dir = Isometric::getDirection(best.position, pos);
@@ -44,7 +43,12 @@ std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2u
 					turns++;
 				}
 
-				node newNode{ pos, best.base_cost + 1, Isometric::manhattanStaggeredDistance(pos, end), turns, dir };
+				// If the tile is not already a road, cost is incremented
+				float newCost = best.base_cost;
+				if (!m_worldMap.isRoad(pos))
+					newCost++;
+
+				node newNode{ pos, newCost, Isometric::manhattanStaggeredDistance(pos, end), turns, dir };
 				openList.push(newNode);
 				predecessors.insert(std::make_pair(pos, best.position));
 			}
