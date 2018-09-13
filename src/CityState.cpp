@@ -63,7 +63,6 @@ void CityState::Leave(Ndk::StateMachine& fsm)
 
 bool CityState::Update(Ndk::StateMachine& fsm, float elapsedTime)
 {
-	//m_worldMap.update();
 	return true;
 }
 
@@ -101,6 +100,7 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 		m_placingRoad = false;
 
 		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+		tilePosition = m_worldMap.getHoveredCell(tilePosition);
 		PathFinder p{ m_worldMap };
 
 		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
@@ -124,19 +124,39 @@ void CityState::mouseWheelMoved(float delta)
 }
 
 void CityState::mouseMoved(Nz::Vector2ui mousePosition)
-{
-	m_worldMap.resetPreview();
+{	
 	m_lastMousePosition = mousePosition;
 
-	if (!m_actionPreview)
+	if (!m_actionPreview) {
+		m_worldMap.resetPreview();
 		return;
+	}
 
 	Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 	tilePosition = m_worldMap.getHoveredCell(tilePosition);
 
-	if (m_worldMap.isPositionCorrect(tilePosition)) {
+	if (m_currentTool == UserTools::PLACE_ROAD && m_placingRoad) {
+		if (m_lastMouseTilePosition == tilePosition)
+			return;
+
+		m_lastMouseTilePosition = tilePosition;
+
+		PathFinder p{ m_worldMap };
+
+		m_worldMap.resetPreview();
+
+		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
+		while (!path.empty()) {
+			Nz::Vector2ui pos = path.front();
+			path.pop_front();
+			m_worldMap.previewEntity(pos, ROAD);
+		}
+	}
+	else if (m_worldMap.isPositionCorrect(tilePosition)) {
+		// Preview a single entity / tile
+		m_worldMap.resetPreview();
 		m_worldMap.previewEntity(tilePosition, m_currentTile);
-	}		
+	}
 }
 
 void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
@@ -167,6 +187,7 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 			m_currentTool = UserTools::PLACE_ROAD;
 			std::cout << "Place road tool" << std::endl;
 			actionPreview = true;
+			m_currentTile = ROAD;
 			break;
 		default:
 			break;

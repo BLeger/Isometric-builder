@@ -1,8 +1,21 @@
 #include "../../includes/Utils/isometric.hpp"
 
-int Isometric::manhattanDistance(Nz::Vector2ui start, Nz::Vector2ui end)
+Nz::Vector2i Isometric::staggeredToDiamound(Nz::Vector2ui position)
 {
-	return std::abs((int)end.x - (int)start.x) + std::abs((int)end.y - (int)start.y);
+	int x{ (int)std::floor((int)position.y / 2) + (int)position.y % 2 + (int)position.x };
+	int y{ (int)std::floor((int)position.y / 2) - (int)position.x };
+
+	return Nz::Vector2i{ x, y };
+}
+
+int Isometric::manhattanStaggeredDistance(Nz::Vector2ui start, Nz::Vector2ui end)
+{
+	return manhattanDistance(staggeredToDiamound(start), staggeredToDiamound(end));
+}
+
+int Isometric::manhattanDistance(Nz::Vector2i start, Nz::Vector2i end)
+{
+	return std::abs(end.x - start.x) + std::abs(end.y - start.y);
 }
 
 Nz::Vector2ui Isometric::topLeftCell(Nz::Vector2ui position)

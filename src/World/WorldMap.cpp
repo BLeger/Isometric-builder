@@ -194,7 +194,6 @@ void WorldMap::updateSurrondingsWalls(Nz::Vector2ui position)
 
 	for (Nz::Vector2ui pos : surrondings) {
 		if (isWall(pos)) {
-			std::cout << "test" << std::endl;
 			Ndk::EntityHandle& entity = m_entities.at(pos);
 			WallComponent &wall = entity->GetComponent<WallComponent>();
 			wall.m_needsUpdate = true;
@@ -254,12 +253,12 @@ bool WorldMap::isWalkable(Nz::Vector2ui position)
 
 void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 {
-	m_previewPosition = position;
+	m_previewPositions.push_back(position);
 
 	TileData& t = getTile(position);
 
 	if (t.environmentMaterial == VOID) {
-		m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Red);
+		m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Green);
 	}
 	else {
 		m_terrain.EnableEnvironmentTile(position, t.environmentMaterial, Nz::Color::Red);
@@ -268,13 +267,15 @@ void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 
 void WorldMap::resetPreview()
 {
-	TileData& t = getTile(m_previewPosition);
+	for (Nz::Vector2ui position : m_previewPositions) {
+		TileData& t = getTile(position);
 
-	if (t.environmentMaterial == VOID) {
-		m_terrain.DisableEnvironmentTile(m_previewPosition);
-	}
-	else {
-		m_terrain.EnableEnvironmentTile(m_previewPosition, t.environmentMaterial);
+		if (t.environmentMaterial == VOID) {
+			m_terrain.DisableEnvironmentTile(position);
+		}
+		else {
+			m_terrain.EnableEnvironmentTile(position, t.environmentMaterial);
+		}
 	}
 }
 

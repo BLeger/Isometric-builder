@@ -2,7 +2,6 @@
 
 SpriteLibrary::SpriteLibrary()
 {
-	createSprite("house_0", 90.f);
 
 	createSprite("character_animations", 64.f);
 }

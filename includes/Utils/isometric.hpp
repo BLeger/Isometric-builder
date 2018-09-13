@@ -23,7 +23,9 @@
 
 class Isometric {
 public:
-	static int manhattanDistance(Nz::Vector2ui start, Nz::Vector2ui end);
+	static Nz::Vector2i staggeredToDiamound(Nz::Vector2ui position);
+	static int manhattanStaggeredDistance(Nz::Vector2ui start, Nz::Vector2ui end);
+	static int manhattanDistance(Nz::Vector2i start, Nz::Vector2i end);
 
 	static Nz::Vector2ui topLeftCell(Nz::Vector2ui position);
 	static Nz::Vector2ui topRightCell(Nz::Vector2ui position);

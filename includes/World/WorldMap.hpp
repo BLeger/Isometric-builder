@@ -93,7 +93,7 @@ private:
 
 	Terrain m_terrain;
 
-	Nz::Vector2ui m_previewPosition{};
+	std::vector<Nz::Vector2ui> m_previewPositions{};
 
 	const Nz::Vector2ui m_size;
 

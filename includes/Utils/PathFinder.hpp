@@ -18,7 +18,7 @@ class CompareNodes {
 public:
 	bool operator() (const node& lhs, const node&rhs) const
 	{
-		return (lhs.base_cost + lhs.heuristic_cost + (lhs.numberOfTurns * 0) > rhs.base_cost + rhs.heuristic_cost + (rhs.numberOfTurns * 0));
+		return (lhs.base_cost + lhs.heuristic_cost + (lhs.numberOfTurns * 2) > rhs.base_cost + rhs.heuristic_cost + (rhs.numberOfTurns * 2));
 	}
 };
 

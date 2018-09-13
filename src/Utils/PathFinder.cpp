@@ -12,7 +12,7 @@ std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2u
 	std::map<Nz::Vector2ui, Nz::Vector2ui> predecessors{};
 
 	// Adding the start node with a cost of 0 and it's heuristic cost to get to end
-	node s{ start, 0, Isometric::manhattanDistance(start, end), 0, Direction::NONE };
+	node s{ start, 0, Isometric::manhattanStaggeredDistance(start, end), 0, Direction::NONE };
 	openList.push(s);
 
 	std::deque<Nz::Vector2ui> path{};
@@ -31,6 +31,7 @@ std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2u
 
 			return path;
 		}
+
 		// Generating successors
 		std::vector<Nz::Vector2ui> surrondings = Isometric::getSurroundingTiles(best.position);
 		for (Nz::Vector2ui pos : surrondings) {
@@ -43,7 +44,7 @@ std::deque<Nz::Vector2ui> PathFinder::findPath(Nz::Vector2ui start, Nz::Vector2u
 					turns++;
 				}
 
-				node newNode{ pos, best.base_cost + 1, Isometric::manhattanDistance(pos, end), turns, dir };
+				node newNode{ pos, best.base_cost + 1, Isometric::manhattanStaggeredDistance(pos, end), turns, dir };
 				openList.push(newNode);
 				predecessors.insert(std::make_pair(pos, best.position));
 			}
