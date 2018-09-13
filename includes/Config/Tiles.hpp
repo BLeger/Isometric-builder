@@ -53,5 +53,6 @@ WALL_NE_SO_SE, WALL_NO_NE_SE, WALL_NO_NE_SO };
 const TileDef TREE{ 2, 0, "tree" };
 const TileDef ROCK{ 2, 1, "rock" };
 
+const TileDef HOUSE{ 3, 0, "house", Nz::Vector2ui{2, 2} };
 
 #endif // !TILES_H

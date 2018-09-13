@@ -14,7 +14,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	m_world.AddSystem<WallSystem>(m_worldMap);
 	m_world.AddSystem<WalkerSystem>(m_worldMap);
 	m_world.AddSystem<AnimationSystem>();
-	m_world.AddSystem<BuildingSystem>(m_worldMap, m_spriteLib);
+	m_world.AddSystem<BuildingSystem>(m_worldMap);
 
 	// Events
 	Nz::EventHandler& eventHandler = window.GetEventHandler();
@@ -171,7 +171,7 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 			m_currentTool = UserTools::PLACE_BUILDING;
 			std::cout << "Place building tool" << std::endl;
 			actionPreview = true;
-			m_currentTile = ROCK;
+			m_currentTile = HOUSE;
 			break;
 		case 27:
 			m_currentTool = UserTools::REMOVE_BUILDING;

@@ -2,10 +2,9 @@
 
 Ndk::SystemIndex BuildingSystem::systemIndex;
 
-BuildingSystem::BuildingSystem(WorldMap & worldMap, SpriteLibrary & spriteLib) :
-	m_worldMap(worldMap), m_spriteLib(spriteLib)
+BuildingSystem::BuildingSystem(WorldMap & worldMap) : m_worldMap(worldMap)
 {
-	Requires<BuildingComponent, Ndk::GraphicsComponent, Ndk::NodeComponent>();
+	Requires<BuildingComponent>();
 	SetUpdateOrder(5);
 	SetMaximumUpdateRate(10.f);
 	//SetUpdateRate(10.f);
@@ -17,12 +16,7 @@ void BuildingSystem::OnUpdate(float elapsed)
 		BuildingComponent &building = entity->GetComponent<BuildingComponent>();
 
 		if (building.needSpriteUpdate()) {
-			Ndk::GraphicsComponent &gc = entity->GetComponent<Ndk::GraphicsComponent>();
-
-			Nz::SpriteRef& spr = m_spriteLib.getSprite(building.getSpriteName());
-			gc.Clear();
-			gc.Attach(spr, building.getRenderOrder());
-
+			m_worldMap.setTileDef(building.getPosition(), building.getTileDef());
 			building.updated(true);
 		}
 	}

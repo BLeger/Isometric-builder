@@ -7,9 +7,11 @@
 
 #include <string>
 
+#include "../../includes/Config/Tiles.hpp"
+
 struct BuildingComponent : public Ndk::Component<BuildingComponent>
 {
-	BuildingComponent(Nz::Vector2ui position, Nz::Vector2ui size, std::string name);
+	BuildingComponent(Nz::Vector2ui position, const TileDef tile);
 
 	unsigned int getState();
 	std::string getName();
@@ -17,23 +19,18 @@ struct BuildingComponent : public Ndk::Component<BuildingComponent>
 
 	Nz::Vector2ui getPosition();
 	Nz::Vector2ui getSize();
-
-	std::string getSpriteName();
+	TileDef getTileDef();
 
 	void updated(bool b = true);
-
-	int getRenderOrder();
-	void setRenderOrder(int order);
 
 	static Ndk::ComponentIndex componentIndex;
 
 private:
-	int m_renderOrder = 0;
 	unsigned int m_state;
-	std::string m_name;
 
 	Nz::Vector2ui m_position;
-	Nz::Vector2ui m_size;
+
+	TileDef m_tileDef;
 
 	bool m_needSpriteUpdate;
 };

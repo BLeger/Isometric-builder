@@ -13,14 +13,13 @@
 class BuildingSystem : public Ndk::System<BuildingSystem>
 {
 public:
-	BuildingSystem(WorldMap& worldMap, SpriteLibrary& spriteLib);
+	BuildingSystem(WorldMap& worldMap);
 	~BuildingSystem() = default;
 
 	static Ndk::SystemIndex systemIndex;
 
 private:
 	WorldMap& m_worldMap;
-	SpriteLibrary& m_spriteLib;
 
 	void OnUpdate(float elapsed) override;
 };

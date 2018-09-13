@@ -32,11 +32,9 @@
 #include "../Components/AnimationComponent.hpp"
 #include "../Components/BuildingComponent.hpp"
 
-
 class WorldMap {
 	
 public:
-	//WorldMap() {};
 	WorldMap(Nz::Vector2ui size, Ndk::World& world);
 	void generateTerrain(SpriteLibrary& spriteLib);
 
@@ -72,7 +70,7 @@ public:
 
 	void setTileDef(Nz::Vector2ui position, TileDef tile);
 
-	void addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size);
+	void addBuilding(Nz::Vector2ui position, const TileDef tile);
 
 	float getScale();
 	void zoom(float delta);

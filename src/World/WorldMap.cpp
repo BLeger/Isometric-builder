@@ -283,39 +283,30 @@ void WorldMap::setTileDef(Nz::Vector2ui position, TileDef tile)
 	TileData& t = getTile(position);
 
 	// TEMPORARY
-	assert(t.type == TileType::WALL_TILE);
+	//assert(t.type == TileType::WALL_TILE);
 	t.environmentMaterial = tile;
 }
 
-void WorldMap::addBuilding(Nz::Vector2ui position, std::string name, Nz::Vector2ui size) 
+void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile) 
 {
 	if (!isPositionAvailable(position)) {
 		std::cout << "Err: tile already occupied" << std::endl;
 		return;
 	}
 
-	// Keep track of the hight y position of the cells for renderOrder
-	int maxY = 0;
-
 	// Update the data of all the tiles below the building
-	std::vector<Nz::Vector2ui> cells = Isometric::square(position, size);
+	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
 	for (Nz::Vector2ui pos : cells) {
 		getTile(pos).type = TileType::BUILDING_BODY;
-		// TODO : Add a ref to the building root
+		// TODO : Add a ptr to the building root
 
-		if (pos.y > maxY)
-			maxY = pos.y;
 	}
-
 	getTile(position).type = TileType::BUILDING_ROOT;
 
+	// Create building entity
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
-	entity->AddComponent<Ndk::NodeComponent>();
-	entity->AddComponent<Ndk::GraphicsComponent>();
 
-	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, size, name);
-	building.setRenderOrder(maxY);
-
+	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, tile);
 	m_buildings.insert(std::make_pair(position, entity));
 }
 
