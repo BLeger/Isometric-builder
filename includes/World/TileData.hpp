@@ -1,6 +1,8 @@
 #ifndef TILE_DATA_H
 #define TILE_DATA_H
 
+#include "../Components/BuildingComponent.hpp"
+
 enum TileType {
 	SIMPLE_TILE, // Just a tile
 	ENVIRONMENT_TILE,
@@ -16,6 +18,7 @@ struct TileData {
 	TileDef groundMaterial;
 	TileDef origialGroundMaterial = groundMaterial;
 	TileDef environmentMaterial = VOID;
+	BuildingComponent* building = nullptr;
 };
 
 #endif // !TILE_DATA_H

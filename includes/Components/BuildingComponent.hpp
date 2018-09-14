@@ -28,8 +28,7 @@ struct BuildingComponent : public Ndk::Component<BuildingComponent>
 private:
 	unsigned int m_state;
 
-	Nz::Vector2ui m_position;
-
+	const Nz::Vector2ui m_position;
 	TileDef m_tileDef;
 
 	bool m_needSpriteUpdate;

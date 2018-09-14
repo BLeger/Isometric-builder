@@ -252,15 +252,27 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 
 void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 {
-	m_previewPositions.push_back(position);
-
 	TileData& t = getTile(position);
 
-	if (t.environmentMaterial == VOID) {
+	if (t.type == TileType::BUILDING_BODY) {
+		// If the tile is part of a building, we need to get the position of it's root to display it red
+		BuildingComponent building = *(t.building);
+		Nz::Vector2ui buildingRootPosition = building.getPosition();
+
+		TileData& rootTile = getTile(buildingRootPosition);
+
+		m_terrain.EnableEnvironmentTile(buildingRootPosition, rootTile.environmentMaterial, Nz::Color::Red);
+		m_previewPositions.push_back(buildingRootPosition);
+
+	} else if (t.environmentMaterial == VOID) {
+		// If tile is empty, preview the possible tile in green
 		m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Green);
+		m_previewPositions.push_back(position);
 	}
 	else {
+		// If the tile is occupied, display the curent tile in red
 		m_terrain.EnableEnvironmentTile(position, t.environmentMaterial, Nz::Color::Red);
+		m_previewPositions.push_back(position);
 	}
 }
 
@@ -294,20 +306,22 @@ void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile)
 		return;
 	}
 
-	// Update the data of all the tiles below the building
-	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
-	for (Nz::Vector2ui pos : cells) {
-		getTile(pos).type = TileType::BUILDING_BODY;
-		// TODO : Add a ptr to the building root
-
-	}
-	getTile(position).type = TileType::BUILDING_ROOT;
-
 	// Create building entity
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 
 	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, tile);
 	m_buildings.insert(std::make_pair(position, entity));
+
+	// Update the data of all the tiles below the building
+	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
+	for (Nz::Vector2ui pos : cells) {
+		TileData& tile = getTile(pos);
+		
+		tile.type = TileType::BUILDING_BODY;
+		tile.building = &building; // TODO : set this ptr to nullptr when removing the building !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	}
+
+	getTile(position).type = TileType::BUILDING_ROOT;
 }
 
 float WorldMap::getScale()
