@@ -64,6 +64,7 @@ public:
 
 	bool isPositionCorrect(Nz::Vector2ui position);
 	bool isPositionAvailable(Nz::Vector2ui position);
+	bool arePositionsAvailable(std::vector<Nz::Vector2ui> positions);
 
 	void previewEntity(Nz::Vector2ui position, TileDef tile);
 	void resetPreview();

@@ -250,6 +250,16 @@ bool WorldMap::isPositionAvailable(Nz::Vector2ui position)
 	return tile.type == TileType::SIMPLE_TILE;
 }
 
+bool WorldMap::arePositionsAvailable(std::vector<Nz::Vector2ui> positions)
+{
+	for (Nz::Vector2ui pos : positions) {
+		if (!isPositionCorrect(pos) || !isPositionAvailable(pos))
+			return false;
+	}
+
+	return true;
+}
+
 void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 {
 	TileData& t = getTile(position);
@@ -265,6 +275,17 @@ void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 		m_previewPositions.push_back(buildingRootPosition);
 
 	} else if (t.environmentMaterial == VOID) {
+
+		// If the tiles takes several cells, we need to check them all
+		if (tile.tileSize != Nz::Vector2ui{ 1, 1 }) {
+			std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
+			if (!arePositionsAvailable(cells)) {
+				m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Red);
+				m_previewPositions.push_back(position);
+				return;
+			}
+		}
+
 		// If tile is empty, preview the possible tile in green
 		m_terrain.EnableEnvironmentTile(position, tile, Nz::Color::Green);
 		m_previewPositions.push_back(position);
@@ -301,7 +322,10 @@ void WorldMap::setTileDef(Nz::Vector2ui position, TileDef tile)
 
 void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile) 
 {
-	if (!isPositionAvailable(position)) {
+	// Cells occupied by the building
+	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
+
+	if (!arePositionsAvailable(cells)) {
 		std::cout << "Err: tile already occupied" << std::endl;
 		return;
 	}
@@ -313,7 +337,6 @@ void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile)
 	m_buildings.insert(std::make_pair(position, entity));
 
 	// Update the data of all the tiles below the building
-	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
 	for (Nz::Vector2ui pos : cells) {
 		TileData& tile = getTile(pos);
 		
