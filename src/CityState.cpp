@@ -81,7 +81,8 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		//m_worldMap.addEnvironmentTile(tilePosition, m_currentTile);
 		break;
 	case REMOVE_BUILDING:
-		m_worldMap.removeEnvironmentTile(tilePosition);
+		m_worldMap.removeBuilding(tilePosition);
+		//m_worldMap.removeEnvironmentTile(tilePosition);
 		break;
 	case PLACE_WALL:
 		m_worldMap.addWall(tilePosition);

@@ -72,6 +72,7 @@ public:
 	void setTileDef(Nz::Vector2ui position, TileDef tile);
 
 	void addBuilding(Nz::Vector2ui position, const TileDef tile);
+	void removeBuilding(Nz::Vector2ui position);
 
 	float getScale();
 	void zoom(float delta);

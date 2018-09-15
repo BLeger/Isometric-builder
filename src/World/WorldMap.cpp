@@ -341,10 +341,45 @@ void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile)
 		TileData& tile = getTile(pos);
 		
 		tile.type = TileType::BUILDING_BODY;
-		tile.building = &building; // TODO : set this ptr to nullptr when removing the building !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		tile.building = &building;
 	}
 
 	getTile(position).type = TileType::BUILDING_ROOT;
+}
+
+void WorldMap::removeBuilding(Nz::Vector2ui position)
+{
+	TileData& tile = getTile(position);
+
+	// If this tile is in the body of a building but not it's root
+	// We need to get the root position in order to delete the entity
+	if (tile.type == TileType::BUILDING_BODY) {
+		BuildingComponent* building = tile.building;
+		position = building->getPosition();
+		tile = getTile(position);
+	}
+
+	if (tile.type != TileType::BUILDING_ROOT) {
+		std::cout << "Err: This is not a building" << std::endl;
+		return;
+	}
+
+	// Delete the entity
+	Ndk::EntityHandle& entity = m_buildings.at(position);
+	entity->Kill();
+
+	m_buildings.erase(m_buildings.find(position));
+
+	// Delete the tile on tilemap
+	m_terrain.DisableEnvironmentTile(position);
+
+	// Update all tile's data
+	for (Nz::Vector2ui pos : Isometric::square(position, tile.environmentMaterial.tileSize)) {
+		TileData& t = getTile(pos);
+		t.type = TileType::SIMPLE_TILE;
+		t.environmentMaterial = VOID;
+		t.building = nullptr;
+	}	
 }
 
 float WorldMap::getScale()
