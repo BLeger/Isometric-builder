@@ -1,3 +1,10 @@
+// Copyright (C) 2017 Jérôme Leclercq
+// This file is part of the "Nazara Engine - Graphics module"
+
+// This file is originaly part of Nazara Engine
+// It has been modified to suit my needs
+// https://github.com/DigitalPulseSoftware/NazaraEngine/
+
 #ifndef TILE_MAP_H
 #define TILE_MAP_H
 
@@ -14,7 +21,6 @@
 
 #include <set>
 #include <map>
-#include <iostream>
 
 class TileMap;
 

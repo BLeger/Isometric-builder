@@ -128,12 +128,6 @@ std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position
 	return surroundingTiles;
 }
 
-/*float Isometric::distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight)
-{
-	Nz::Vector2f center = cellCenter(tilePosition, tileWidth, tileHeight);
-	return pow(center.x - mousePosition.x, 2) + pow(center.y - mousePosition.y, 2);
-}*/
-
 Nz::Vector2ui Isometric::pixelToCell(Nz::Vector2ui pixelPosition, float mapScale, Nz::Vector2f cameraOffset)
 {
 	pixelPosition.x /= mapScale;

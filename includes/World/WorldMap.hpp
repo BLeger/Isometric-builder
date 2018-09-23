@@ -40,7 +40,6 @@ public:
 
 	TileData& getTile(Nz::Vector2ui position);
 
-	bool createEntity(Nz::Vector2ui position);
 	bool deleteEntity(Nz::Vector2ui position);
 
 	Nz::Vector2ui getHoveredCell(Nz::Vector2ui flatCell);

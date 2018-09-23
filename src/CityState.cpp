@@ -122,7 +122,6 @@ void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
 void CityState::mouseWheelMoved(float delta)
 {
 	m_worldMap.zoom(delta);
-	//m_worldMap.display(m_world);
 }
 
 void CityState::mouseMoved(Nz::Vector2ui mousePosition)

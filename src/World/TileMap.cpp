@@ -1,3 +1,10 @@
+// Copyright (C) 2017 Jérôme Leclercq
+// This file is part of the "Nazara Engine - Graphics module"
+
+// This file is originaly part of Nazara Engine
+// It has been modified to suit my needs
+// https://github.com/DigitalPulseSoftware/NazaraEngine/
+
 #include "../../includes/World/TileMap.hpp"
 
 TileMap::TileMap(const Nz::Vector2ui& mapSize, const Nz::Vector2f& tileSize, std::size_t materialCount) :

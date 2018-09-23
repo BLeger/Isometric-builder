@@ -44,26 +44,6 @@ TileData& WorldMap::getTile(Nz::Vector2ui position) {
 	return m_tiles.at(m_size.x * position.y + position.x);
 }
 
-bool WorldMap::createEntity(Nz::Vector2ui position)
-{
-	if (!isPositionAvailable(position)) {
-		std::cout << "Err: tile already occupied" << std::endl;
-		return false;
-	}
-
-	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
-	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
-
-	Nz::Vector2ui pixelPosition = Isometric::cellToPixel(position, m_scale);
-	nc.SetScale(m_scale);
-	nc.SetPosition(Nz::Vector3f{ (float)pixelPosition.x, (float)pixelPosition.y, 0.f });
-
-	entity->AddComponent<Ndk::GraphicsComponent>();
-	m_entities.insert(std::make_pair(position, entity));
-
-	return true;
-}
-
 bool WorldMap::deleteEntity(Nz::Vector2ui position)
 {
 	if (isPositionAvailable(position)) {
