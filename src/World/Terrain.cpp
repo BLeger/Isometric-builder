@@ -108,7 +108,8 @@ void Terrain::scale(float value)
 
 void Terrain::EnableTile(TileMapRef& tilemap, Nz::Vector2ui position, TileDef & tile, Nz::Color color)
 {
-	tilemap->DisableTile(position);
+	assert(tile.lineIndex >= 0 && tile.tileIndex >= 0);
+	tilemap->DisableTile(position);	
 	tilemap->EnableTile(position, m_textureManager.getTextureCoords(tile), m_textureManager.getTileSize(tile), color, 0);
 }
 

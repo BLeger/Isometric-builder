@@ -38,8 +38,8 @@ void WorldMap::generateTerrain(SpriteLibrary& spriteLib)
 
 
 TileData& WorldMap::getTile(Nz::Vector2ui position) {
-	assert(position.x < m_size.x);
-	assert(position.y < m_size.y);
+	assert(position.x >= 0 && position.x < m_size.x);
+	assert(position.y >= 0 && position.y < m_size.y);
 
 	return m_tiles.at(m_size.x * position.y + position.x);
 }
@@ -250,7 +250,6 @@ void WorldMap::previewEntity(Nz::Vector2ui position, TileDef tile)
 		Nz::Vector2ui buildingRootPosition = building.getPosition();
 
 		TileData& rootTile = getTile(buildingRootPosition);
-
 		m_terrain.EnableEnvironmentTile(buildingRootPosition, rootTile.environmentMaterial, Nz::Color::Red);
 		m_previewPositions.push_back(buildingRootPosition);
 
@@ -304,18 +303,19 @@ void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile)
 {
 	// Cells occupied by the building
 	std::vector<Nz::Vector2ui> cells = Isometric::square(position, tile.tileSize);
-
+	
 	if (!arePositionsAvailable(cells)) {
 		std::cout << "Err: tile already occupied" << std::endl;
 		return;
 	}
-
+	
 	// Create building entity
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 
 	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, tile);
 	m_buildings.insert(std::make_pair(position, entity));
-
+	setTileDef(building.getPosition(), building.getTileDef());
+	
 	// Update the data of all the tiles below the building
 	for (Nz::Vector2ui pos : cells) {
 		TileData& tile = getTile(pos);

@@ -8,6 +8,37 @@ Nz::Vector2i Isometric::staggeredToDiamound(Nz::Vector2ui position)
 	return Nz::Vector2i{ x, y };
 }
 
+std::vector<Nz::Vector2ui> Isometric::perpendicularPath(Nz::Vector2ui start, Nz::Vector2ui end)
+{
+	Nz::Vector2i diamStart = staggeredToDiamound(start);
+	Nz::Vector2i diamEnd = staggeredToDiamound(end);
+
+	int dX = diamEnd.x - diamStart.x;
+	int dY = diamEnd.y - diamStart.y;
+
+	std::vector<Nz::Vector2ui> path{start};
+	
+	for (int i = 0; i < std::abs(dX); i++) {
+		if (dX > 0) {
+			path.push_back(bottomRightCell(path[path.size() - 1]));
+		}
+		else {
+			path.push_back(topLeftCell(path[path.size() - 1]));
+		}
+	}
+
+	for (int j = 0; j < std::abs(dY); j++) {
+		if (dY < 0) {
+			path.push_back(topRightCell(path[path.size() - 1]));
+		}
+		else {
+			path.push_back(bottomLeftCell(path[path.size() - 1]));
+		}
+	}
+
+	return path;
+}
+
 int Isometric::manhattanStaggeredDistance(Nz::Vector2ui start, Nz::Vector2ui end)
 {
 	return manhattanDistance(staggeredToDiamound(start), staggeredToDiamound(end));

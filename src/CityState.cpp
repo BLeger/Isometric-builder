@@ -103,12 +103,15 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 
 		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 		tilePosition = m_worldMap.getHoveredCell(tilePosition);
-		PathFinder p{ m_worldMap };
 
-		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
-		while(!path.empty()){
-			Nz::Vector2ui pos = path.front();
-			path.pop_front();
+		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
+		// Every tile must be available in order to build the road
+		for (auto pos : path) {
+			if (!m_worldMap.isPositionAvailable(pos))
+				return;
+		}
+
+		for (auto pos : path) {
 			m_worldMap.addRoad(pos);
 		}
 	}
@@ -133,23 +136,27 @@ void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 		return;
 	}
 
+	// Get the tile hovered by the mouse
 	Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 	tilePosition = m_worldMap.getHoveredCell(tilePosition);
 
+	if (!m_worldMap.isPositionCorrect(tilePosition)) 
+		return; // The cursor is off the map
+
 	if (m_currentTool == UserTools::PLACE_ROAD && m_placingRoad) {
+		// Display road placement preview
 		if (m_lastMouseTilePosition == tilePosition)
 			return;
 
 		m_lastMouseTilePosition = tilePosition;
-
-		PathFinder p{ m_worldMap };
-
 		m_worldMap.resetPreview();
 
-		std::deque<Nz::Vector2ui> path = p.findPath(m_roadPlacementStart, tilePosition);
-		while (!path.empty()) {
-			Nz::Vector2ui pos = path.front();
-			path.pop_front();
+		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
+		for (auto pos : path) {
+			if (!m_worldMap.isPositionAvailable(pos)) {
+				m_worldMap.resetPreview();
+				return;
+			}
 			m_worldMap.previewEntity(pos, ROAD);
 		}
 	}

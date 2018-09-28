@@ -24,6 +24,7 @@
 class Isometric {
 public:
 	static Nz::Vector2i staggeredToDiamound(Nz::Vector2ui position);
+	static std::vector<Nz::Vector2ui> perpendicularPath(Nz::Vector2ui start, Nz::Vector2ui end);
 	static int manhattanStaggeredDistance(Nz::Vector2ui start, Nz::Vector2ui end);
 	static int manhattanDistance(Nz::Vector2i start, Nz::Vector2i end);
 
@@ -38,7 +39,6 @@ public:
 	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, Nz::Vector2ui size);
 
 	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
-	//static float distanceToCenter(Nz::Vector2i tilePosition, Nz::Vector2i mousePosition, float tileWidth, float tileHeight);
 	
 
 	static Nz::Vector2ui pixelToCell(Nz::Vector2ui pixelPosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));

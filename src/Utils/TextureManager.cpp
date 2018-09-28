@@ -41,6 +41,7 @@ TileSize TextureManager::getTileSize(TileDef & tile)
 
 TileSize TextureManager::getTileSize(unsigned int lineIndex)
 {
+	assert(m_textureLines.size() > lineIndex);
 	return m_textureLines.at(lineIndex);
 }
 
