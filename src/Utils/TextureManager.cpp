@@ -3,7 +3,7 @@
 TextureManager::TextureManager()
 {
 	// Simple tiles
-	m_textureLines.push_back(TileSize{ Nz::Vector2ui {1, 1}, Nz::Vector2f{64.f, 32.f } });
+	m_textureLines.push_back(TileSize{ Nz::Vector2ui{ 1, 1 }, Nz::Vector2f{ 64.f, 32.f } });
 
 	// Walls
 	m_textureLines.push_back(TileSize{ Nz::Vector2ui{ 1, 1 }, Nz::Vector2f{ 64.f, 70.f } });

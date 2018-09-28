@@ -37,10 +37,10 @@ public:
 	static Direction getDirection(Nz::Vector2ui start, Nz::Vector2ui destination);
 
 	static std::vector<Nz::Vector2ui> square(Nz::Vector2ui tilePosition, Nz::Vector2ui size);
+	static std::vector<Nz::Vector2ui> area(Nz::Vector2ui start, Nz::Vector2ui end);
 
 	static std::vector<Nz::Vector2ui> getSurroundingTiles(Nz::Vector2ui position);
 	
-
 	static Nz::Vector2ui pixelToCell(Nz::Vector2ui pixelPosition, float mapScale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 	static Nz::Vector2ui cellToPixel(Nz::Vector2ui cellPosition, float scale = 1.f, Nz::Vector2f cameraOffset = Nz::Vector2f(0.f, 0.f));
 	

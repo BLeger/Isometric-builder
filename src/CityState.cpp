@@ -91,6 +91,10 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		m_placingRoad = true;
 		m_roadPlacementStart = tilePosition;
 		break;
+	case SELECT_AREA:
+		m_placingRoad = true;
+		m_roadPlacementStart = tilePosition; // Changes thoses names -> generic
+		break;
 	default:
 		break;
 	}
@@ -107,11 +111,22 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
 		// Every tile must be available in order to build the road
 		for (auto pos : path) {
-			if (!m_worldMap.isPositionAvailable(pos))
+			if (!m_worldMap.isPositionAvailable(pos) && !m_worldMap.isRoad(pos))
 				return;
 		}
 
 		for (auto pos : path) {
+			m_worldMap.addRoad(pos);
+		}
+	}
+	else if (m_currentTool == UserTools::SELECT_AREA) {
+		m_placingRoad = false;
+
+		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
+		tilePosition = m_worldMap.getHoveredCell(tilePosition);
+
+		std::vector<Nz::Vector2ui> area = Isometric::area(m_roadPlacementStart, tilePosition);
+		for (auto pos : area) {
 			m_worldMap.addRoad(pos);
 		}
 	}
@@ -153,10 +168,21 @@ void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 
 		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
 		for (auto pos : path) {
-			if (!m_worldMap.isPositionAvailable(pos)) {
+			if (!m_worldMap.isPositionAvailable(pos) && !m_worldMap.isRoad(pos)) {
 				m_worldMap.resetPreview();
 				return;
 			}
+			m_worldMap.previewEntity(pos, ROAD);
+		}
+	}
+	else if (m_currentTool == UserTools::SELECT_AREA && m_placingRoad) {
+
+		if (m_lastMouseTilePosition == tilePosition)
+			return;
+
+		m_worldMap.resetPreview();
+		std::vector<Nz::Vector2ui> area = Isometric::area(m_roadPlacementStart, tilePosition);
+		for (auto pos : area) {
 			m_worldMap.previewEntity(pos, ROAD);
 		}
 	}
@@ -194,6 +220,12 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		case 29:
 			m_currentTool = UserTools::PLACE_ROAD;
 			std::cout << "Place road tool" << std::endl;
+			actionPreview = true;
+			m_currentTile = ROAD;
+			break;
+		case 30:
+			m_currentTool = UserTools::SELECT_AREA;
+			std::cout << "Select area" << std::endl;
 			actionPreview = true;
 			m_currentTile = ROAD;
 			break;

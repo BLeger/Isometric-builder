@@ -125,6 +125,9 @@ std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, Nz::Vec
 {
 	std::vector<Nz::Vector2ui> cells{};
 
+	if (size.x == 0 || size.y == 0)
+		return cells;
+	
 	for (int i = 0; i < size.x; i++) {
 		cells.push_back(Nz::Vector2ui(tilePosition.x, tilePosition.y));
 
@@ -136,11 +139,30 @@ std::vector<Nz::Vector2ui> Isometric::square(Nz::Vector2ui tilePosition, Nz::Vec
 			tilePosition = botRight;
 		}
 
-		Nz::Vector2ui topRight = topRightCell(lineStart);
-		tilePosition = topRight;
+		tilePosition = topRightCell(lineStart);
 	}
 
 	return cells;
+}
+
+std::vector<Nz::Vector2ui> Isometric::area(Nz::Vector2ui start, Nz::Vector2ui end)
+{
+	/*if (end.x <= start.x || end.y <= end.y) {
+		int tX, tY;
+		tX = end.x; tY = end.y;
+		end.x = start.x; end.y = start.y;
+		start.x = tX; start.y = tY;
+	}*/
+
+	Nz::Vector2i diamStart = staggeredToDiamound(start);
+	Nz::Vector2i diamEnd = staggeredToDiamound(end);
+
+	unsigned int dX = std::abs(diamEnd.x - diamStart.x);
+	unsigned int dY = std::abs(diamEnd.y - diamStart.y); 
+
+	assert(dX >= 0 && dY >= 0);
+
+	return square(start, Nz::Vector2ui{ dY + 1, dX + 1 });
 }
 
 std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position)
