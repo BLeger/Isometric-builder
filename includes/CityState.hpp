@@ -40,21 +40,24 @@ public:
 	void keyPressed(const Nz::WindowEvent::KeyEvent& k);
 
 private:
+	std::vector<Nz::Vector2ui> getSelectedTiles(Nz::Vector2ui tilePosition);
+
 	Ndk::World& m_world;
 	const Nz::Vector2f m_windowSize;
 	Ndk::EntityHandle& m_camera;
 
 	WorldMap m_worldMap;
 	
-	UserTools m_currentTool;
+	// User tool & selection
+	UserTools m_userTool;
+	SelectionModes m_selectionMode;
+	bool m_selectionEnabled = false;
+	Nz::Vector2ui m_selectionStart;
 
 	Nz::Vector2ui m_lastMousePosition{ 0u, 0u };
 	Nz::Vector2ui m_lastMouseTilePosition{ 0u, 0u };
 	bool m_actionPreview = false;
 
-	// Road placement
-	bool m_placingRoad = false;
-	Nz::Vector2ui m_roadPlacementStart;
 	SpriteLibrary m_spriteLib;
 
 	TileDef m_currentTile = ROCK;

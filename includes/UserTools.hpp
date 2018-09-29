@@ -3,10 +3,15 @@
 
 enum UserTools {
 	PLACE_BUILDING,
-	REMOVE_BUILDING,
 	PLACE_WALL,
 	PLACE_ROAD,
-	SELECT_AREA
+	DESTROY
+};
+
+enum SelectionModes {
+	CURSOR,
+	PATH,
+	AREA
 };
 
 #endif // !USER_TOOLS_H

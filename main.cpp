@@ -8,7 +8,7 @@
 #include <NDK/Widgets/CheckboxWidget.hpp>
 #include <NDK/Widgets/ButtonWidget.hpp>
 
-#include "includes/CityState.h"
+#include "includes/CityState.hpp"
 #include "includes/Components/EnvironmentTileComponent.hpp"
 #include "includes/Components/WallComponent.hpp"
 #include "includes/Components/AnimationComponent.hpp"

@@ -1,11 +1,11 @@
-#include "../includes/CityState.h"
+#include "../includes/CityState.hpp"
 
 CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHandle& camera) :
 	m_world(world),
 	State(),
 	m_windowSize(window.GetSize()),
 	m_worldMap(WorldMap{ Nz::Vector2ui{70, 140}, world }),
-	m_currentTool(UserTools::PLACE_BUILDING),
+	m_userTool(UserTools::PLACE_BUILDING),
 	m_camera(camera)
 {
 	m_worldMap.generateTerrain(m_spriteLib);
@@ -74,13 +74,13 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 	if (!m_worldMap.isPositionCorrect(tilePosition))
 		return;
 
-	switch (m_currentTool)
+	switch (m_userTool)
 	{
 	case PLACE_BUILDING:
 		m_worldMap.addBuilding(tilePosition, m_currentTile);
 		//m_worldMap.addEnvironmentTile(tilePosition, m_currentTile);
 		break;
-	case REMOVE_BUILDING:
+	case DESTROY:
 		m_worldMap.removeBuilding(tilePosition);
 		//m_worldMap.removeEnvironmentTile(tilePosition);
 		break;
@@ -88,12 +88,8 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 		m_worldMap.addWall(tilePosition);
 		break;
 	case PLACE_ROAD:
-		m_placingRoad = true;
-		m_roadPlacementStart = tilePosition;
-		break;
-	case SELECT_AREA:
-		m_placingRoad = true;
-		m_roadPlacementStart = tilePosition; // Changes thoses names -> generic
+		m_selectionEnabled = true;
+		m_selectionStart = tilePosition;
 		break;
 	default:
 		break;
@@ -102,31 +98,20 @@ void CityState::mouseLeftPressed(Nz::Vector2ui mousePosition)
 
 void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 {
-	if (m_currentTool == UserTools::PLACE_ROAD) {
-		m_placingRoad = false;
+	if (m_userTool == UserTools::PLACE_ROAD) {
+		m_selectionEnabled = false;
 
 		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
 		tilePosition = m_worldMap.getHoveredCell(tilePosition);
 
-		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
+		std::vector<Nz::Vector2ui> cells = getSelectedTiles(tilePosition);
 		// Every tile must be available in order to build the road
-		for (auto pos : path) {
+		for (auto pos : cells) {
 			if (!m_worldMap.isPositionAvailable(pos) && !m_worldMap.isRoad(pos))
 				return;
 		}
 
-		for (auto pos : path) {
-			m_worldMap.addRoad(pos);
-		}
-	}
-	else if (m_currentTool == UserTools::SELECT_AREA) {
-		m_placingRoad = false;
-
-		Nz::Vector2ui tilePosition = Isometric::pixelToCell(mousePosition, m_worldMap.getScale(), -m_worldMap.getCameraOffset());
-		tilePosition = m_worldMap.getHoveredCell(tilePosition);
-
-		std::vector<Nz::Vector2ui> area = Isometric::area(m_roadPlacementStart, tilePosition);
-		for (auto pos : area) {
+		for (auto pos : cells) {
 			m_worldMap.addRoad(pos);
 		}
 	}
@@ -160,7 +145,7 @@ void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 	if (!m_worldMap.isPositionCorrect(tilePosition)) 
 		return; // The cursor is off the map
 
-	if (m_currentTool == UserTools::PLACE_ROAD && m_placingRoad) {
+	if (m_selectionEnabled) {
 		// Display road placement preview
 		if (m_lastMouseTilePosition == tilePosition)
 			return;
@@ -168,25 +153,26 @@ void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 		m_lastMouseTilePosition = tilePosition;
 		m_worldMap.resetPreview();
 
-		std::vector<Nz::Vector2ui> path = Isometric::perpendicularPath(m_roadPlacementStart, tilePosition);
-		for (auto pos : path) {
+		std::vector<Nz::Vector2ui> cells = getSelectedTiles(tilePosition);
+		
+		for (auto pos : cells) {
 			if (!m_worldMap.isPositionAvailable(pos) && !m_worldMap.isRoad(pos)) {
 				m_worldMap.resetPreview();
 				return;
 			}
-			m_worldMap.previewEntity(pos, ROAD);
-		}
-	}
-	else if (m_currentTool == UserTools::SELECT_AREA && m_placingRoad) {
 
-		if (m_lastMouseTilePosition == tilePosition)
-			return;
-
-		m_worldMap.resetPreview();
-
-		std::vector<Nz::Vector2ui> area = Isometric::area(m_roadPlacementStart, tilePosition);
-		for (auto pos : area) {
-			m_worldMap.previewEntity(pos, ROAD);
+			switch (m_userTool)
+			{
+			case PLACE_WALL:
+				m_worldMap.previewEntity(pos, WALL);
+				break;
+			case PLACE_ROAD:
+				m_worldMap.previewEntity(pos, ROAD);
+				break;
+			default:
+				return;
+				break;
+			}
 		}
 	}
 	else if (m_worldMap.isPositionCorrect(tilePosition)) {
@@ -202,42 +188,51 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 	if (k.code >= 26 && k.code <= 36) {
 		// F1 <-> F11
 		bool actionPreview = false;
+		SelectionModes selectionMode = SelectionModes::CURSOR;
 		switch (k.code)
 		{
 		case 26:
-			m_currentTool = UserTools::PLACE_BUILDING;
+			m_userTool = UserTools::PLACE_BUILDING;
 			std::cout << "Place building tool" << std::endl;
 			actionPreview = true;
 			m_currentTile = HOUSE;
 			break;
 		case 27:
-			m_currentTool = UserTools::REMOVE_BUILDING;
-			std::cout << "Remove building tool" << std::endl;
+			m_userTool = UserTools::DESTROY;
+			std::cout << "Destroy tool" << std::endl;
 			break;
 		case 28:
-			m_currentTool = UserTools::PLACE_WALL;
+			m_userTool = UserTools::PLACE_WALL;
 			std::cout << "Place wall tool" << std::endl;
 			actionPreview = true;
 			m_currentTile = WALL;
 			break;
 		case 29:
-			m_currentTool = UserTools::PLACE_ROAD;
+			m_userTool = UserTools::PLACE_ROAD;
 			std::cout << "Place road tool" << std::endl;
+			selectionMode = SelectionModes::PATH;
 			actionPreview = true;
 			m_currentTile = ROAD;
 			break;
-		case 30:
-			m_currentTool = UserTools::SELECT_AREA;
+		/*case 30:
+			m_userTool = UserTools::SELECT_AREA;
 			std::cout << "Select area" << std::endl;
 			actionPreview = true;
 			m_currentTile = ROAD;
-			break;
+			break;*/
 		default:
+			m_userTool = UserTools::PLACE_BUILDING;
+			std::cout << "Place building tool" << std::endl;
+			actionPreview = true;
+			m_currentTile = HOUSE;
 			break;
 		}
 
 		m_actionPreview = actionPreview;
+		m_selectionMode = selectionMode;
 		mouseMoved(m_lastMousePosition);
+
+		m_selectionEnabled = false;
 	}
 
 	if (k.code >= 76 && k.code <= 85) {
@@ -282,4 +277,20 @@ void CityState::keyPressed(const Nz::WindowEvent::KeyEvent& k)
 		nc.SetPosition(newCameraOffset);
 		m_worldMap.setCameraOffset(newCameraOffset);
 	}
+}
+
+std::vector<Nz::Vector2ui> CityState::getSelectedTiles(Nz::Vector2ui tilePosition)
+{
+	std::vector<Nz::Vector2ui> cells;
+	if (m_selectionMode == SelectionModes::PATH) {
+		cells = Isometric::perpendicularPath(m_selectionStart, tilePosition);
+	}
+	else if (m_selectionMode == SelectionModes::AREA) {
+		cells = Isometric::area(m_selectionStart, tilePosition);
+	}
+	else {
+		cells.push_back(tilePosition);
+	}
+
+	return cells;
 }

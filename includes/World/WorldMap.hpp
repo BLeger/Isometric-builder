@@ -91,9 +91,9 @@ private:
 	std::vector<Ndk::EntityHandle> m_walkers{};
 
 	Terrain m_terrain;
-public:
+
 	std::vector<Nz::Vector2ui> m_previewPositions{};
-private:
+
 	const Nz::Vector2ui m_size;
 
 	float m_scale = 1.f;
