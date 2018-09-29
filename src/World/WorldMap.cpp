@@ -288,6 +288,8 @@ void WorldMap::resetPreview()
 			m_terrain.EnableEnvironmentTile(position, t.environmentMaterial);
 		}
 	}
+
+	m_previewPositions.clear();
 }
 
 void WorldMap::setTileDef(Nz::Vector2ui position, TileDef tile)

@@ -130,6 +130,8 @@ void CityState::mouseLeftReleased(Nz::Vector2ui mousePosition)
 			m_worldMap.addRoad(pos);
 		}
 	}
+
+	m_worldMap.resetPreview();
 }
 
 void CityState::mouseRightPressed(Nz::Vector2ui mousePosition)
@@ -143,7 +145,7 @@ void CityState::mouseWheelMoved(float delta)
 }
 
 void CityState::mouseMoved(Nz::Vector2ui mousePosition)
-{	
+{
 	m_lastMousePosition = mousePosition;
 
 	if (!m_actionPreview) {
@@ -181,6 +183,7 @@ void CityState::mouseMoved(Nz::Vector2ui mousePosition)
 			return;
 
 		m_worldMap.resetPreview();
+
 		std::vector<Nz::Vector2ui> area = Isometric::area(m_roadPlacementStart, tilePosition);
 		for (auto pos : area) {
 			m_worldMap.previewEntity(pos, ROAD);
