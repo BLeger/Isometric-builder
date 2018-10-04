@@ -31,6 +31,7 @@
 #include "../Components/WalkerComponent.hpp"
 #include "../Components/AnimationComponent.hpp"
 #include "../Components/BuildingComponent.hpp"
+#include "../Components/ResidentialBuildingComponent.hpp"
 
 class WorldMap {
 	
@@ -57,7 +58,7 @@ public:
 	bool isWall(Nz::Vector2ui position);
 	void updateSurrondingsWalls(Nz::Vector2ui position);
 
-	void addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite);
+	WalkerComponent& addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite);
 
 	void updateTile(Nz::Vector2ui position);
 

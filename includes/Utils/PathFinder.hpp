@@ -1,5 +1,5 @@
-#ifndef PATH_FINDER_H
-#define PATH_FINDER_H
+#ifndef PATH_FINDER_HPP
+#define PATH_FINDER_HPP
 
 #include "../World/WorldMap.hpp"
 #include "Direction.hpp"
@@ -36,4 +36,4 @@ private:
 	WorldMap& m_worldMap;
 };
 
-#endif // !PATH_FINDER_H
+#endif // !PATH_FINDER_HPP

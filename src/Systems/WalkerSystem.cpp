@@ -21,10 +21,30 @@ void WalkerSystem::OnUpdate(float elapsed)
 
 		bool animation = false;
 
+		// If the walker has a destination but not any path
+		if (walker.m_path.empty() && walker.m_destination != walker.m_tilePosition && walker.m_isDestinationReachable) {
+			PathFinder p{ m_worldMap };
+			walker.m_path = p.findPath(walker.m_tilePosition, walker.m_destination);
+
+			if (walker.m_path.empty()) {
+				walker.m_isDestinationReachable = false;
+				std::cout << "A walker cannot reach his destination" << std::endl;
+			}
+		}
+
 		if (!walker.m_path.empty()) {
 			Nz::Vector2ui currentTile = walker.m_tilePosition;
 			Nz::Vector2ui nextTileInPath = walker.m_path.front();
 
+			// Check if the walker is already on that tile
+			if (currentTile.x == nextTileInPath.x && currentTile.y == nextTileInPath.y) {
+				walker.m_path.pop_front();
+				if (!walker.m_path.empty())
+					nextTileInPath = walker.m_path.front();
+			}
+			
+			// Get the direction the walker need to follow
+			// And move it's position according to it
 			Direction direction;
 			try {
 				direction = Isometric::getDirection(currentTile, nextTileInPath);
@@ -56,11 +76,12 @@ void WalkerSystem::OnUpdate(float elapsed)
 			catch (std::exception e) {
 				// IF the two cells are not next to each other
 				// Need to get another path
+				std::cout << "[Walker system] path error" << std::endl;
 			}
 
 			// Display the walker at it's new position
 			nc.SetScale(mapScale);
-			nc.SetPosition(Nz::Vector2f{ (float)walker.m_pixelPosition.x * mapScale + cameraOffset.x, (float)walker.m_pixelPosition.y * mapScale + cameraOffset.y });
+			nc.SetPosition(Nz::Vector2f{ (float)walker.m_pixelPosition.x * mapScale, (float)walker.m_pixelPosition.y * mapScale });
 
 			// Update the tile position
 			walker.m_tilePosition = Isometric::pixelToCell(walker.m_pixelPosition, mapScale, cameraOffset);

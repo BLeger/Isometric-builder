@@ -2,7 +2,6 @@
 
 Ndk::ComponentIndex AnimationComponent::componentIndex;
 
-
 AnimationComponent::AnimationComponent(Nz::SpriteRef & sprite, Nz::Vector2f imgSize, unsigned int animationLine) :
 	m_sprite(sprite), m_imageSize(imgSize), m_animationLine(animationLine)
 {

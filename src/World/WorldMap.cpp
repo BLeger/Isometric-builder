@@ -186,7 +186,7 @@ void WorldMap::updateSurrondingsWalls(Nz::Vector2ui position)
 	}
 }
 
-void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
+WalkerComponent& WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 {
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 	Ndk::NodeComponent &nc = entity->AddComponent<Ndk::NodeComponent>();
@@ -195,12 +195,14 @@ void WorldMap::addWalker(Nz::Vector2ui position, Nz::SpriteRef& sprite)
 	nc.SetPosition(m_cameraOffset);
 
 	Ndk::GraphicsComponent &gc = entity->AddComponent<Ndk::GraphicsComponent>();
-	entity->AddComponent<WalkerComponent>(position);
+	WalkerComponent &wc = entity->AddComponent<WalkerComponent>(position);
 	AnimationComponent &ac = entity->AddComponent<AnimationComponent>(sprite, Nz::Vector2f{ 43.f, 64.f });
 
 	gc.Attach(ac.getSprite());
 	ac.enable();
 	m_walkers.push_back(entity);
+
+	return wc;
 }
 
 void WorldMap::updateTile(Nz::Vector2ui position)
@@ -315,6 +317,7 @@ void WorldMap::addBuilding(Nz::Vector2ui position, const TileDef tile)
 	Ndk::EntityHandle entity = m_worldRef.CreateEntity();
 
 	BuildingComponent &building = entity->AddComponent<BuildingComponent>(position, tile);
+	entity->AddComponent<ResidentialBuildingComponent>();
 	m_buildings.insert(std::make_pair(position, entity));
 	setTileDef(building.getPosition(), building.getTileDef());
 	

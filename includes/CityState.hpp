@@ -13,16 +13,18 @@
 #include <Nazara/Utility.hpp>
 #include <Nazara/Renderer/RenderWindow.hpp>
 
-#include "Systems\WallSystem.hpp"
-#include "Systems\WalkerSystem.hpp"
-#include "Systems\AnimationSystem.hpp"
-#include "Systems\BuildingSystem.hpp"
-
 #include "Config\TilesConfig.hpp"
 #include "World/WorldMap.hpp"
 #include "UserTools.hpp"
 #include "SpriteLibrary.hpp"
 #include "Utils\PathFinder.hpp"
+#include "City\City.hpp"
+
+#include "Systems\WallSystem.hpp"
+#include "Systems\WalkerSystem.hpp"
+#include "Systems\AnimationSystem.hpp"
+#include "Systems\BuildingSystem.hpp"
+#include "Systems\ResidentialBuildingSystem.hpp"
 
 class CityState : public Ndk::State {
 
@@ -47,6 +49,7 @@ private:
 	Ndk::EntityHandle& m_camera;
 
 	WorldMap m_worldMap;
+	City m_city;
 	
 	// User tool & selection
 	UserTools m_userTool;

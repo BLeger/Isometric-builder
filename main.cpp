@@ -14,10 +14,13 @@
 #include "includes/Components/AnimationComponent.hpp"
 #include "includes/Components/WalkerComponent.hpp"
 #include "includes/Components/BuildingComponent.hpp"
+#include "includes/Components/ResidentialBuildingComponent.hpp"
+
 #include "includes/Systems/WallSystem.hpp"
 #include "includes/Systems/AnimationSystem.hpp"
 #include "includes/Systems/WalkerSystem.hpp"
 #include "includes/Systems/BuildingSystem.hpp"
+#include "includes/Systems/ResidentialBuildingSystem.hpp"
 
 #include <iostream>
 
@@ -28,17 +31,19 @@ int main()
 	Ndk::InitializeComponent<WalkerComponent>("Walker");
 	Ndk::InitializeComponent<AnimationComponent>("Anima");
 	Ndk::InitializeComponent<BuildingComponent>("Build");
+	Ndk::InitializeComponent<ResidentialBuildingComponent>("ResBuild");
 
 	Ndk::InitializeSystem<WallSystem>();
 	Ndk::InitializeSystem<WalkerSystem>();
 	Ndk::InitializeSystem<AnimationSystem>();
 	Ndk::InitializeSystem<BuildingSystem>();
+	Ndk::InitializeSystem<ResidentialBuildingSystem>();
 
 	Ndk::Application application;
 
 	Nz::RenderWindow& mainWindow = application.AddWindow<Nz::RenderWindow>();
 	mainWindow.Create(Nz::VideoMode(900, 600, 32), "Test");
-	//mainWindow.EnableVerticalSync(true);
+	mainWindow.EnableVerticalSync(true);
 
 	// World
 	Ndk::World& world = application.AddWorld();

@@ -184,6 +184,44 @@ std::vector<Nz::Vector2ui> Isometric::area(Nz::Vector2ui start, Nz::Vector2ui en
 	return cells;
 }
 
+/*
+ * Return the tiles marked + around a building
+ * Thoses tiles represents entry/exit for walkers
+ *  +
+ * +X+
+ *  +
+ */
+std::vector<Nz::Vector2ui> Isometric::buildingEntryTiles(Nz::Vector2ui buildingRootPosition, Nz::Vector2ui buildingSize)
+{
+	std::vector<Nz::Vector2ui> tiles;
+
+	// Start with the tile directly at the left of the root position
+	Nz::Vector2ui startPosition{ buildingRootPosition.x - 1, buildingRootPosition.y };
+	Nz::Vector2ui currentPosition{ startPosition };
+
+	for (int i = 0; i < buildingSize.x + 1; i++) {
+		currentPosition = bottomRightCell(currentPosition);
+		tiles.push_back(currentPosition);
+	}
+
+	for (int i = 0; i < buildingSize.y + 1; i++) {
+		currentPosition = topRightCell(currentPosition);
+		tiles.push_back(currentPosition);
+	}
+
+	for (int i = 0; i < buildingSize.x + 1; i++) {
+		currentPosition = topLeftCell(currentPosition);
+		tiles.push_back(currentPosition);
+	}
+
+	for (int i = 0; i < buildingSize.y + 1; i++) {
+		currentPosition = bottomLeftCell(currentPosition);
+		tiles.push_back(currentPosition);
+	}
+
+	return tiles;
+}
+
 std::vector<Nz::Vector2ui> Isometric::getSurroundingTiles(Nz::Vector2ui position)
 {
 	std::vector<Nz::Vector2ui> tiles{Isometric::bottomLeftCell(position) , Isometric::topLeftCell(position),

@@ -1,10 +1,11 @@
-#ifndef WALKER_SYSTEM_H
-#define WALKER_SYSTEM_H
+#ifndef WALKER_SYSTEM_HPP
+#define WALKER_SYSTEM_HPP
 
 #include <NDK/System.hpp>
 #include <NDK/Component.hpp>
 #include "../Components/WalkerComponent.hpp"
 #include "../World/WorldMap.hpp"
+#include "../Utils/PathFinder.hpp"
 
 #include <exception>
 
@@ -22,4 +23,4 @@ private:
 	void OnUpdate(float elapsed) override;
 };
 
-#endif // !WALKER_SYSTEM_H
+#endif // !WALKER_SYSTEM_HPP

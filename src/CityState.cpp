@@ -5,6 +5,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	State(),
 	m_windowSize(window.GetSize()),
 	m_worldMap(WorldMap{ Nz::Vector2ui{70, 140}, world }),
+	m_city(City{m_worldMap}),
 	m_userTool(UserTools::PLACE_BUILDING),
 	m_camera(camera)
 {
@@ -15,6 +16,7 @@ CityState::CityState(Ndk::World& world, Nz::RenderWindow& window, Ndk::EntityHan
 	m_world.AddSystem<WalkerSystem>(m_worldMap);
 	m_world.AddSystem<AnimationSystem>();
 	m_world.AddSystem<BuildingSystem>(m_worldMap);
+	m_world.AddSystem<ResidentialBuildingSystem>(m_city, m_spriteLib);
 
 	// Events
 	Nz::EventHandler& eventHandler = window.GetEventHandler();

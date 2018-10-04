@@ -23,7 +23,7 @@ void AnimationSystem::OnUpdate(float elapsed)
 				ac.incrementStep();
 
 			gc.Clear();
-			gc.Attach(ac.getSprite());
+			gc.Attach(ac.getSprite(), 1000);
 		}
 	}
 }
